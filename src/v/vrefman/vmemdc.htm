@@ -1,0 +1,60 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vMemoryDC</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vMemoryDC</H1>
+<HR>
+<A NAME="vMemoryDC"></A>
+A memory drawing canvas.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/vmemdc.h&#62;</tt>
+	<dt><b>Class name:</b></dt><dd> vMemoryDC
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This drawing canvas can be used to draw to memory. Like
+all drawing canvases, the available methods are described
+in <tt><A HREF="vdc.htm">vDC</A></tt>. A very effective technique for using a memory
+canvas is to draw to both the screen canvas pane and a memory
+canvas during interactive drawing, and use the memory canvas to
+update the screen for <tt>Redraw</tt> events. This is especially
+useful if your application requires extensive computation to
+draw a screen.
+
+<p>
+
+<h2>Methods</h2>
+
+<p>
+
+<H4>vMemoryDC(int width, int height)</H4>
+The constructor is used to construct a memory DC of the
+specified width and height. This can be anything you need.
+If you are using the memory DC to update the screen for
+<tt>Redraw</tt> events, then it should be initialized to be
+big enough to repaint whatever you will be drawing on the
+physical screen. The methods  <tt>vApp::ScreenWidth()</tt> and
+<tt>vApp::ScreenHeight()</tt> can be used to obtain the maximum
+size of the physical screen.
+
+<p>
+The method <tt>CopyFromMemoryDC</tt> is used to copy the contents
+of a memory DC to another DC. This can be another memory DC, but
+will usually be a canvas pane DC.
+
+
+</BODY>
+</HTML>

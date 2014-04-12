@@ -1,0 +1,503 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vBaseGLCanvasPane</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vBaseGLCanvasPane</H1>
+<HR>
+<A NAME="vBaseGLCanvasPane"></A>
+A specialized base class to support OpenGL graphics.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/vbglcnv.h&#62;</tt>
+	<dt><b>Class name:</b></dt><dd> vBaseGLCanvasPane
+ 	<dt><b>Hierarchy:</b></dt><dd> vPane -&#62;vBaseGLCanvasPane
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This is a specialized class to provide very basic support
+for the OpenGL graphics package. Unlike other 
+<em><b>V</b></em>&nbsp;canvas
+panes, this class does not use a <tt>vDC</tt> class. Instead,
+it has a few features designed to support OpenGL.
+
+<p>
+This is a basic class. It does not provide many convenience
+methods to support OpenGL at a high level, but it does hide
+all the messy details of interfacing with the host GUI
+environment, and provides the first really easy way to
+generate sophisticated interfaces for OpenGL applications.
+A more sophisticated class
+called <tt>vGLCanvasPane</tt> that will provide a number
+of convenience operations is under development, but the
+base class is still very useful.
+
+<p>
+By following a standard convention to structure V/OpenGL
+code, it is relatively easy to generate applications.
+The details of this convention are explained in the tutorial
+section of this description.
+
+<p>
+See the section <tt>vPane</tt> for a general description of panes.
+
+<p>
+
+<h2>Constructor</h2> 
+<H4>vBaseGLCanvasPane(unsigned int vGLmode)</H4>
+The <tt>vBaseGLCanvasPane</tt> constructor allows you to specify
+certain attributes of the visual used by OpenGL. The options,
+which can be ORed together, include:
+
+<p>
+
+<DL compact><dt><b>vGL_Default</b></dt><dd> Use the default visual, which includes
+<tt>vGL_RGB</tt> and <tt>vGL_DoubleBuffer</tt>. 
+<em><b>V</b></em>&nbsp;will
+use this default if you don't provide a value to the constructor.
+
+<p>
+<dt><b>vGL_RGB</b></dt><dd> This is the standard RGBA mode used by
+most OpenGL programs. The size of the RED, GREEN, and
+BLUE planes are maximized according to the capabilities
+of the host machine. An ALPHA plane is not included
+unless the <tt>vGL_Alpha</tt> property is also specified.
+
+<p>
+<dt><b>vGL_Alpha</b></dt><dd> Used to include an APLHA plane. Not all
+machines support ALPHA planes.
+
+<p>
+<dt><b>vGL_Indexed</b></dt><dd> Use indexed rather than RGB mode. 
+<em><b>V</b></em>
+will attempt to maximize the usefulness of the palette.
+You should not specify both RGB and Indexed.
+
+<p>
+<dt><b>vGL_DoubleBuffer</b></dt><dd> Use Double buffering if available.
+Single buffering is assumed if <tt>vGL_DoubleBuffer</tt> is not
+specified.
+
+<p>
+<dt><b>vGL_Stereo</b></dt><dd> Use a Stereo buffer if available.
+
+<p>
+<dt><b>vGL_Stencil</b></dt><dd> Use Stencil mode if available.
+
+<p>
+<dt><b>vGL_Accum</b></dt><dd> Use accumulation buffers if available.
+
+<p>
+<dt><b>vGL_Depth</b></dt><dd> Use Depth mode if available.
+
+<p>
+</DL>Not all of these attributes are available on all OpenGL implementations,
+and 
+<em><b>V</b></em>&nbsp;will attempt to get a reasonable visual based on your
+specifications. For now, the <tt>vGL_Default</tt> mode works well
+for many OpenGL applications.
+
+<p>
+
+<em><b>V</b></em>&nbsp;supports only one visual per application, and the first
+<tt>vBaseGLCanvasPane</tt> created determines the attributes of
+the visual used.
+
+<p>
+
+<h2>Utility Methods</h2> 
+<p>
+The following methods provide useful service without modification. Sometimes
+you will want to override some of these, but you will then usually
+call these methods from your derived class. Most of these methods
+are the equivalent of the normal 
+<em><b>V</b></em>&nbsp;<tt>vCanvasPane</tt> class.
+
+<p>
+
+<H4>VCursor GetCursor()</H4>
+Returns the id of the current cursor being used in the canvas.
+See <tt>SetCursor</tt>.
+
+<p>
+
+<H4>virtual int GetHeight()</H4>
+Returns the height of the current drawing canvas in pixels.
+
+<p>
+
+<H4>virtual int GetHScroll(int&amp; Shown, int&amp; Top)</H4>
+Get the status of the Horizontal Scroll bar. Returns 1 if the
+scroll bar is displayed, 0 if not. Returns in <tt>Shown</tt> and
+<tt>Top</tt> the current values of the scroll bar. See <tt>SetVScroll</tt>
+for a description of the meanings of parameters.
+
+<p>
+
+<H4>virtual int GetVScroll(int&amp; Shown, int&amp; Top)</H4>
+Get the status of the Vertical Scroll bar. See
+<tt>GetHScroll</tt> for details.
+
+<p>
+
+<H4>virtual int GetWidth()</H4>
+Returns the width of the current drawing canvas in pixels.
+This is either the initial size of the window, or the size
+after the user has resized the window.
+
+<p>
+
+<H4>void SetCursor(VCursor id)</H4>
+This method sets the cursor displayed while the mouse in
+in the current canvas area.
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<H4>void SetWidthHeight(int width, int height)</H4>
+This will set the size of the drawing canvas to <tt>height</tt>
+and <tt>width</tt> in pixels. It will also cause a <tt>Resize</tt>
+event message to be sent to the window.
+
+<p>
+
+<H4>virtual void SetHScroll(int Shown, int Top)</H4>
+Set the horizontal scroll bar
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<H4>virtual void SetVScroll(int Shown, int Top)</H4>
+Set the vertical scroll bar. 
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<H4>virtual void ShowHScroll(int OnOrOff)</H4>
+
+<H4>virtual void ShowVScroll(int OnOrOff)</H4>
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<h2>Methods to Override</h2> 
+<p>
+
+<H4>virtual void HPage(int Shown, int Top)</H4>
+When the user moves the horizontal scroll bar, it generates an
+<tt>HPage</tt> event. 
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<H4>virtual void HScroll(int step)</H4>
+This method is called when the user enters a single step command
+to the scroll bar. 
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<H4>virtual void MouseDown(int x, int y, int button)</H4>
+This is called when the user clicks a button on the mouse.
+
+<p>
+It is important to remember that all mouse coordinates are
+in screen pixels, and use 0,0 as the upper left corner.
+You will probably have to map them to the actual coordinates
+in use by your OpenGL graphic.
+
+<p>
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<H4>virtual void MouseMotion(int x, int y)</H4>
+This is called when the mouse moves while a button is 
+<em>not</em>
+pressed.
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<H4>virtual void MouseMove(int x, int y, int button)</H4>
+This is called when the mouse moves while a button is pressed.
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<H4>virtual void MouseUp(int x, int y, int button)</H4>
+This is called when the user releases the mouse button.
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<H4>virtual void Redraw(int x, int y, int width, int height)</H4>
+<tt>Redraw</tt> is called when the canvas needs to be redrawn.
+The first redraw is generated when the canvas is first created.
+Other redraws are generated when the canvas is covered or uncovered
+by another window, and means the contents of the canvas must
+be repainted. Normally, you will put a call to the code that
+redraws your OpenGl picture here.
+
+<p>
+The parameters of <tt>Redraw</tt> represent the rectangular area
+that needs to be repainted. This areas is not always the whole
+canvas, and it is possible that many <tt>Redraw</tt> events will
+be generated in a row as the user drags a covering window off
+the canvas.
+
+<p>
+The default <tt>Redraw</tt> in <tt>vBaseGLCanvasPane</tt> is a
+no-op, and your subclass needs to override <tt>Redraw</tt>.
+
+<p>
+
+<H4>virtual void Resize(int newW, int newH)</H4>
+A <tt>Resize</tt> event is generated when the user changes the
+size of the canvas using the resize window command provided
+by the host windowing system.
+
+<p>
+The default <tt>Resize</tt> in <tt>vBaseGLCanvasPane</tt> is a
+no-op, and your subclass needs to override <tt>Redraw</tt>.
+
+<p>
+
+<H4>virtual void VPage(int Shown, int Top)</H4>
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<H4>virtual void VScroll(int step)</H4>
+See the description of <tt>vCanvasPane</tt> for details.
+
+<p>
+
+<h2>Specific OpenGL methods</h2> 
+<p>
+
+<H4>virtual void graphicsInit(void)</H4>
+This method is called after the OpenGL drawing canvas has
+been created, and 
+<em>must</em> be overridden by your code.
+You use this method to set up whatever you would usually do
+to initialize OpenGL. In practice, this is a very convenient
+way to get things started. 
+
+<p>
+It is critical that you call the <tt>graphicsInit</tt> method
+in the base <tt>vBaseGLCanvasPane</tt> class 
+<em>first</em>,
+then whatever OpenGL calls you need.
+See the example in the OpenGL tutorial section for more details.
+
+<p>
+
+<H4>void vglMakeCurrent(void)</H4>
+This method should be called by your program before you
+call any OpenGL drawing code. Normally, this is called
+first thing in <tt>Redraw</tt>, or whatever code you use
+to draw with. It is essential to call this, and since
+it is cheap to call this for an already current drawing
+canvas, it is better to be safe.
+
+<p>
+
+<H4>virtual void vglFlush(void)</H4>
+Call this method after you are finished calling OpenGL to
+draw a picture. It automatically handles the details of
+displaying your picture in the window, including double
+buffering and synchronization. It is normally found in your
+<tt>Redraw</tt> method.
+        
+
+<H4>virtual XVisualInfo* GetXVisualInfo()</H4>
+This method is specific to X, and will return a pointer to the
+<tt>XVisualInfo</tt> structure currently being used. There will
+be an equivalent method available for MS-Windows.
+
+<p>
+
+<h2>Tutorial</h2> 
+<p>
+A minimal V/OpenGL application will consist of a class derived
+from <tt>vApp</tt>, a class derived from <tt>vCmdWindow</tt>, and
+a canvas pane class derived from <tt>vBaseGLCanvasPane</tt>.
+Most of your drawing code will be in or called from your derived
+canvas pane.
+
+<p>
+Within that class, you will minimally need to override the
+<tt>graphicsInit</tt> method, and the <tt>Redraw</tt> method. The
+following code fragment, adapted directly from the example code
+in Mark J. Kilgard's book, 
+<em>OpenGL, Programming for the X
+Window System</em>, shows how simple it can be to draw a picture.
+The full code can be found in the <tt>opengl/shapes</tt> directory
+in the 
+<em><b>V</b></em>&nbsp;distribution.
+
+<p>
+<font size=-2>
+<pre>
+
+  static int initDone = 0;
+
+  ......
+
+//==========&#62;&#62;&#62; testGLCanvasPane::graphicsInit &lt;&lt;&lt;=================
+  void testGLCanvasPane::graphicsInit(void)
+  {
+    // Always call the superclass first!
+    vBaseGLCanvasPane::graphicsInit();
+
+    // Example from Mark Kilgard
+    glEnable(GL_DEPTH_TEST);
+    glClearDepth(1.0);
+    glClearColor(0.0, 0.0, 0.0, 0.0);  /* clear to black */
+    glMatrixMode(GL_PROJECTION);
+    gluPerspective(40.0, 1.0, 10.0, 200.0);
+    glMatrixMode(GL_MODELVIEW);
+    glTranslatef(0.0, 0.0, -50.0);
+    glRotatef(-58.0, 0.0, 1.0, 0.0);
+
+    initDone = 1;
+  }
+
+//============&#62;&#62;&#62; testGLCanvasPane::Spin &lt;&lt;&lt;=======================
+  void testGLCanvasPane::Spin()
+  {
+    // Called from the parent CmdWindow for animation
+    vglMakeCurrent();              // Call this FIRST!
+    glRotatef(2.5, 1.0, 0.0, 0.0);
+    Redraw(0,0,0,0);
+  }
+
+//============&#62;&#62;&#62; testGLCanvasPane::Redraw &lt;&lt;&lt;=====================
+  void testGLCanvasPane::Redraw(int x, int y, int w, int h)
+  {
+    static int inRedraw = 0;
+
+    if (inRedraw || !initDone)  // Don't draw until initialized
+ 	return;
+
+    inRedraw = 1;               // Don't allow recursive redraws.
+
+    vglMakeCurrent();           // Call this to make current
+
+    // Code taken directly from Mark J. Kilgard's example
+    // Draws 3 intersecting triangular planes
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glBegin(GL_POLYGON);
+    glColor3f(0.0, 0.0, 0.0); glVertex3f(-10.0, -10.0, 0.0);
+    glColor3f(0.7, 0.7, 0.7); glVertex3f(10.0, -10.0, 0.0);
+    glColor3f(1.0, 1.0, 1.0); glVertex3f(-10.0, 10.0, 0.0);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+    glColor3f(1.0, 1.0, 0.0); glVertex3f(0.0, -10.0, -10.0);
+    glColor3f(0.0, 1.0, 0.7); glVertex3f(0.0, -10.0, 10.0);
+    glColor3f(0.0, 0.0, 1.0); glVertex3f(0.0, 5.0, -10.0);
+    glEnd();
+
+    glBegin(GL_POLYGON);
+    glColor3f(1.0, 1.0, 0.0); glVertex3f(-10.0, 6.0, 4.0);
+    glColor3f(1.0, 0.0, 1.0); glVertex3f(-10.0, 3.0, 4.0);
+    glColor3f(0.0, 0.0, 1.0); glVertex3f(4.0, -9.0, -10.0);
+    glColor3f(1.0, 0.0, 1.0); glVertex3f(4.0, -6.0, -10.0);
+    glEnd();
+
+    vglFlush();    // Call when done drawing to display
+
+    inRedraw = 0;  // Not in here any more
+  }
+
+  ....
+</pre></font>
+
+Note that this example includes a method called <tt>Spin</tt>.
+It is used to animate the intersecting planes. In a 
+<em><b>V</b></em>
+OpenGL application, the easiest way to implement animation
+is with the timer. Create a timer in the Command Window
+class, and then call the animation code in the canvas
+in response to timer events. You should keep code to
+prevent recursive redraws if the timer events end up
+occurring faster than the picture can be rendered, which
+might happen for complex pictures or heavily loaded systems.
+See the example code in the <tt>v/opengl</tt> directory for
+a complete example of animation using the timer.
+
+<p>
+<h2>Comments</h2> 
+<p>
+You should be able to include regular
+V Canvases in your application, as well as OpenGL canvases. In
+versions before 1.20, the OpenGl canvas was a replacement for the
+standard vCanvasPane. It is now properly derived from vCanvasPane.
+<p>
+I've tried to make the OpenGL canvas easy to use. The
+best way (for now) to learn how to use the class is
+to look at the sample programs included here.
+To use it, compile your code, and link it
+with the V library and the V OpenGL library.
+<p>
+This version has been tested on Linux with Mesa 2.6.
+It used to run on Silicon Graphics machines, and there
+is no reason to assume that has changed.
+<p>
+When I installed Mesa, I had to add some symbolic
+links to have it link like standard OpenGL, but you
+could also change the library switches in the Makefiles.
+<p>
+There are a several of samples, some derived from GLUT,
+others from the Mesa distribution. Each sample is included
+in a separate directory. There are mingw32 makefiles for MS-Windows
+for all examples, and Linux makefiles for many.
+<p>
+This documentation for vBaseGLCanvasPane is still incomplete. The
+best way to use it is to look at &lt;v/vbglcnv.h&gt; and the examples.
+I've only been able to get the Windows version to work correctly
+under mingw32 and Borland C++ 5.0. Microsoft C++ 4.0 couldn't find
+the proper link libraries. If someone knows how to get this
+problem solved, please let me know.
+<p>
+The Mingw32 distribution requires proper .h files. They are included
+in the gnuwin32 directory. The OpenGL header
+files I provide are edited to remove references to CALLBACK
+parameters, which means the tessellation stuff doesn't work.
+<p>
+The Windows version doesn't seem to support Indexed color mode,
+even though the definitions are there, and some code looks
+like it generates a correct graphics context. The problem
+for now seems to be there is no equivalent of glutSetColor to
+set a color index. Does ANYONE in the whole world actually
+use Indexed color? If so, then I'll look at glut and see if
+I can add indexed color support.
+<p>
+I am working on developing a new vOpenGLCanvasPane class with a
+V user. The new class will have built in support for some
+vector stuff and some lighting stuff. Would anyone like
+some of the glut shapes: spheres, cubes, etc? They shouldn't be
+too hard to add, but I don't know if they really get used.
+<p>
+<h2>See Also</h2> 
+<p>
+<A HREF="vcanvas.htm">vCanvasPane</A>
+
+
+
+</BODY>
+</HTML>

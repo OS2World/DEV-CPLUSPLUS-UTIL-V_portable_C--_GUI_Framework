@@ -1,0 +1,155 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vModalDialog</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vModalDialog</H1>
+<HR>
+<A NAME="vModalDialog"></A>
+Used to show modal dialogs.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<DL compact>
+<p>
+	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vModalDialog">&lt;v/vmodald.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vModalDialog
+ 	<dt><b>Hierarchy:</b></dt><dd> (vBaseWindow,vCmdParent) -&#62;<A HREF="vdialog.htm">vDialog</A> -&#62;vModalDialog
+	<dt><b>Contains:</b></dt><dd> <A HREF="cmdobj.htm">CommandObject</A>
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This class is an implementation of a modal dialog.  This means
+that the dialog grabs control, and waits for the user to select
+an appropriate command from the dialog.  You can use any of
+the methods defined by the <tt>vDialog</tt> class, as well as the
+new <tt>ShowModalDialog</tt> method.
+
+<p>
+
+<h2>Constructor</h2> 
+<p>
+
+<H4>vModalDialog(vBaseWindow* parent, char* title)</H4>
+
+<H4>vModalDialog(vApp* parent, char* title)</H4>
+
+<p>
+There are two versions of the constructor, one for constructing
+dialogs from windows, the other from the vApp object. See the
+description of the <tt>vDialog</tt> constructor for more details.
+
+<p>
+The default value for the title is an empty string, so you
+can declare instances of modal dialogs without the title
+string if you wish. The dialog title will always show in
+Windows, but in X is dependent on how the window manager
+treats decorations on transient windows.
+
+<p>
+
+<h2>New Methods</h2>
+
+<p>
+
+<H4>virtual ItemVal ShowModalDialog(char* message, ItemVal&amp; retval)</H4>
+This method displays the dialog, and does not return until
+the modal dialog is closed. It returns the id of the
+button that caused the return, and in <tt>retval</tt>, the value of
+the button causing the return as defined in the dialog
+declaration.
+
+<p>
+Please see the description of <tt>DialogDisplayed</tt>
+for an important discussion of setting dialog control values.
+
+<p>
+There are a couple of ways to close a modal dialog and make
+<tt>ShowModalDialog</tt> return, all controlled by the <tt>DialogCommand</tt>
+method. The default <tt>DialogCommand</tt> will close the modal
+dialog automatically when the user clicks the <tt>M_Cancel</tt>,
+<tt>M_Done</tt>, or <tt>M_OK</tt> buttons.
+
+<p>
+All command actions are still passed to the virtual <tt>DialogCommand</tt>
+method, which is usually overridden in the derived class. By
+first calling <tt>vModalDialog::DialogCommand</tt>
+to handle the default operation, and then checking for the
+other buttons that should close the dialog, you can also close
+the dialog by calling the <tt>CloseDialog</tt> method, which will
+cause the return.
+
+<p>
+The following code demonstrates this.
+
+<p>
+<FONT SIZE=-2>
+<pre>
+    void myModal::DialogCommand(ItemVal id, ItemVal val,
+        CmdType ctype)
+      {
+        // Call the parent for default processing
+        vModalDialog::DialogCommand(id,val,ctype);
+        if (id == M_Yes || id == M_No) // These close, too.
+            CloseDialog();
+      }
+</pre></FONT>
+<h2>Derived Methods</h2>
+
+<p>
+
+<H4>virtual void DialogCommand(ItemVal Id, ItemVal val, CmdType type)</H4>
+Adds a little functionality for handling this modally.
+
+<p>
+
+<h2>Inherited Methods</h2>
+
+<p>
+
+<H4>vDialog(vBaseWindow* parent)</H4>
+
+<H4>vDialog(vBaseWindow* parent, int modalflag)</H4>
+
+<H4>vDialog(vApp* parent)</H4>
+
+<p>
+
+<H4>vDialog(vApp* parent, int modalflag)</H4>
+
+<p>
+
+<H4>void vDialog::AddDialogCmds(CommandObject* cList)</H4>
+
+<p>
+
+<H4>virtual void CancelDialog()</H4>
+
+<H4>virtual void CloseDialog()</H4>
+
+<H4>virtual int GetTextIn(ItemVal Id, char* str, int maxlen)</H4>
+
+<H4>virtual int GetValue(ItemVal Id)</H4>
+
+<H4>virtual void SetValue(ItemVal Id, ItemVal val, ItemSetType type)</H4>
+
+<H4>virtual void SetString(ItemVal Id, char* str)</H4>
+
+<H4>virtual void ShowDialog(char* message)</H4>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="vdialog.htm">vDialog</A>
+
+
+</BODY>
+</HTML>

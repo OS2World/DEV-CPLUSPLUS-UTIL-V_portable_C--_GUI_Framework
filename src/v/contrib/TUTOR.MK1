@@ -1,0 +1,60 @@
+WCDIR = c:\wc105
+VDRIVE = e:
+VDIR  = \v
+
+BASEOBJ = $(VDRIVE)$(VDIR)\watcom\win32\TCANVAS.OBJ &
+$(VDRIVE)$(VDIR)\watcom\win32\TCMDWIN.OBJ   &
+$(VDRIVE)$(VDIR)\watcom\win32\TDIALOG.OBJ  &
+$(VDRIVE)$(VDIR)\watcom\win32\TMODAL.OBJ     &
+$(VDRIVE)$(VDIR)\watcom\win32\TUTAPP.OBJ
+
+BLANK = ""
+
+$(VDRIVE)$(VDIR)\watcom\win32\tutor.exe : $(BASEOBJ)  #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ @%write tutor.lk1 NAME tutor
+ @%append tutor.lk1 FIL TCANVAS.obj,TCMDWIN.obj,TDIALOG.obj,TMODAL.obj,TUTAPP.obj
+ @%append tutor.lk1
+
+#!ifneq BLANK ""
+# *wlib -q -n -b tutor.imp
+# @%append tutor.lk1 LIBR tutor.imp
+#!endif
+
+ *wlink d all SYS nt_win op m libp win32 libr vlib32 op maxe=25 op q op symf @tutor.lk1
+!ifneq BLANK ""
+ wrc -q -ad  tutor.exe
+!endif
+
+
+$(VDRIVE)$(VDIR)\watcom\win32\TCANVAS.obj : $(VDRIVE)$(VDIR)\tutor\TCANVAS.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\tutor\TCANVAS.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\tutor -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\TCMDWIN.obj : $(VDRIVE)$(VDIR)\tutor\TCMDWIN.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\tutor\TCMDWIN.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\includew&
+;$(VDRIVE)$(VDIR)\tutor -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\TDIALOG.obj : $(VDRIVE)$(VDIR)\tutor\TDIALOG.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\tutor\TDIALOG.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\tutor -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\TMODAL.obj : $(VDRIVE)$(VDIR)\tutor\TMODAL.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\tutor\TMODAL.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\tutor -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\TUTAPP.obj : $(VDRIVE)$(VDIR)\tutor\TUTAPP.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\tutor\TUTAPP.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\includ&
+ew;$(VDRIVE)$(VDIR)\tutor -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+

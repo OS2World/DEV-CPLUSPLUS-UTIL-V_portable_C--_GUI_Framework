@@ -1,0 +1,119 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>Drawing</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>Introduction to Drawing</H1>
+<HR>
+<A NAME="Drawing"></A>
+The basic 
+<em><b>V</b></em>&nbsp;model of drawing is a canvas. 
+<em><b>V</b></em>&nbsp;supports several kinds
+of drawing canvases. The most obvious canvas is the screen drawing canvas.
+This will often be the main or even only canvas you use. 
+<em><b>V</b></em>&nbsp;also
+supports printing canvases. Each kind of canvas has identical drawing
+methods, so you can write code to draw that is mostly independent of
+which kind of canvas is being used.
+
+<p>
+There is also a specialized drawing canvas to support OpenGL. This
+class differs somewhat from the other drawing canvases.
+
+<h2>Drawing with the vDC Class</h2>
+You draw to the various canvases using a 
+<A HREF="vdc.htm" TARGET="info"><tt>vDC</tt></A> class, the
+general 
+<em><b>V</b></em>&nbsp;Drawing Canvas Class (the OpenGL canvas does not use
+the <tt>vDC</tt> class). The <tt>vDC</tt> class for drawing to the
+screen is <tt><A HREF="vcpdc.htm" TARGET="_self" >vCanvasPaneDC</A></tt>. The class <tt><A HREF="vprintdc.htm" TARGET="_self" >vPrintDC</A></tt> is the
+platform independent class to draw to a printer. For X, <tt>vPrintDC</tt>
+supports PostScript printing. The Windows version supports
+standard Windows printers. (You can also use the PostScript DC
+independently on Windows.) If you write your drawing code to use
+a <tt>vDC</tt> pointer, you will be able to draw to several
+canvases just by changing the value of the pointer.
+
+<p>
+Each <tt>vDC</tt> supports the methods described in the <tt>vDC</tt> section.
+Because the <tt>vCanvasPane</tt> class is so central to most
+applications, it duplicates
+all the <tt>vDC</tt> methods so you can call them directly from your
+<tt>vCanvasPane</tt> object. In fact, all the methods in <tt>vCanvasPane</tt>
+are just calls to the corresponding <tt>vDC</tt> using the <tt>vCanvasPaneDC</tt>
+of the canvas pane. You can get the <tt>vCanvasPaneDC</tt> pointer with
+the <tt>GetDC</tt> method.
+
+<p>
+There are three kinds of drawing methods supported by 
+<em><b>V</b></em>. The simplest
+methods draw lines of various widths and colors using the current
+<tt><A HREF="vpen.htm" TARGET="_self" >vPen</A></tt>. You change the color and width of the lines being drawn
+by setting the current <tt>vPen</tt> with the <tt>SetPen</tt> method.
+
+<p>
+The second type of drawing includes filling the space surrounded
+by a shape such as a polygon. The edges of the shape are drawn using
+the current <tt>vPen</tt>. The filled area is drawn using the current
+<tt>vBrush</tt>. You can set various attributes of the brush, and use
+<tt>SetBrush</tt> to change how the shapes will be filled, as well as
+changing the attributes of the <tt>vPen</tt> used to draw the surrounding
+line. Both the pen and the brush can be transparent, allowing you to
+draw unfilled outline shaped, or to fill a shape without an outline.
+
+<p>
+Finally, 
+<em><b>V</b></em>&nbsp;supports drawing of text on a canvas using various
+<tt><A HREF="vfont.htm" TARGET="_self" >vFonts</A></tt> and text attributes. The canvas pane will start out
+using the default system font (<tt>vfSystemDefault</tt>). If you need
+a different initial font, use <tt>vFont::SetFontValues</tt> to
+select the font you want, then <tt>vCanvasPane::SetFont</tt> to set
+the new font.
+
+<p>
+
+<h2><A NAME="Coordinates"></A>Coordinates</h2>
+
+<p>
+All 
+<em><b>V</b></em>&nbsp;drawing canvas classes use integer physical coordinates
+appropriate to the canvas. All devices call the upper left corner
+x,y coordinate of the drawing canvas 0,0. The x values increase
+to the right, and y values increase down.
+
+<p>
+It it up to each application to provide appropriate mapping
+from the coordinates used for the particular model being used
+(often called the world coordinate system) to the physical
+mapping used by each 
+<em><b>V</b></em>&nbsp;drawing canvas. Each drawing canvas
+will have a physical limit for the maximum x and maximum y,
+usually imposed by the particular canvas (a screen or a paper
+size, for example). You can set a scale factor for each drawing
+canvas which can be helpful for using different kinds of drawing
+canvases. 
+<em><b>V</b></em>&nbsp;also supports setting an x,y translation. This will
+allow you to more easily use the scroll bars and set margins
+on printers. Your application can usually use the messages
+received from the scroll bars to set the translation coordinates
+to map your the canvas to a different drawing area. The system
+will handle clipping.
+
+<p>
+However, the application is for the most part responsible
+for determining all coordinate mapping - translations of
+a viewport of the drawing, determining the scaling for
+various drawing canvases, and any mapping from the world
+to the physical coordinates. The application will have to
+map the mouse input accordingly, too.
+<P>
+<h2>See Also</h2>
+<A HREF="vcpdc.htm" TARGET="info"><TT>vCanvasPaneDC</TT></A>,
+<A HREF="vmemdc.htm" TARGET="info"><TT>vMemoryDC</TT></A>,
+and <A HREF="vprintdc.htm" TARGET="info"><TT>vPrintDC</TT></A>.
+
+</BODY>
+</HTML>

@@ -1,0 +1,370 @@
+
+BLANK = ""
+
+WCDIR  = c:\wc105
+VDRIVE = e:
+VDIR   = \v
+
+LIBTARGET = $(VDRIVE)$(VDIR)\watcom\win32\vlib32.lib
+
+BASEOBJECTS = $(VDRIVE)$(VDIR)\watcom\win32\vapp.obj $(VDRIVE)$(VDIR)\watcom\win32\vawinfo.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vbaseitm.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vbasewin.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vboxlblc.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vbrush.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\vbtncmd.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vcanvas.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vcbtncmd.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vchkboxc.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vclabelc.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vcmd.obj     &
+$(VDRIVE)$(VDIR)\watcom\win32\vcmdpane.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vcmdprnt.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vcmdwin.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vcolor.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\vcomboc.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vcpdc.obj    &
+$(VDRIVE)$(VDIR)\watcom\win32\vdebug.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\vdialog.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vfilesel.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vfont.obj    &
+$(VDRIVE)$(VDIR)\watcom\win32\vfontsel.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vframec.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vicon.obj    &
+$(VDRIVE)$(VDIR)\watcom\win32\vlabelc.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vlistc.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\vmemdc.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\vmenu.obj    &
+$(VDRIVE)$(VDIR)\watcom\win32\vmodald.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vnotice.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vpen.obj     &
+$(VDRIVE)$(VDIR)\watcom\win32\vprogrsc.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vradioc.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vreply.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\vsliderc.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vspinc.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\vtextc.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\vtextcnv.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vtextinc.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vthislst.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vtimer.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\vutil.obj    &
+$(VDRIVE)$(VDIR)\watcom\win32\vwindc.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\vwindow.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\vwinprdc.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vwinprtr.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\vynreply.obj
+
+OBJECTS = vapp.obj vawinfo.obj vbaseitm.obj vbasewin.obj vboxlblc.obj     &
+vbrush.obj vbtncmd.obj vcanvas.obj vcbtncmd.obj vchkboxc.obj vclabelc.obj &
+vcmd.obj vcmdpane.obj vcmdprnt.obj vcmdwin.obj vcolor.obj vcomboc.obj     &
+vcpdc.obj vdebug.obj vdialog.obj vfilesel.obj vfont.obj vfontsel.obj      &
+vframec.obj vicon.obj vlabelc.obj vlistc.obj vmemdc.obj vmenu.obj         &
+vmodald.obj vnotice.obj vpen.obj vprogrsc.obj vradioc.obj vreply.obj      &
+vsliderc.obj vspinc.obj vtextc.obj vtextcnv.obj vtextinc.obj vthislst.obj &
+vtimer.obj vutil.obj vwindc.obj vwindow.obj vwinprdc.obj vwinprtr.obj     &
+vynreply.obj
+
+$(LIBTARGET): $(BASEOBJECTS) #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ %create vlib32.lb1
+#!if BLANK != "$(OBJECTS)"
+
+ @for %i in ( $(OBJECTS) ) do @%append vlib32.lb1 +%i
+
+#!else
+# @for %i in () do @%append vlib32.lb1 +'%i'
+#!endif
+  *wlib -b -c -n -q -p=512 vlib32.lib @vlib32.lb1
+
+$(VDRIVE)$(VDIR)\watcom\win32\vapp.obj: $(VDRIVE)$(VDIR)\srcwin\vapp.cpp          #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vapp.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vawinfo.obj : $(VDRIVE)$(VDIR)\srcwin\vawinfo.cpp   #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vawinfo.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vbaseitm.obj : $(VDRIVE)$(VDIR)\srcwin\vbaseitm.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vbaseitm.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vbasewin.obj : $(VDRIVE)$(VDIR)\srcwin\vbasewin.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vbasewin.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vboxlblc.obj : $(VDRIVE)$(VDIR)\srcwin\vboxlblc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vboxlblc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vbrush.obj : $(VDRIVE)$(VDIR)\srcwin\vbrush.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vbrush.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\include&
+w -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vbtncmd.obj : $(VDRIVE)$(VDIR)\srcwin\vbtncmd.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vbtncmd.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vcanvas.obj : $(VDRIVE)$(VDIR)\srcwin\vcanvas.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vcanvas.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vcbtncmd.obj : $(VDRIVE)$(VDIR)\srcwin\vcbtncmd.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vcbtncmd.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vchkboxc.obj : $(VDRIVE)$(VDIR)\srcwin\vchkboxc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vchkboxc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vclabelc.obj : $(VDRIVE)$(VDIR)\srcwin\vclabelc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vclabelc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vcmd.obj : $(VDRIVE)$(VDIR)\srcwin\vcmd.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vcmd.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includew &
+-w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vcmdpane.obj : $(VDRIVE)$(VDIR)\srcwin\vcmdpane.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vcmdpane.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vcmdprnt.obj : $(VDRIVE)$(VDIR)\srcwin\vcmdprnt.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vcmdprnt.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vcmdwin.obj : $(VDRIVE)$(VDIR)\srcwin\vcmdwin.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vcmdwin.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vcolor.obj : $(VDRIVE)$(VDIR)\srcwin\vcolor.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vcolor.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\include&
+w -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vcomboc.obj : $(VDRIVE)$(VDIR)\srcwin\vcomboc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vcomboc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vcpdc.obj : $(VDRIVE)$(VDIR)\srcwin\vcpdc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vcpdc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includew&
+ -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vdebug.obj : $(VDRIVE)$(VDIR)\srcwin\vdebug.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vdebug.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\include&
+w -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vdialog.obj : $(VDRIVE)$(VDIR)\srcwin\vdialog.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vdialog.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vfilesel.obj : $(VDRIVE)$(VDIR)\srcwin\vfilesel.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vfilesel.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vfont.obj : $(VDRIVE)$(VDIR)\srcwin\vfont.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vfont.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includew&
+ -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vfontsel.obj : $(VDRIVE)$(VDIR)\srcwin\vfontsel.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vfontsel.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vframec.obj : $(VDRIVE)$(VDIR)\srcwin\vframec.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vframec.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vicon.obj : $(VDRIVE)$(VDIR)\srcwin\vicon.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vicon.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includew&
+ -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vlabelc.obj : $(VDRIVE)$(VDIR)\srcwin\vlabelc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vlabelc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vlistc.obj : $(VDRIVE)$(VDIR)\srcwin\vlistc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vlistc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\include&
+w -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vmemdc.obj : $(VDRIVE)$(VDIR)\srcwin\vmemdc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vmemdc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\include&
+w -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vmenu.obj : $(VDRIVE)$(VDIR)\srcwin\vmenu.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vmenu.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includew&
+ -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vmodald.obj : $(VDRIVE)$(VDIR)\srcwin\vmodald.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vmodald.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vnotice.obj : $(VDRIVE)$(VDIR)\srcwin\vnotice.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vnotice.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vpen.obj : $(VDRIVE)$(VDIR)\srcwin\vpen.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vpen.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includew &
+-w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vprogrsc.obj : $(VDRIVE)$(VDIR)\srcwin\vprogrsc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vprogrsc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vradioc.obj : $(VDRIVE)$(VDIR)\srcwin\vradioc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vradioc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vreply.obj : $(VDRIVE)$(VDIR)\srcwin\vreply.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vreply.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\include&
+w -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vsliderc.obj : $(VDRIVE)$(VDIR)\srcwin\vsliderc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vsliderc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vspinc.obj : $(VDRIVE)$(VDIR)\srcwin\vspinc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vspinc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\include&
+w -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vtextc.obj : $(VDRIVE)$(VDIR)\srcwin\vtextc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vtextc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\include&
+w -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vtextcnv.obj : $(VDRIVE)$(VDIR)\srcwin\vtextcnv.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vtextcnv.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vtextinc.obj : $(VDRIVE)$(VDIR)\srcwin\vtextinc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vtextinc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vthislst.obj : $(VDRIVE)$(VDIR)\srcwin\vthislst.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vthislst.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vtimer.obj : $(VDRIVE)$(VDIR)\srcwin\vtimer.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vtimer.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\include&
+w -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vutil.obj : $(VDRIVE)$(VDIR)\srcwin\vutil.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vutil.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includew&
+ -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vwindc.obj : $(VDRIVE)$(VDIR)\srcwin\vwindc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vwindc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\include&
+w -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vwindow.obj : $(VDRIVE)$(VDIR)\srcwin\vwindow.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vwindow.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\includ&
+ew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vwinprdc.obj : $(VDRIVE)$(VDIR)\srcwin\vwinprdc.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vwinprdc.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vwinprtr.obj : $(VDRIVE)$(VDIR)\srcwin\vwinprtr.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vwinprtr.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\vynreply.obj : $(VDRIVE)$(VDIR)\srcwin\vynreply.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\srcwin\vynreply.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;..\..\inclu&
+dew -w1 -e25 -d_WIN32 -zp2 -zq -otexan -3r -bt=nt -mf
+
+
+

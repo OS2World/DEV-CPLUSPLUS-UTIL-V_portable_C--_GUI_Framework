@@ -1,0 +1,56 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>Key Codes</title>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>Symbolic Key Codes</H1>
+<HR>
+<A NAME="Symbolic Key Codes"></A>
+<p>
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/vkeys.h&#62;</tt>
+</DL>
+<p>
+
+<h2>Description</h2>
+<p>
+Because each platform defines values of keys differently, <b>V</b>
+provides its own symbolic set of key code values. <b>V</b>
+uses the standard ASCII values for the normal printing keys
+below the value 0x80. The following
+are the symbols defined for other key codes:
+<p>
+<pre><code><font size="-1">
+
+VKM_Shift         VKM_Ctrl       VKM_Alt
+
+vk_BackSpace      vk_Tab          vk_Linefeed
+vk_Return         vk_Pause        vk_Escape
+vk_Delete         vk_BackTab      vk_Home
+vk_Left           vk_Up           vk_Right
+vk_Down           vk_Page_Up      vk_Page_Down
+vk_End            vk_Insert       vk_KP_Enter
+vk_KP_Home        vk_KP_Left      vk_KP_Up
+vk_KP_Right       vk_KP_Down      vk_KP_Page_Up
+vk_KP_Page_Down   vk_KP_End       vk_KP_Insert
+vk_KP_Delete      vk_KP_Equal     vk_KP_Multiply
+vk_KP_Add         vk_KP_Subtract  vk_KP_Decimal
+vk_KP_Divide      vk_space        vk_asciitilde
+
+vk_KP_0 - vk_KP_9
+vk_F1 - vk_F16
+
+</font></code></pre>
+
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="vwindow.htm#KeyIn">vWindow::KeyIn</A>
+</BODY>
+</HTML>

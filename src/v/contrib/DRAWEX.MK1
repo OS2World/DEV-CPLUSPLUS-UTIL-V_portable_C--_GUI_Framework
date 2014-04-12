@@ -1,0 +1,46 @@
+WCDIR = c:\wc105
+VDRIVE = e:
+VDIR  = \v
+
+BASEOBJ = $(VDRIVE)$(VDIR)\watcom\win32\DRAWAPP.OBJ  &
+$(VDRIVE)$(VDIR)\watcom\win32\DRAWCMDW.OBJ &
+$(VDRIVE)$(VDIR)\watcom\win32\DRAWCNV.OBJ
+
+BLANK = ""
+
+$(VDRIVE)$(VDIR)\watcom\win32\drawex.exe : $(BASEOBJ)  #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ @%write drawex.lk1 NAME drawex
+ @%append drawex.lk1 FIL DRAWAPP.OBJ,DRAWCMDW.OBJ,DRAWCNV.OBJ
+ @%append drawex.lk1
+
+#!ifneq BLANK ""
+# *wlib -q -n -b drawex.imp
+# @%append drawex.lk1 LIBR drawex.imp
+#!endif
+
+ *wlink d all SYS nt_win op m libp win32 libr vlib32 op maxe=25 op q op symf @drawex.lk1
+!ifneq BLANK ""
+ wrc -q -ad  drawex.exe
+!endif
+
+
+$(VDRIVE)$(VDIR)\watcom\win32\DRAWAPP.obj : $(VDRIVE)$(VDIR)\drawex\DRAWAPP.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\drawex\DRAWAPP.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\drawex -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\DRAWCMDW.obj : $(VDRIVE)$(VDIR)\drawex\DRAWCMDW.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\drawex\DRAWCMDW.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\drawex -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\DRAWCNV.obj : $(VDRIVE)$(VDIR)\drawex\DRAWCNV.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\drawex\DRAWCNV.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\drawex -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+

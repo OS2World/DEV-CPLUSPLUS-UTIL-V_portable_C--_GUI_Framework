@@ -1,0 +1,226 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vAppGen</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>V Application Generator</H1>
+<HR>
+<A NAME="VAppGen"></A> 
+
+<p>
+The 
+<em><b>V</b></em>&nbsp;Application Generator will automatically generate
+C++ code needed to build a simple 
+<em><b>V</b></em>&nbsp;application. It has
+several options that let you specify the name of the
+application, the name of your derived classes, and what
+
+<em><b>V</b></em>&nbsp;interface elements to include in the application.
+The 
+<em><b>V</b></em>&nbsp;Application Generator, <tt>vgen</tt>, does not generate code that
+does any real work, it just provides a very good starting
+skeleton program to build your application.
+
+<p>
+On approach for beginning a new 
+<em><b>V</b></em>&nbsp;application
+is to copy one of the example programs, and modify
+it. <tt>Vgen</tt> has the advantage of allowing a certain amount
+of customization with names and interface elements included
+in the basic skeleton program.
+
+<p>
+<tt>Vgen</tt> will generate
+the skeleton code and a makefile compatible with GNU make. On the
+Windows version, <tt>vgen</tt> will generate a makefile compatible
+with mingw32. If you use a different compiler, it is up to you to
+build a project file for your compiler. This is usually a very
+trivial operation.
+
+<p>
+Once you have generated and compiled the skeleton application,
+you can modify the code to build your own application. It
+is highly recommend that you start every new 
+<em><b>V</b></em>&nbsp;application
+this way to get a consistency in the structure of the code.
+
+<p>
+
+<h2>Overview</h2>
+
+<p>
+<tt>Vgen</tt> is a very simple program to use. You run it,
+and then select if you are generating a standard 
+<em><b>V</b></em>\
+application skeleton, or if you are generating an
+extra dialog skeleton to add to an existing application.
+
+<p>
+The most common use of <tt>vgen</tt> is to generate a standard 
+<em><b>V</b></em>\
+application skeleton. This consists of a derived <tt>vCommandWindow</tt>
+class with a simple menu bar, a command pane with a sample
+button, a derived <tt>vCanvasPane</tt>, and a status pane. The
+standard 
+<em><b>V</b></em>&nbsp;skeleton also allows you to generate a modeless and
+a modal dialog. You can specify the name of the classes
+you want to use, as well as the file names to use for each
+of the generated files. The standard files generated include
+a file for the derived <tt>vApp</tt> class, a file for the
+derived <tt>vCmdWindow</tt> class, a file for the derived
+<tt>vCanvasPane</tt> class, and files for the dialogs.
+<tt>Vgen</tt> also generates a GNU compatible makefile.
+
+<p>
+<tt>Vgen</tt> also will generate extra copies of dialogs.
+You can specify the class name of the dialog, and then
+generate a skeleton file. These dialogs must be added
+manually to the basic skeleton application.
+
+<p>
+The remainder of the reference manual will explain each
+menu item and each dialog.
+
+<p>
+
+<h2>File Menu</h2>
+
+<p>
+The file menu only has an Exit command, which closes
+<tt>vgen</tt>.
+
+<p>
+
+<h2>Generate Menu</h2>
+
+<p>
+The <tt>Generate</tt> menu selects which type of code you
+want to generate. These are duplicated on the tool bar.
+
+<p>
+
+<H4>Generate:Standard Application</H4>
+
+<p>
+This option brings up a dialog that controls the
+generation of a standard 
+<em><b>V</b></em>&nbsp;application. This section
+will explain each option contained on the Standard
+V App dialog.
+
+<p>
+When <tt>vgen</tt> generates a skeleton application, it
+uses some fixed conventions for naming derived classes and
+file names. The 
+<em>Application Base Name</em> input lets
+you specify the base name of each class. The default
+base name is <tt>my</tt>. Thus, <tt>vgen</tt> will generate
+the derived class names <tt>myApp</tt>, <tt>myCmdWindow</tt>,
+<tt>myCanvasPane</tt> or <tt>myTextCanvasPane</tt>, 
+<tt>myDialog</tt>, and <tt>myModalDialog</tt>.
+
+<p>
+The 
+<em>File Base Name</em> input lets you control
+the base name of the generated code files. If you
+intend to do development for Windows, it is recommended
+that you specify a name that follows the 8 character
+limit on file base names. Using the default <tt>my</tt>
+file base name, <tt>vgen</tt> will generate the files
+<tt>myapp.cpp</tt> and <tt>myapp.h</tt>, <tt>mycmdw.cpp</tt>
+and <tt>mycmdw.h</tt>, <tt>mycnv.cpp</tt> and <tt>mycnv.h</tt>,
+<tt>mydlg.cpp</tt> and <tt>mydlg.h</tt>, and <tt>mymdlg.cpp</tt>
+and <tt>mymdlg.h</tt>. If you generate a makefile, it
+will be called <tt>makefile.my</tt>.
+
+<p>
+The generate dialog allows you to control which interface
+elements are included in the generated code. 
+The first section of the dialog controls the Command Window
+options. You can elect to include a tool bar and a status bar.
+You can also include code that shows the date and time on the
+status bar if you wish. You can control if the code generates
+Windows MDI or SDI model code (this has no effect on the X code).
+The command window class includes a short, standard menu bar that
+you can later modify to add your own menu items. You can also
+specify a title that will appear in the app's title bar. Finally,
+you can have <tt>vgen</tt> generate code that implements a <tt>vTimer</tt>
+in the CommandWindow. This is most likely to be useful for OpenGL
+apps.
+
+<p>
+The second section of the dialog controls the generation of
+the canvas pane.
+You can generate a canvas pane derived
+from a <tt>vCanvasPane</tt>, a <tt>vTextCanvasPane</tt>,
+or a <tt>vBaseGLCanvasPane</tt>. You also have the choice
+of no canvas pane at all. If you select no canvas pane,
+then your app 
+<em>must</em> have a tool bar.
+You can elect to show the vertical or horizontal
+scroll bars by default.
+
+<p>
+You can also control generation of a modal and a modeless
+dialog. If you include these, code to activate the dialogs
+will be included in the menu bar. You will usually modify
+that code to activate the dialogs in a manner needed by
+your application. 
+
+<p>
+You also have the option of generating
+a GNU make compatible makefile. The make file needs to
+know where the <tt>v/include</tt> and 
+<em><b>V</b></em>&nbsp;library files
+are found on your system. On Unix-like systems, the default
+<tt>vgen</tt> assumes that these will be located in 
+<tt>/usr/local/v</tt>. There is a variable, <tt>HOMEV</tt> in the
+makefile that sets this path. If 
+<em><b>V</b></em>&nbsp;is found in a different
+place, you can change it in the generate dialog, or you can
+change an <tt>ifdef</tt> in the source code and recompile <tt>vgen</tt>.
+In the MS-Windows version, <tt>vgen</tt> assumes you are using
+mingw32 installed on C:, with the 
+<em><b>V</b></em>libraries and includes
+also installed in the mingw32 path.
+
+<p>
+Finally, you can control where the generated files are written.
+The 
+<em>Set Save Path</em> brings up the standard file selection
+dialog for where to save the <tt>myapp.cpp</tt> file. That file
+and the others will be saved in whatever directory you specify.
+If you don't specify a save path, the files will be saved in
+the startup directory.
+
+<p>
+When you have made all your selections, the 
+<em>Generate</em>
+button will generate the skeleton application.
+
+<p>
+
+<H4>Generate:Extra Dialog</H4>
+
+<p>
+Many applications need more than one modeless or one modal dialog.
+<tt>Vgen</tt>'s solution to this is not super sophisticated, but
+it is easier than modifying an existing dialog from scratch.
+The 
+<em>Extra Dialog</em> generate command allows you to generate
+extra dialog classes that you can then manually add to your
+main application. The dialogs generated are just like the
+dialogs that the generate standard app builds, but with
+a different base name. The options in this dialog include
+set the class and file base names, the title, modal or
+modeless, and the save path.
+
+<p>
+
+
+
+</BODY>
+</HTML>

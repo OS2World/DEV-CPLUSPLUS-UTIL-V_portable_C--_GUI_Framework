@@ -1,0 +1,98 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vCmdWindow</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vCmdWindow</H1>
+<HR>
+
+<A NAME="vCmdWindow"></A>
+A class to show a window with various command panes.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vCmdWindow">&lt;v/vcmdwin.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vCmdWindow
+ 	<dt><b>Hierarchy:</b></dt><dd> vBaseWindow -&#62;<A HREF="vwindow.htm">vWindow</A> -&#62;vCmdWindow
+	<dt><b>Contains:</b></dt><dd> <A HREF="vdialog.htm">vDialog</A>, <A HREF="vpane.htm">vPane</A>
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+The <tt>vCmdWindow</tt> class is derived from the <tt>vWindow</tt>
+class. This class is intended as a class that serves as
+a main control window containing various <tt>vPane</tt> objects
+such as menu bars, canvases, and command bars. The main 
+difference between the <tt>vCmdWindow</tt> class and the
+<tt>vWindow</tt> class is how they are treated by the host
+windowing system. You will normally derive your windows from
+the <tt>vCmdWindow</tt> class.
+
+<p>
+
+<h2>Constructor</h2> 
+<p>
+
+<H4>vCmdWindow(char* title)</H4>
+
+<H4>vCmdWindow(char* title, int h, int w)</H4>
+
+<p>
+These construct a <tt>vCmdWindow</tt> with a title and a size specified
+in pixels. You can use <tt>theApp-&#62;DefaultHeight()</tt> and
+<tt>theApp-&#62;DefaultWidth()</tt> in the call to the constructor to
+create a ``standard'' size window. Note that the height and width are
+of the canvas area, and not the entire window.
+
+<p>
+
+<h2>Inherited Methods</h2> 
+<p>
+See the section <tt>vWindow</tt> for details of the following methods.
+
+<p>
+
+<H4>virtual void KeyIn(vKey key, unsigned int shift)</H4>
+
+<H4>virtual void MenuCommand(ItemVal itemId)</H4>
+
+<H4>virtual void WindowCommand(ItemVal Id, ItemVal Val, CmdType Type)</H4>
+
+<H4>virtual void AddPane(vPane* pane)</H4>
+
+<H4>virtual void GetPosition(int&amp; left, int&amp; top, int&amp; width, int&amp; height)</H4>
+
+<H4>virtual int GetValue(ItemVal itemId)</H4>
+
+<H4>virtual void RaiseWindow(void)</H4>
+
+<H4>virtual void ShowPane(vPane* wpane, int OnOrOff)</H4>
+
+<H4>virtual void SetValue(ItemVal itemId, int Val, ItemSetType what)</H4>
+
+<H4>virtual void SetString(ItemVal itemId, char* title)</H4>
+
+<H4>virtual void SetTitle(char* title)</H4>
+
+<H4>virtual void UpdateView(vWindow* sender, int hint, void* pHint)</h4>
+
+<H4>virtual void CloseWin()</H4>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="vwindow.htm">vWindow</A>
+
+
+
+</BODY>
+</HTML>

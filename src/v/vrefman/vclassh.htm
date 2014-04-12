@@ -1,0 +1,34 @@
+<HTML> <HEAD>
+  <TITLE> V Reference Manual - V Class Hierarchy </TITLE>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+ </HEAD>
+<BODY bgcolor="#ffffff">
+
+<H1>V Class Hierarchy</H1>
+<HR>
+
+<p>
+The following figure is shows the internal organization of the 
+<em><b>V</b></em>\
+class hierarchy. Note that boxes with a double line edge denote
+classes that
+have object instances, while boxes with single line edges are abstract
+classes used to build subclasses.  Most of the time, you won't care
+about these abstract classes.
+
+<p>
+Also note that the classes derived from <tt>vCmd</tt> represent the
+classes used to implement command objects. Normally, you won't need
+to used these classes directly. Instances of these objects are generated
+by 
+<em><b>V</b></em>&nbsp;from your <tt>CommandObject</tt> declarations when you call
+<tt>AddDialogCmds</tt>.
+
+<center>
+<p>
+<font size=+2>The V GUI Class Hierarchy</font>
+</center>
+<p>
+<center><img src="fig/vapphier.gif"><br></font></center>
+<HR>
+</BODY></HTML>

@@ -1,0 +1,134 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vPrintDC</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vPrintDC</H1>
+<HR>
+<A NAME="vPrintDC"></A>
+A printer drawing canvas.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/vprintdc.h&#62;</tt>
+	<dt><b>Class name:</b></dt><dd> vPrintDC
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This drawing canvas can be used to draw to a printer. Like
+all drawing canvases, the available methods are described
+in <tt><A HREF="vdc.htm">vDC</A></tt>. A very effective technique for combining a printer
+DC and a screen DC is to pass a pointer to either a <tt>vCanvasPaneDC</tt>
+or a <tt>vPrintDC</tt> to the code that draws the screen. The same
+code can then be used to draw or print.
+
+<p>
+To successfully use a <tt>vPrintDC</tt>, your code must
+obtain the physical size of the page in units using
+<tt>GetPhysWidth</tt> and <tt>GetPhysHeight</tt>. On
+paper, these represent 1/72 inch points, and correspond
+very closely, but not exactly, to a pixel on the screen.
+
+<p>
+You must bracket the printing with calls to <tt>BeginPrinting</tt>
+and <tt>EndPrinting</tt>. Use <tt>BeginPage</tt> and <tt>EndPage</tt>
+to control paging. Note that the width of text will not
+necessarily be the same on a <tt>vCanvasPaneDC</tt> and a <tt>vPrintDC</tt>,
+even for the same fonts. Also, the size of the paper represents
+the entire page. Most printers cannot actually print all the way
+to the edges of the paper, so you will usually use <tt>vDC:SetTranslate</tt>
+to leave some margins. (Don't forget to account for margins when
+you calculate what can fit on a page.)
+
+<p>
+The implementation of <tt>vPrintDC</tt> is somewhat platform
+dependent. For X, <tt>vPrintDC</tt> represents a PostScript
+printer, and is derived from the class <tt>vPSPrintDC</tt>. For
+Windows, <tt>vPrintDC</tt> is derived from the <tt>vWinPrintDC</tt>
+class. To get platform independent operation for your
+application, use <tt>vPrintDC</tt>. On Windows, you can also use
+the PostScript version directly if you want by using the <tt>vPSPrintDC</tt>
+class, but the program will not conform to standard Windows
+behavior.
+
+<p>
+
+<h2>Methods</h2>
+
+<p>
+
+<H4>void SetPrinter(vPrinter&amp; printer)</H4>
+This method is used to associate a <tt>vPrinter</tt> with
+a <tt>vPrintDC</tt>.
+By default, a <tt>vPrintDC</tt> represents standard
+8.5x11 inch Letter paper printed in black and white in
+portrait orientation. You can use <tt>vPrinter::Setup</tt> to allow
+the user to change the attributes of the printer, then use
+<tt>SetPrinter</tt> to associate those attributes with the <tt>vPrintDC</tt>.
+Note: If you change the default printer attributes, you 
+<em>must</em>
+call <tt>SetPrinter</tt> before doing any drawing to the DC.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+This is a simple example taken from the <tt>VDraw</tt> demo program.
+<tt>Print</tt> is called to print the current drawing. <tt>Print</tt>
+calls <tt>vPrinter::Setup</tt> to set the printer characteristics,
+and then calls <tt>DrawShapes</tt> with a pointer to the <tt>vPrintDC</tt>.
+<tt>DrawShapes</tt> is also called to repaint the screen using the
+<tt>vCanvasPaneDC</tt>. By carefully planning for both screen and
+printer drawing, your program can often share drawing code in
+this fashion.
+
+<p>
+<font size=-2>
+<pre>
+//===================&#62;&#62;&#62; myCanvasPane::Print &lt;&lt;&lt;=================
+  void myCanvasPane::Print()
+  {
+    // Print current picture
+
+    vPrintDC pdc;               // create a vPrintDC object
+    vPrinter printer;           // and a printer to set attributes
+
+    printer.Setup("test.ps");   // setup the printer
+    pdc.SetPrinter(printer);    // change to the printer we setup
+
+    if (!pdc.BeginPrinting())   // call BeginPrinting first
+        return;
+
+    pdc.SetTranslate(36,36);    // Add 1/2" (36 * 1/72") margins
+
+    DrawShapes(&pdc);           // Now, call shared drawing method
+
+    pdc.EndPrinting();          // Finish printing
+  }
+
+//===================&#62;&#62;&#62; myCanvasPane::DrawShapes &lt;&lt;&lt;=================
+  void myCanvasPane::DrawShapes(vDC* cp)
+  {
+    // Common code for drawing both on Screen and Printer
+    ...
+  }
+</pre></i></b></tt><font size=+0>
+
+<h2>See Also</h2>
+<A HREF="vprinter.htm" TARGET="info"><TT>vPrinter</TT></A>
+
+
+
+</BODY>
+</HTML>

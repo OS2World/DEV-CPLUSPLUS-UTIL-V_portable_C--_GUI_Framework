@@ -1,0 +1,64 @@
+                   V OpenGL support
+		    November 21, 1998
+
+
+OpenGL support has now been included in the regular release
+of V (starting with V 1.20). Is should work exactly like
+the previous version included separately.
+
+However, you should now also be able to include regular
+V Canvases, as well as OpenGL canvases. In the previous
+version, the OpenGl canvas was a replacement for the
+standard vCanvasPane. In this version, it is properly
+derived from vCanvasPane.
+
+I've tried to make the OpenGL canvas easy to use. The
+best way (for now) to learn how to use the class is
+to look at the sample programs included here.
+To use it, compile your code, and link it
+with the V library and the V OpenGL library.
+
+This version has been tested on Linux with Mesa 2.6.
+It used to run on Silicon Graphics machines, and there
+is no reason to assume that has changed.
+
+When I installed Mesa, I had to add some symbolic
+links to have it link like standard OpenGL, but you
+could also change the library switches in the Makefiles.
+
+There are a several of samples, some derived from GLUT,
+others from the Mesa distribution. Each sample is included
+in a separate directory. There are mingw32 makefiles for MS-Windows
+for all examples, and Linux makefiles for many.
+
+The documentation for vBaseGLCanvasPane is still incomplete. The
+best way to use it is to look at <v/vbglcnv.h> and the examples.
+
+I've only been able to get the Windows version to work correctly
+under mingw32 and Borland C++ 5.0. Microsoft C++ 4.0 couldn't find
+the proper link libraries. If someone knows how to get this
+problem solved, please let me know.
+
+The Mingw32 distribution requires proper .h files. They are included
+in the gnuwin32 directory. The OpenGL header
+files I provide are edited to remove references to CALLBACK
+parameters, which means the tesselation stuff doesn't work.
+
+The Windows version doesn't seem to support Indexed color mode,
+even though the definitions are there, and some code looks
+like it generates a correct graphics context. The problem
+for now seems to be there is no equivalent of glutSetColor to
+set a color index. Does ANYONE in the whole world actually
+use Indexed color? If so, then I'll look at glut and see if
+I can add indexed color support.
+
+I am working on developing a new vOpenGLCanvasPane class with a
+V user. The new class will have built in support for some
+vector stuff and some lighting stuff. Would anyone like
+some of the glut shapes: spheres, cubes, etc? They shouldn't be
+too hard to add, but I don't know if they really get used.
+
+Thanks,
+
+Bruce Wampler
+bruce@objectcentral.com

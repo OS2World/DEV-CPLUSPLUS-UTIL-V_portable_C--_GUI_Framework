@@ -1,0 +1,80 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vYNReplyDialog</title>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vYNReplyDialog</H1>
+<HR>
+
+<A NAME="vYNReplyDialog"></A>
+A utility class to display a message, and get a Yes or No answer.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>        <dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vYNReplyDialog">&lt;v/vynreply.h&#62;</A></tt>
+        <dt><b>Class name:</b></dt><dd> vYNReplyDialog
+        <dt><b>Hierarchy:</b></dt><dd> <A HREF="vmodald.htm">vModalDialog</A> -&#62;vYNReplyDialog
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This simple utility class can be used to display a simple
+message to the user. The utility displays the message, and then
+waits for the user to enter to press Yes, No, or Cancel.
+
+<p>
+
+<h2>New Methods</h2>
+
+<p>
+
+<H4>vYNReplyDialog(vBaseWindow* win)</H4>
+
+<H4>vYNReplyDialog(vApp* app)</H4>
+
+<p>
+The <tt>vYNReplyDialog</tt> constructor requires a pointer to a
+<tt>vBaseWindow</tt>, which includes all 
+<em><b>V</b></em>&nbsp;windows and dialogs,
+or a pointer to the <tt>vApp</tt> object.
+You will usually pass the <tt>this</tt> to the constructor.
+
+<p>
+
+<H4>int AskYN(const char* prompt)</H4>
+You provide a <tt>prompt</tt> for the user. The user will then press
+the Yes, No, or Cancel buttons. <tt>AskYN</tt> returns a 1 if
+the user selected Yes, a 0 if they selected No, and a -1 if
+they selected Cancel.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+The following is a simple example of using <tt>vYNReplyDialog</tt>.
+
+<p>
+<img src="fig/ynreply.gif"><br>
+<font size=-2>
+<pre>
+    #include &lt;v/vynreply.h&#62;
+    ...
+    vYNReplyDialog ynd(this);   // instantiate a notice
+
+    int ans = ynd.AskYN("Exit. Are you sure?);
+    if (ans == 1)
+      exit(0);
+</pre></font>
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,60 @@
+WCDIR = c:\wc105
+VDRIVE = e:
+VDIR  = \v
+
+BASEOBJ = $(VDRIVE)$(VDIR)\watcom\win32\TESTAPP.OBJ &
+$(VDRIVE)$(VDIR)\watcom\win32\VDRWAPP.OBJ  &
+$(VDRIVE)$(VDIR)\watcom\win32\VDRWCMDW.OBJ &
+$(VDRIVE)$(VDIR)\watcom\win32\VDRWCNV.OBJ  &
+$(VDRIVE)$(VDIR)\watcom\win32\VDRWDLG.OBJ
+
+BLANK = ""
+
+$(VDRIVE)$(VDIR)\watcom\win32\draw.exe : $(BASEOBJ)  #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ @%write draw.lk1 NAME draw
+ @%append draw.lk1 FIL VDRWAPP.OBJ,VDRWCMDW.OBJ,VDRWCNV.OBJ,VDRWDLG.OBJ #,VTCANVAS.OBJ,VTCMDWIN.OBJ,VTDIALOG.OBJ
+ @%append draw.lk1
+
+#!ifneq BLANK ""
+# *wlib -q -n -b draw.imp
+# @%append draw.lk1 LIBR draw.imp
+#!endif
+
+ *wlink d all SYS nt_win op m libp win32 libr vlib32 op maxe=25 op q op symf @draw.lk1
+!ifneq BLANK ""
+ wrc -q -ad  draw.exe
+!endif
+
+
+$(VDRIVE)$(VDIR)\watcom\win32\TESTAPP.obj : $(VDRIVE)$(VDIR)\draw\TESTAPP.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\draw\TESTAPP.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\draw -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\VDRWAPP.obj : $(VDRIVE)$(VDIR)\draw\VDRWAPP.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\draw\VDRWAPP.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\draw -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\VDRWCMDW.obj : $(VDRIVE)$(VDIR)\draw\VDRWCMDW.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\draw\VDRWCMDW.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\draw -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\VDRWCNV.obj : $(VDRIVE)$(VDIR)\draw\VDRWCNV.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\draw\VDRWCNV.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\draw -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\VDRWDLG.obj : $(VDRIVE)$(VDIR)\draw\VDRWDLG.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\draw\VDRWDLG.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\draw -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+

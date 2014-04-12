@@ -1,0 +1,78 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vNoticeDialog</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vNoticeDialog</H1>
+<HR>
+<A NAME="vNoticeDialog"></A>
+A utility class to display a message.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>        <dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vNoticeDialog">&lt;v/vnotice.h&#62;</A></tt>
+        <dt><b>Class name:</b></dt><dd> vNoticeDialog
+        <dt><b>Hierarchy:</b></dt><dd> <A HREF="vmodald.htm">vModalDialog</A> -&#62;vNoticeDialog
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This simple utility class can be used to display a simple
+message to the user. The utility displays the message, and then
+waits for the user to enter to press OK.
+
+<p>
+
+<h2>New Methods</h2>
+
+<p>
+
+<H4>vNoticeDialog(vBaseWindow* win)</H4>
+
+<H4>vNoticeDialog(vApp* app)</H4>
+
+<p>
+The <tt>vNoticeDialog</tt> constructor requires a pointer to a
+<tt>vBaseWindow</tt>, which includes all 
+<em><b>V</b></em>&nbsp;windows and dialogs,
+or a pointer to the <tt>vApp</tt> object.
+You will usually pass the <tt>this</tt> to the constructor.
+
+<p>
+
+<H4>void Notice(const char* prompt)</H4>
+You provide a <tt>prompt</tt> for the user. If the message
+contains 'backslashn' newlines, it will be shown on multiple
+lines.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+The following is a simple example of using <tt>vNoticeDialog</tt>.
+
+<p>
+<img src="fig/notice.gif"><br>
+<font size=-2>
+<pre>
+    #include &lt;v/vnotice.h&#62;
+    ...
+    vNoticeDialog note(this);   // instantiate a notice
+
+    (void)note.Notice("This is a notice.");
+</pre></font>
+
+
+
+</BODY>
+</HTML>

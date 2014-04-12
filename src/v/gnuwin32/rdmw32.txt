@@ -1,0 +1,3 @@
+This directory contains some header files that MAY be required
+to use V for mingw32/egcs. Please see the file
+/v/Configs/Mingw32-readme.txt for more details.

@@ -1,0 +1,286 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vIcon</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vIcon</H1>
+<HR>
+<A NAME="vIcon"></A>
+Used to define 
+<em><b>V</b></em> icons.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>        <dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vIcon">&lt;v/v_icon.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vIcon
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+Icons may be used for simple graphical labels in dialogs,
+as well as for graphical command buttons in dialogs and command bars.
+See the sections <tt>vButton</tt> and 
+<em>Dialog Commands</em> for
+descriptions of using icons.
+
+<p>
+Presently, 
+<em><b>V</b></em> supports monochrome icons which allow an on or
+off state for each pixel, and color icons of either 256 or 2<sup>24</sup> colors.
+The format of 
+<em><b>V</b></em> monochrome icons is identical to the X bitmap format. This
+is a packed array of unsigned characters (or bytes), with each bit
+representing one pixel. The size of the icon is specified
+separately from the icon array. The 
+<em><b>V</b></em> color icon format is internally
+defined, and allows easy conversion to various color file formats
+used by X and Windows.
+
+<p>
+
+<h2>Constructor</h2> 
+<p>
+
+<H4>vIcon(unsigned char* icon, int height, int width, int depth = 1,
+IconType iType = Normal)</H4>
+The constructor for a <tt>vIcon</tt> has been designed to allow you to
+easily define an icon. The first parameter is a pointer to the static icon
+array. (Note: <tt>vIcon</tt> does not make a copy of the icon - it
+needs to be a static or persistent definition in your code.) The second and third
+parameters specify the height and width of the icon. The fourth
+parameter specifies depth. The final parameter specifies the type
+of the icon, which by default is <tt>Normal</tt>. If you specify
+<tt>Transparent</tt> for 8 or 24 bit icons, then the lower left
+corner pixel will be used as a transparent color.
+
+<p>
+
+<h2>Class Members</h2>
+
+<p>
+ int height This is the height in pixels of the icon.
+
+<p>
+ int width This is the width in pixels of the icon. A icon
+will thus require (height * width) pixels.  These bits are packed
+into bytes, with 0's padding the final byte if needed.
+
+<p>
+ int depth For monochrome icons, this will be one.
+For color icons, the value is either 8 (for 2<sup>8</sup> or 256 colors) or 24
+(for 2<sup>24</sup> colors).
+
+<p>
+ unsigned char* icon This is a pointer to the array of
+bytes that contain the icon. 
+<em><b>V</b></em> basically uses the format
+defined by X (<tt>.XBM</tt>) bitmaps for monochrome bitmaps.
+It uses an internal format consisting of a color map followed
+by a one byte per pixel color icon description, or a three
+bytes per pixel color icon description.
+
+<p>
+
+<h2>Defining Icons</h2>
+
+<p>
+The easiest way to define an icon is to include the definition of
+it in your code (either directly or by an <tt>#include</tt>).
+You then provide the address of the icon data plus its height and
+width to the initializer of the <tt>vIcon</tt> object.
+
+<p>
+The 
+<em><b>V</b></em> distribution includes a simple icon editor that can
+be used to create and edit icons in standard <tt>.vbm</tt> format,
+as well as several other formats.
+You can also generate monochrome icons is with the X
+<tt>bitmap</tt> utility. That program allows you to
+draw a bitmap, and then save the definition as C code. This code
+can be included directly in your code and used in the initialization
+of the <tt>vIcon</tt> object.  If you follow the example, you should
+be able to modify and play with your icons very easily.
+
+<p>
+A simple converter that converts a Windows <tt>.bmp</tt> format file
+to a 
+<em><b>V</b></em> <tt>.vbm</tt> 
+<em><b>V</b></em> bitmap format is also included in the
+standard 
+<em><b>V</b></em> distribution. There are many utilities that let
+you generate <tt>.bmp</tt> files on both Windows and X, so this
+tool easily lets you add color icons of arbitrary size. 
+Chapter 9 has more details on <tt>bmp2vbm</tt>.
+
+<p>
+The standard 
+<em><b>V</b></em> distribution also contains a directory 
+(<tt>v/icons</tt>) with quite a few sample icons suitable for using
+in a command bar.
+
+<p>
+Once you have a <tt>.vbm</tt> file, the easiest way to add an icon
+to your program is to include code similar to this in your source:
+
+<p>
+<FONT SIZE=-2>
+<pre>
+
+#include "bruce.vbm"    // Picture of Bruce
+  static vIcon bruceIcon(&bruce_bits[0], bruce_height,
+                          bruce_width,8);
+
+</pre></FONT>
+The following sections describe the format of the
+<tt>unsigned char* icon</tt> data for 1, 8, and 24 bit
+
+<em><b>V</b></em> icons.
+
+<p>
+
+<H4>1 Bit Icons</H4>
+
+<p>
+Icon definitions are packed into bytes. A bit value of 1
+represents Black, a 0 is White. The bytes are arranged by rows,
+starting with the top row, with the bytes padded with leading
+zeros to come out to whole bytes. The bytes are scanned in
+ascending order (<tt>icon[0], icon[1],</tt> etc.). Within bytes,
+the bits are scanned from LSB to MSB. A 12 bit row with the
+pattern <tt>BBBWWBBWBWBW</tt> would be represented as 
+<tt>unsigned char row[ ] = { 0x67, 0x05 };</tt>. This is the format
+produced by the X <tt>bitmap</tt> program.
+
+<p>
+
+<H4>8 Bit Icons</H4>
+
+<p>
+Eight bit icons support 256 colors. Each pixel of the icon is
+represented by one byte. Bytes are arranged in row order,
+starting with the top row. Each byte represents an index into a
+color map. The color map consists of RGB byte entries.
+While an 8 bit icon can only have 256 colors, it can map into
+2<sup>24</sup> possible colors. Thus, each 8 bit icon must also include
+the color map as part of its data.
+The very first byte of the <tt>icon</tt> data is the number of
+entries in the color map 
+<em>minus one</em><a href="#FootNote1" name=FootNote1Ref><sup>1</sup></a> (you don't have to define all 256
+colors), followed by the color map RGB bytes, followed by the
+icon pixels. The following is a very simple example of an icon:
+
+<p>
+<FONT SIZE=-2>
+<pre>
+//vbm8
+#define color_width 16
+#define color_height 12
+#define color_depth 8
+static unsigned char color_bits[] = {
+       2,       // 3 colors in color map (2 == 3-1)
+       255,0,0, // byte value 0 maps to red
+       0,255,0, // 1 -&#62; green
+       0,0,255, // 2 -&#62; blue
+       // Now, the pixels: an rgb "flag", 3 16x4 rows
+       0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // RRRRRRRRRRRRRRRR
+       0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0, // RRRRRRRRRRBBBBBR
+       0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0, // RRRRRRRRRRBBBBBR
+       0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, // RRRRRRRRRRRRRRRR
+       1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // GGGGGGGGGGGGGGGG
+       1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // GGGGGGGGGGGGGGGG
+       1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // GGGGGGGGGGGGGGGG
+       1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, // GGGGGGGGGGGGGGGG
+       2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, // BBBBBBBBBBBBBBBB
+       2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, // BBBBBBBBBBBBBBBB
+       2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, // BBBBBBBBBBBBBBBB
+       2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2  // BBBBBBBBBBBBBBBB
+     };
+
+static vIcon colorIcon(&color_bits[0], color_height, color_width,
+     color_depth);
+</pre></FONT>
+<H4>24 Bit Icons</H4>
+
+<p>
+Twenty-four bit icons are arranged in rows, staring with the top
+row, of three bytes per pixel. Each 3 byte pixel value represents
+an RGB value. There is no color map, and the RGB pixel values
+start immediately in the <tt>unsigned char* icon</tt> data array.
+This is a simple example of a 24 bit icon.
+
+<p>
+<FONT SIZE=-2>
+<pre>
+//vbm24
+#define c24_height 9
+#define c24_width 6
+#define c24_depth 24
+    static unsigned char c24_bits[] = {
+     255,0,0,255,0,0,255,0,0,255,0,0,0,255,0,0,255,0, //RRRRGG
+     255,0,0,255,0,0,255,0,0,255,0,0,0,255,0,0,255,0, //RRRRGG
+     255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0, //RRRRRR
+     0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0, //GGGGGG
+     0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0, //GGGGGG
+     0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0, //GGGGGG
+     0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255, //BBBBBB
+     0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255, //BBBBBB
+     0,0,255,0,0,255,0,0,255,0,0,255,0,0,255,0,0,255  //BBBBBB
+    };
+    static vIcon c24Icon(&c24_bits[0], c24_height, c24_width,
+        c24_depth);
+
+</pre></FONT>
+<h3>Example</h3>
+
+<p>
+This example uses the definition of the checked box used by the
+Athena checkbox dialog command.
+
+<p>
+<FONT SIZE=-2>
+<pre>
+// This code is generated by the V Icon Editor:
+//vbm1
+#define checkbox_width 12
+#define checkbox_height 12
+#define checkbox_depth 1
+static unsigned char checkbox_bits[] = {
+   0xff, 0x0f, 0x03, 0x0c, 0x05, 0x0a, 0x09, 0x09, 
+   0x91, 0x08, 0x61,  0x08, 0x61, 0x08, 0x91, 0x08,
+   0x09, 0x09, 0x05, 0x0a, 0x03, 0x0c, 0xff, 0x0f};
+
+// This code uses the above definitions to define an icon
+// in the initializer of checkIcon to vIcon.
+
+static vIcon checkIcon(&checkbox_bits[0],
+    checkbox_height, checkbox_width, checkbox_depth);
+
+</pre></FONT>
+<p>
+<h2>Transparent Icons</h2>
+<p>
+Beginning with V 1.21, <b>V</b> supports transparent 8 and 24 bit icons
+on MS-Windows. They should be added to OS/2 and X in the future.
+If you specify <tt>Transparent</tt> for the IconType in the <tt>vIcon</tt>
+constructor, then <b>V</b> will treat the icon as having a transparent
+background. The pixel in the lower left corner is used for the transparent
+color. Transparent icons make much nicer icon buttons.
+<p>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="commands.htm#C_Button">C_Button</A>, <A HREF="commands.htm">Dialog Commands</A>, <A HREF="vquickr.htm#C_Icon">C_Icon</A>
+and <A HREF="vquickr.htm#C_IconButton">C_IconButton</A>
+
+</BODY>
+</HTML>

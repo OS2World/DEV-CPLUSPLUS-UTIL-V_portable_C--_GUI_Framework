@@ -1,0 +1,706 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vApp</title>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vApp</H1>
+<HR>
+
+<A NAME="vApp"></A>
+The base class for building applications.
+
+<p>
+
+<H2>Synopsis</H2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vApp">&lt;v/vapp.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vApp
+	<dt><b>Contains:</b></dt><dd> <A HREF="vcmdwin.htm" TARGET="_self" >vCmdWindow</A>, <A HREF="vawinfo.htm">vAppWinInfo</A>
+</DL>
+<p>
+
+<H2>Description</H2>
+
+<p>
+The <tt>vApp</tt> class serves as the base class for building
+applications. There must be exactly one instance of an object derived
+from the <tt>vApp</tt> class.  The base class contains and hides the
+code for interacting with the host windowing system, and serves to
+simplify using the windowing system.
+
+<p>
+You will usually derive a class based on <tt>vApp</tt> that will serve
+as the main control center of the application, as well as containing
+the window objects needed for the user interface. The single instance
+of the application class is defined in the body of the derived
+application class code.
+
+<p>
+The <tt>vApp</tt> class has several utility methods of general
+usefulness, as well as several methods that are normally overridden to
+provide the control interface from the application to the command
+windows. The derived class will also usually have other methods used
+to interface with the application.
+
+<p>
+In order to simplify the control interface between the application and
+the windows, the <tt>vAppWinInfo</tt> class has been provided. The
+application can extend that class to keep track of relevant
+information for each window. When the <tt>NewAppWin</tt> method is
+used to create a window, it will create an appropriate instance of
+a <tt>vAppWinInfo</tt> object, and return a pointer to the new object.
+The base <tt>vApp</tt> then provides the method <tt>getAppWinInfo</tt>
+to retrieve the information associated with a given window.
+
+<p>
+
+<H2>Constructor</H2> 
+<p>
+
+<H4>vApp(char* appName)</H4>
+
+<H4>vApp(char* appName, simSDI = 0, int fh = 0, int fw = 0)</H4>
+  appName Default name for the application. This name
+will be used by default when names are not provided for windows. The
+name also appears on the ``main window'' for some platforms, including
+Microsoft Windows, but not X. The constructor also initializes some
+internal state information. There must be exactly one instance of
+the <tt>vApp</tt> object, and will usually represent your derived
+<tt>myApp</tt> object. See the code below with <tt>AppMain</tt> for an
+example of creating the single app instance.
+
+<p>
+simSDI This  <em>optional</em> parameter is used to specify  that 
+<em><b>V</b></em>should start as a Windows SDI application if it is
+set to 1. This parameter has no effect for the X version.
+
+<p>
+ fw, fh These are used to specify the size of a
+menuless and canvasless  <em><b>V</b></em>application, and are
+optional.
+
+<p>
+
+<H2>Methods to Override</H2> 
+<p>
+
+<H4>void AppCommand(vWindow* win, ItemVal val)</H4>
+Any window commands not processed by the <tt>
+<A HREF="vwindow.htm">vWindow</A></tt> object
+are passed to <tt>AppCommand</tt>. You can override this method to
+handle any commands not processed in windows.
+
+<p>
+
+<H4>int AppMain(int argc, char** argv)</H4>
+This is a global function (not a class member!) that is called once by
+the system at start up time with the standard command line
+arguments <tt>argc</tt> and <tt>argv</tt>. You provide this function
+in your code.
+
+<p>
+Your program will not have a C <tt>main</tt> function. The main reason
+for this is portability. While you would usually have a <tt>main</tt>
+in a Unix based program, MS-Windows does not use <tt>main</tt>, but
+rather <tt>PASCAL WinMain</tt>. By handling how the program gets
+started and providing the <tt>AppMain</tt> 
+mechanism,  <em><b>V</b></em>&nbsp;allows you to ignore the
+differences. You will still have all the capability to access the
+command line arguments and do whatever else you would do 
+in <tt>main</tt> without having to know about getting the host
+windowing system up and running.
+
+<p>
+The windowing system will have been initialized before <tt>AppMain</tt>
+is called. You can process the command line arguments, and perform
+other required initializations. The top level command window should
+also created in <tt>AppMain</tt> by calling <tt>NewAppWin</tt>.
+
+<p>
+Before <tt>AppMain</tt> is called, the single instance of your
+derived <tt>vApp</tt> object must also be constructed, usually by
+instantiating a static instance with a statement such as <tt>static
+myApp* MyApp = new myApp("ProtoApp")</tt>. As part of the
+construction of the <tt>myApp</tt> object, the global pointer
+<tt>vApp* theApp</tt> is also pointed to the single instance of the
+<tt>vApp</tt> or derived <tt>myApp</tt> object. You can then use
+<tt>theApp</tt> anywhere in your code to access methods provided by
+the <tt>vApp</tt> class.
+
+<p>
+Your <tt>AppMain</tt> should return a 0 if it was successful. A
+nonzero return value will cause the 
+<em><b>V</b></em>&nbsp;system to terminate with
+an exit code corresponding to the value you returned.
+
+<p>
+
+<h3>Example</h3>
+<pre><CODE >
+<FONT SIZE="-2">
+// EVERY V application needs the equivalent of the following line
+
+  static myApp myApp("My V App");  // Construct the app.
+
+//==========================&#62;&#62;&#62; AppMain &lt;&lt;&lt;===========================
+  int AppMain(int argc, char** argv)
+  {
+    // Use AppMain to perform special app initialization, and
+    // to create the main window.  This example assumes that
+    // NewAppWin knows how to create the proper window.
+
+    (void) theApp-&#62;NewAppWin(0, "My V App", 350, 100, 0);
+    return 0;
+  }
+</FONT>
+</CODE></pre>
+
+<H4>int CloseAppWin(vWindow* win)</H4>
+
+This is the normal way to close a window. Your derived <tt>CloseAppWin</tt>
+should first handle all housekeeping details, such as saving the
+contents of a file, and then call the default <tt>vApp::CloseAppWin</tt>
+method. Your code can abort the close process by 
+<em>not</em> calling
+the default <tt>vApp::CloseAppwin</tt> class, and instead returning
+a 0. When you call the default method, the window's <tt>CloseWin</tt>
+method is called and the window removed.
+
+<p>
+The <tt>CloseAppWin</tt> method is also called when the user clicks
+the close button of the window.  This close button will
+correspond to the standard close window button depending on the
+native windowing system. On X Windows, this button will depend
+on what window manager you are using. On Windows, this corresponds
+to a double click on the upper left box of the title bar, or
+the ``X'' box in Windows 95. To abort this "close all" procedure,
+return 0 from your class.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+
+<pre><CODE>
+<FONT SIZE="-2">
+//======================&#62;&#62;&#62; videApp::CloseAppWin &lt;&lt;&lt;===========================
+  int videApp::CloseAppWin(vWindow* win)
+  {
+    // This will be called BEFORE a window has been really closed.
+
+    videCmdWindow* cw = (videCmdWindow*)win; // get our cmd window
+    if (cw-&#62;CheckClose())                    // check if OK to close
+        return vApp::CloseAppWin(win);       // if OK, then call vApp method
+    else
+        return 0;                            // otherwise, abort close process
+  }
+</FONT>
+</CODE></pre>
+
+<a name="vApp::CloseLastCmdWindow"></a>
+<H4>int CloseLastCmdWindow(vWindow* win, int exitcode)</H4>
+
+This method is provided mainly for MS-Windows MDI compatibility.
+The default behavior of <b>V</b> is to close the app when the last
+MDI child window is closed. This corresponds to what would happen
+on the X version. However, this is not standard behavior for
+Windows MDI apps.
+<p>
+If your app needs standard Windows behavior, then you should
+override <tt>CloseLastCmdWindow</tt>, and simply return. This
+will result in an empty MDI frame with a single active File
+menu with the commands New, Open, and Exit. You should also then
+override <tt>vApp::AppCommand</tt> to handle the New and Open cases.
+It will be harmless to duplicate this code for X apps.
+<p>
+The following code sample, taken from the V Text Editor code,
+shows how to get standard MDI behavior in a way that is compatible
+with both Windows and X.
+<p>
+<pre><CODE>
+<FONT SIZE="-2">
+//======================&#62;&#62;&#62; vedApp::AppCommand &lt;&lt;&lt;===========================
+  void vedApp::AppCommand(vWindow* win, ItemVal id, ItemVal val, CmdType cType)
+  {
+    // Commands not processed by the window will be passed here
+    // switch is used to handle empty MDI frame commands New and Open
+    // for Windows apps only. Harmless on X.
+
+    UserDebug1(Build,"vedApp::AppCmd(ID: %d)\n",id);
+    switch (id)
+      {
+        case M_New:
+          {
+            (void*) theApp->NewAppWin(0, "V Text Editor", 100, 50);
+            return;
+          }
+
+        case M_Open:
+          {
+            vedCmdWindow* cw;
+            cw = (vedCmdWindow*) theApp->NewAppWin(0, "V Text Editor", 100, 50);
+            cw->WindowCommand((ItemVal)M_Open,(ItemVal)0,(CmdType)0);
+            return;
+          }
+      }
+
+    vApp::AppCommand(win, id, val, cType);
+  }
+
+//===================&#62;&#62;&#62; vedApp::CloseLastCmdWindow &lt;&lt;&lt;======================
+  void vedApp::CloseLastCmdWindow(vWindow* win, int exitcode)
+  {
+#ifndef V_VersionWindows
+    vApp::CloseLastCmdWindow(win,exitcode);   // call default for X
+#endif
+  }
+</FONT>
+</CODE></pre>
+
+
+
+<H4>void Exit(void)</H4>
+This is the normal way to exit from a standard 
+<em><b>V</b></em>&nbsp;application. The
+overridden method can perform any special processing (e.g.,
+asking ``Are you sure?'') required. The default <tt>Exit</tt> will
+call <tt>CloseAppWin</tt> for each window created with <tt>NewAppWin</tt>,
+and then exit from the windowing system.
+
+<p>
+
+<H4>void KeyIn(vWindow* win, vKey key, unsigned int shift)</H4>
+Any input key events not handled by the <tt>vWindow</tt> object are
+passed to <tt>VApp::KeyIn</tt>. See <tt>KeyIn</tt> in the <tt>vWindow</tt>
+section for details of using keys.
+
+<p>
+
+<H4>vWindow* NewAppWin(vWindow* win, char* name, int w, int h,
+  vAppWinInfo* winInfo)</H4>
+The purpose of the <tt>NewAppWin</tt> method is to create a
+new instance of a window. Most likely, you will override
+<tt>NewAppWin</tt> with your own version, but you still 
+<em>must</em>
+call the base <tt>vApp::NewAppWin</tt> method 
+<em>after</em> your
+derived method has completed its initializations.
+
+<p>
+The default behavior of the base <tt>NewAppWin</tt> class is to set
+the window title to <tt>name</tt>, and the width <tt>w</tt> and
+height <tt>h</tt>. Note that the height and width are of the
+<em>canvas</em>, and not necessarily the whole app window. If you
+don't add a canvas to the command window, the results are not
+specified. Usually, your derived <tt>NewAppWin</tt> will create an
+instance of your derived <tt>vCmdWindow</tt> class, and you will
+pass its pointer in the <tt>win</tt> parameter. If the the <tt>win</tt>
+parameter is null, then a standard <tt>vCmdWindow</tt> will be
+created automatically, although that window won't be particularly
+useful to anyone.
+<p>
+Your <tt>NewAppWin</tt> class may also create an instance of your
+derived <tt>vAppWinInfo</tt> class. You would pass its pointer to the
+<tt>winInfo</tt> parameter. If you pass a null, then the base <tt>NewAppWin</tt>
+method also  creates an instance of the standard <tt>vAppWinInfo</tt>
+class.
+<p>
+The real work done by the base <tt>NewAppWin</tt> is to register
+the instance of the window with the internal 
+<em><b>V</b></em>&nbsp;run time system.
+This is why you must call the base <tt>NewAppWin</tt> method.
+
+<p>
+<tt>NewAppWin</tt> returns a pointer to the object just created. Your
+derived code can return the value returned by the base
+<tt>vApp::NewAppWin</tt>, or the pointer it created itself.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+The following shows a minimal example of deriving a <tt>NewAppWin</tt>
+method.
+
+<p>
+
+<pre><CODE>
+<FONT SIZE="-2">vWindow* myApp::NewAppWin(vWindow* win, char* name, int w, int h,
+  vAppWinInfo* winInfo)
+  {
+    // Create and register a window. Usually this derived method
+    // knows about the windows that need to be created, but
+    // it is also possible to create the window instance outside.
+
+    vWindow* thisWin = win;
+    vAppWinInfo* theWinInfo = winInfo;
+
+    if (!thisWin)   // Normal case: we will create the new window
+        thisWin = new myCmdWindow(myname, w, h);  // create window
+
+    // Now the application would do whatever it needed to create
+    // a new view -- opening a file, tracking information, etc.
+    // This information can be kept in the vAppWinInfo object.
+
+    if (!theWinInfo)               // Create if not supplied
+        vAppWinInfo* theWinInfo = new myAppWinInfo(name);
+
+    // Now carry out the default actions
+    return vApp::NewAppWin(thisWin, name, w, h, theWinInfo);
+  }</FONT>
+</CODE></pre>
+<h2>Utility Methods</h2> 
+<p>
+
+<H4>char* ClipboardCheckText()</H4>
+Returns 1 if there is text available on the clipboard.
+
+<p>
+
+<H4>void ClipboardClear()</H4>
+Clears the contents of the clipboard. Deactivates
+<tt>M_Paste</tt>.
+
+<p>
+
+<H4>char* ClipboardGetText()</H4>
+If there is text on the clipboard, this method will return
+a pointer to that text.
+
+<p>
+
+<H4>int ClipboardSetText(char* text)</H4>
+This will set the system clipboard to the value of <tt>text</tt>.
+It will also send a <tt>vApp::SetValueAll</tt> message to each of
+your windows to set any command object <tt>M_Paste</tt> to sensitive.
+(Whenever the clipboard is emptied, a message to set <tt>M_Paste</tt>
+insensitive is also sent.)
+
+<p>
+Note that it is up to you to implement clipboard interaction.
+The <tt>vTextCanvasPane</tt> does not provide automatic clipboard
+support. Thus, your app needs to respond to cut, copy, and paste
+commands. The clipboard code will send a message to your
+Command Window to control the sensitivity of the <tt>M_Paste</tt>
+command.
+
+<p>
+
+<H4>int DefaultHeight()</H4>
+Returns a default window canvas height value in pixels corresponding to 24 lines
+of text in the default font.
+
+<p>
+
+<H4>int DefaultWidth()</H4>
+Returns a default window canvas width value in pixels corresponding to 80 columns
+of text in the default font.
+
+<p>
+
+<H4>vFont GetDefaultFont(void)</H4>
+This method returns a <tt>vFont</tt> object representing the default
+system font. It is a convenience method, and probably not overly useful
+to application programs.
+
+<p>
+
+<H4>vFont GetVVersion(int&amp; major, int&amp; minor)</H4>
+Returns the current major and minor version of 
+<em><b>V</b></em>.
+
+<p>
+
+<H4>int IsRunning()</H4>
+This method returns true if the windowing system is active and
+running. A false return means the program was started from
+a non-windowing environment.
+
+<p>
+
+<H4>int ScreenHeight()</H4>
+Returns the overall height of the physical display screen in pixels.
+Note that this value may or may not be overly useful. On X,
+the <tt>vCommandWindows</tt> are drawn on the full display. On
+the Windows MDI version, the command windows all fall inside the
+MDI frame, and thus knowing the size of the whole screen is less
+useful.
+
+<p>
+<H4>int ScreenWidth()</H4>
+Returns the overall width of the physical display screen in pixels.
+See <tt>ScreenHeight</tt>.
+
+<p>
+
+<H4>void SendWindowCommandAll(ItemVal id, int val, CmdType ctype)</H4>
+This method can be used to send a message to the <tt>WindowCommand</tt> method
+of 
+<em>ALL</em> currently active windows. This method is most useful for
+sending messages to windows from modeless dialogs. While messages to
+the <tt>WindowCommand</tt> method usually originate with the system
+in response to menu picks or command object selection, it can be
+useful to send the messages directly under program control. The
+<tt>vDraw</tt> sample program contains a good example of using
+<tt>SendWindowCommandAll</tt> (and <tt>SetValueAll</tt>) in <tt>vdrwdlg.cpp</tt>.
+There is no way to send a message to a specific window. The message
+is sent to all active windows.
+
+<p>
+
+<H4>void SetAppTitle(char* title)</H4>
+This method is used to set the title of the main application
+window. This currently only applies to the Microsoft Windows
+MDI version of 
+<em><b>V</b></em>. It is a no-op for the X version. It is still
+important that you choose a good title for your main window,
+and set it either with this method, or by providing a good
+name to the <tt>vApp</tt> initializer.
+
+<p>
+
+<H4>void SetValueAll(ItemVal itemId, int Val,
+ItemSetType what)</H4>
+This method is similar to <tt>vWindow::SetValue</tt>, except that
+the control with the given <tt>itemId</tt> in 
+<em>ALL</em> currently
+active windows is set. This is useful to keep control values
+in different windows in sync. The only difference between
+<tt>vApp :: SetValueAll</tt> and <tt>vWindow :: SetValueAll</tt> is
+that the <tt>vApp</tt> version can be easily called from dialogs
+as well as windows.
+
+<p>
+
+<H4>void SetStringAll(ItemVal itemId, char* title)</H4>
+This method is similar to <tt>vWindow::SetString</tt>, except that
+the string with the given <tt>itemId</tt> in 
+<em>ALL</em> currently
+active windows is set. This is useful to keep control strings
+in different windows in sync. The only difference between the
+<tt>vApp::SetStringAll</tt> version and the <tt>vWindow::SetStringAll</tt>
+version is that the <tt>vApp</tt> version can be easily called from
+dialogs as well as windows.
+
+<p>
+
+<a name="vApp::showAppWin"></a>
+<h4>void showAppWin(bool show)</h4>
+This method is intended to support dialog-only V apps. The strategy
+is to not define an AppWindow (don't call <tt>NewAppWin</tt> from
+<tt>AppMain</tt>), but rather define a dialog instead. Then,
+call <tt>showAppWin(false)</tt> before showing the dialog, and
+the main application window will be hidden. 
+<p>
+Note that this is really a no-op on X, and hides the MDI frame on Windows.
+In practice, this means you will get a tiny flash as the MDI frame
+is shown briefly, and is then hidden. While this is slightly
+annoying, by setting the size to 1,1, the flash is minimized.
+This method seemed the most backward compatible way of supporting
+this feature.
+<p>
+Here is a short example of the code needed to define a
+dialog-only V app:
+<p>
+<pre>
+<tt>
+//=======================================================================
+//
+//  Example of a dialog-only V app.
+//
+//=======================================================================
+
+#include "myapp.h"               // Header file defines appropriate things
+#include &lt;v/vnotice.h&gt;
+
+  static myApp my_App("My V App",1,1,1);     // The instance of the app
+                                 // Notice defined as SDI with size of 1,1
+  int AppMain(int argc, char** argv)
+  {
+    // Don't call NewAppWin! Just create the dialog. This sample is
+    // a simple vNotice box, but could be anything.
+
+    vNoticeDialog note(theApp);   // dialog instance
+
+    my_App.showAppWin(false);     // This hides App window
+
+    note.Notice("This is a dialog only app.");  // And this is your dialog.
+    theApp->Exit();               // exit app when dialog returns
+    return 0;
+  }
+</tt>
+</pre>
+<p>
+
+<H4>vAppWinInfo *getAppWinInfo(vWindow* win)</H4>
+This method provides an easy way to retrieve the <tt>vAppWinInfo</tt>
+(or more typically, a derived class) object that is associated
+with a window.  By convention, when a window is first created,
+it and its associated <tt>vAppWinInfo</tt> object are tracked by
+<tt>NewAppWin</tt>. When a user action in a window causes a method
+in <tt>vApp</tt> to be invoked, the <tt>this</tt> of that window is
+usually sent to the <tt>vApp</tt> method.  You then use that
+<tt>vWindow</tt> pointer to call <tt>getAppWinInfo</tt> to get a
+pointer to the associated <tt>vAppWinInfo</tt> object. It will be
+up to you to determine what information that object has, and how
+to use it.
+
+<p>
+<a name=MVC></a>
+<h2>MVC</H2>
+With release 1.21, V adds support for writing MVC (Model View Controller)
+applications. The MVC paradigm is widely used for object-oriented applications.
+The basic idea of MVC is that your application consists of some kind
+of Model for the application. You show various Views of the Model under
+management of a controller.
+<p>
+How does this translate to V terms? Generally, it is up to you to
+build your model. Essentially, it will be your data structures and
+whatever else is needed to implement the core of your app. The controller
+is usually very closely related to a view of the model. The view and
+controller will usually be implemented in a <tt>vCmdWindow</tt> class.
+You can have different behavior for different views. The power of
+MVC comes from the ability of a given controller to send a message
+to all Views of the Model to update themselves as appropriate.
+<p>
+Consider a simple editing program that allows you to edit a data
+file either in text mode or in hex mode. Your app could have two
+Views of the Model (your internal representation of the file),
+one a text view, the other a hex view. Each of these views would
+be controlled and displayed by individual <tt>vCmdWindow</tt> classes.
+If the user makes a change in the text view, then the text view controller
+would send a message to the hex view to update itself.
+<p>
+V provides two methods to implement MVC, <tt>vApp::UpdateAllViews</tt>,
+and <a href="vwindow.htm#UpdateView">
+<tt>vWindow::UpdateView</tt></a>. Your controller sends a message to
+all other views using <tt>UpdateAllViews</tt>, and each view receives
+the message in <tt>UpdateView</tt>.
+<p>
+<h4>void UpdateAllViews(vWindow* sender, int hint, void* pHint)</h4>
+This method is called by the user whenever a change is made to
+the model, e.g., the document. This causes <tt>vWindow::UpdateView</tt>
+to be called for every open window. The parameters are used to both
+filter and hint the windows on which actions to take in 
+<tt>vWindow::UpdateView</tt>.
+<p>
+Generally, you call <tt>UpdateAllViews</tt> with <tt>sender</tt> set
+to <tt>this</tt>. <tt>UpdateAllViews</tt> will not call <tt>UpdateView</tt>
+for the <tt>sender</tt> window because typically the change of the model
+was a result of an interaction with this window. If you want the <tt>sender</tt>
+to be called, call with <tt>sender</tt> zero.
+<p>
+The hints are passed to <tt>UpdateView</tt> to help define what action
+the view needs to take. Generally, <tt>hint</tt> would have a value
+set to an <tt>enum</tt> defined in your derived <tt>vApp</tt> class.
+These values would hint about which kind of change is made so that only
+appropriate actions is taken by the appropriate views. The <tt>pHint</tt>
+is typically a pointer to the object representing the model.
+
+<p>
+
+<h2>Tasking</h2> Some applications may have extensive computation requirements. In
+traditional programming environments, this is usually no problem.
+However, for GUI based applications, the code cannot simply
+perform extensive computation in response to some command event
+(such as a "Begin Computation" menu command). GUIs make a basic
+assumption that the application will process events relatively
+quickly. While computation is in process, the application will
+not receive additional events, and may appear to hang if the
+computation is too long.
+
+<p>
+
+<em><b>V</b></em>&nbsp;provides two different approaches to handling compute bound
+applications. The most straight forward approach is to have
+the computation periodically call the 
+<em><b>V</b></em>&nbsp;method <tt>vApp::CheckEvents</tt>.
+<tt>CheckEvents</tt> will process events, and pass the messages to the
+appropriate 
+<em><b>V</b></em>&nbsp;method. This method may be the most appropriate
+for applications such as simulations.
+The second technique is to have the 
+<em><b>V</b></em>&nbsp;system call a work procedure
+periodically to allow some computation to be performed. This technique
+may be most appropriate for applications that have short computations
+that should be performed even if the user is not entering commands
+or interacting with the application. The technique is supported by
+the <tt>WorkSlice</tt> method.
+
+<p>
+
+<H4>CheckEvents()</H4>
+Most 
+<em><b>V</b></em>&nbsp;applications will 
+<em>not</em> need this utility. However, it is possible
+for some compute bound applications to lock out system response to the
+events needed to update the screen. If you notice that your application
+stops responding to input, or fails to consistently update items
+in your window, then place calls to <tt>vApp::CheckEvents()</tt> in
+your code somewhere. You may have to experiment how often you need
+to call it. It does have some overhead, so you don't want it to
+slow down your app. But it does need to get called enough so the
+system can keep up with the screen updates. This function needs
+no parameters, and returns no value.
+
+<p>
+
+<H4>EnableWorkSlice(long slice)</H4>
+For applications that need computations to be performed continuously
+or periodically, even while the user is not interacting with the program,
+
+<em><b>V</b></em>&nbsp;provides <tt>EnableWorkSlice</tt> and <tt>WorkSlice</tt>. After
+<tt>EnableWorkSlice</tt> has been called, 
+<em><b>V</b></em>&nbsp;will call the app's
+<tt>WorkSlice</tt> method every <tt>slice</tt> milliseconds.
+The <tt>WorkSlice</tt> method of every open <tt>vCommandWindow</tt>
+will also be called. Calling <tt>EnableWorkSlice</tt> with a zero
+value will stop the calls to the <tt>WorkSlice</tt> methods.
+
+<p>
+
+<em><b>V</b></em>&nbsp;uses a standard 
+<em><b>V</b></em>&nbsp;<tt>
+<A HREF="vtimer.htm">vTimer</A></tt> object to implement this
+behavior. Thus, all of the information about actual time intervals
+and limits on the number of timers discussed in the <tt>vTimer</tt>
+description apply to <tt>EnableWorkSlice</tt> and <tt>WorkSlice</tt>.
+
+<p>
+
+<H4>WorkSlice()</H4>
+When a <tt>EnableWorkSlice</tt> has been called with a positive value,
+
+<em><b>V</b></em>&nbsp;calls <tt>vApp::WorkSlice</tt> at approximately the specified
+interval (or more
+likely, the overridden method in your app), as well as the
+<tt>vWindow::WorkSlice</tt> method of each open <tt>vCommandWindow</tt>.
+Your application can override the appropriate <tt>WorkSlice</tt>
+method to perform short, periodic computations. Theses
+computations should be shorter than the time interval specified for
+<tt>EnableWorkSlice</tt>. This may be difficult to ensure since
+different processors will work at different speeds. One simple
+way to be sure you don't get multiple calls to the <tt>WorkSlice</tt>
+method is to set a static variable on entry to the code. Note
+that <tt>vCommandWindow</tt> also has a <tt>WorkSlice</tt> method.
+The <tt>WorkSlice</tt> for the <tt>vApp</tt> is called first,
+followed by a call to each open <tt>vCommandWindow</tt>
+sequentially in no specific order.
+
+<p>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="vwindow.htm">vWindow</A>, <A HREF="vawinfo.htm">vAppWinInfo</A>
+
+
+
+</BODY>
+</HTML>

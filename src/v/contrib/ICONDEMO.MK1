@@ -1,0 +1,32 @@
+WCDIR = c:\wc105
+VDRIVE = e:
+VDIR  = \v
+
+BASEOBJ = $(VDRIVE)$(VDIR)\watcom\win32\icondemo.obj
+
+BLANK = ""
+
+$(VDRIVE)$(VDIR)\watcom\win32\icondemo.exe : $(BASEOBJ)  #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ @%write icondemo.lk1 NAME icondemo
+ @%append icondemo.lk1 FIL icondemo.obj
+ @%append icondemo.lk1
+
+#!ifneq BLANK ""
+# *wlib -q -n -b icondemo.imp
+# @%append icondemo.lk1 LIBR icondemo.imp
+#!endif
+
+ *wlink d all SYS nt_win op m libp win32 libr vlib32 op maxe=25 op q op symf @icondemo.lk1
+!ifneq BLANK ""
+ wrc -q -ad  icondemo.exe
+!endif
+
+
+$(VDRIVE)$(VDIR)\watcom\win32\icondemo.obj : $(VDRIVE)$(VDIR)\icons\icondemo.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\icons\icondemo.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\icons -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+

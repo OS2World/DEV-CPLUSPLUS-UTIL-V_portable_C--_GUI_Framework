@@ -1,0 +1,207 @@
+<HTML> <HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+  <TITLE> V Reference Manual - What is V? </TITLE>
+ </HEAD>
+<BODY bgcolor="#ffffff">
+
+<H1><A NAME="What_is_V"></a><br>What is V?</H1>
+
+<HR>
+<em><b>V</b></em>&nbsp;is a C++ Graphical User Interface Framework designed
+to provide an easy to use and program system for building GUI
+applications. The framework is small, elegant, and provides the
+tools required for building all but the most specialized
+applications.
+
+<p>
+The 
+<em><b>V</b></em>&nbsp;framework has also been designed to be portable.
+Currently, versions for the X Windowing System (using a
+customized 3D Athena widget set), Microsoft Windows 3.1, and
+Microsoft WIN32 (Windows 95 and NT) are available. A version for
+OS/2 is also available. A gtk version for X is also under development. The
+
+<em><b>V</b></em>&nbsp;system is freely available for use by anyone under the terms
+of the GNU Library General Public License.
+
+<p>
+Why did I write 
+<em><b>V</b></em>, and why did I put it under the GNU license? I
+have been programming for over 20 years now, and building
+interactive applications for most of that time. During that time,
+I got tired of complicated, difficult to learn and use libraries
+for building interfaces, and wanted something easier.
+
+<p>
+I've also been successful in the software business, having founded
+two different software companies, Aspen Software and Reference
+Software International. I was the principle designer and author
+of the widely known and used grammar checker,
+Grammatik<a href="#tthFtNtAAB" name=tthFrefAAB><sup>1</sup></a>.
+Basically, I see 
+<em><b>V</b></em>&nbsp;as something of a public service; a way
+to give something back to the software industry that has been
+good to me. The concept of a portable GUI library is not
+original, but I think some of the design goals of 
+<em><b>V</b></em>&nbsp;are
+significantly different than other similar libraries I've seen.
+
+<p>
+
+<UL>
+<li> The main design goal is for for 
+<em><b>V</b></em>&nbsp;is ease of programming.
+I don't think that building the GUI part of an application should
+be the hardest part of the job as it is with most native
+GUI toolkits. 
+<em><b>V</b></em>&nbsp;is
+small, easy to learn, easy to use, and provides the essentials of
+a good graphical user interface.
+
+<p>
+I have some evidence that I have succeeded in this goal. 
+<em><b>V</b></em>&nbsp;has
+been used for several semesters for large team projects in the
+software engineering class I taught at the University of New
+Mexico.  While I get many questions from my students related to
+the projects they are doing, I got virtually no questions about
+using 
+<em><b>V</b></em>&nbsp;itself. The small number of questions about 
+<em><b>V</b></em>&nbsp;has
+been both startling and rewarding, and is good evidence that this
+design goal has been met. 
+<em><b>V</b></em>&nbsp;has also been used successfully
+for a Junior level programming class. Previously, the high
+overhead of learning to write applications for X has prevented
+the students from writing small programs with interesting user
+interfaces. The simplicity of 
+<em><b>V</b></em>&nbsp;has allowed them to do this for
+the first time.
+
+<p>
+
+<li> 
+<em><b>V</b></em>&nbsp;is designed to be portable. Over the years, I've programmed
+on a wide variety of interactive platforms. The main GUI
+platforms widely used today include the X Window System,
+Microsoft Windows (3.1, 95, and NT), OS/2, and the Macintosh. 
+<em><b>V</b></em>
+has been designed to work on all those platforms, and present a
+look and feel that is consistent with native applications.
+
+<p>
+
+<li> 
+<em><b>V</b></em>&nbsp;is not too big. It has less than 15 C++ classes that you
+will have to interact with. This is unlike many other frameworks
+that provide dozens and dozens of classes that you must learn and
+understand. The 
+<em><b>V</b></em>&nbsp;framework only supports GUIs. It does not
+have templates, containers, and bunches of other C++ classes. If
+you need a good list class, use your favorite one from another
+class library. Use 
+<em><b>V</b></em>&nbsp;for your interface.
+
+<p>
+
+<li> 
+<em><b>V</b></em>&nbsp;has very good associated documentation. It is likely that
+part of the reason that 
+<em><b>V</b></em>&nbsp;is easy to use is that it is accompanied
+by a better than average programming manual. I've tried to not only
+give a useful explanation of each 
+<em><b>V</b></em>&nbsp;class and function, but to
+accompany each description with a short example that shows how to
+use the 
+<em><b>V</b></em>&nbsp;feature in a useful way. There are also several examples
+provided with the 
+<em><b>V</b></em>&nbsp;distribution to help you get started with a
+basic 
+<em><b>V</b></em>&nbsp;application.
+
+<p>
+
+<li> 
+<em><b>V</b></em>&nbsp;is an alternative for building 
+<em>compiled</em> GUI applications.
+While interpretive solutions such as Tk/Tcl for building GUI
+applications are becoming popular, they don't allow fully
+compiled code on multiple platforms. As machines get faster and
+faster, I don't think the advantage of an edit/interpret cycle
+versus an edit/compile/run cycle is significant.
+
+<p>
+
+<li> The 
+<em><b>V</b></em>&nbsp;library is free software; you can redistribute it and/or
+modify it under the terms of the GNU Library General Public
+License as published by the Free Software Foundation; either
+version 2 of the License, or any later version.
+
+<p>
+
+<em><b>V</b></em>&nbsp;is distributed in the hope that it will be useful,
+but 
+<em>without any warranty</em>; without even the implied
+warranty of 
+<em>merchantability</em> or 
+<em>fitness for a
+particular purpose</em>.  See the 
+<A HREF="http://www.gnu.org/copyleft/lgpl.html" TARGET="_main">
+GNU Library General Public License</A>
+for more details. (Note: that is a direct link to the
+GNU web page. If you are viewing this manual off-line,
+don't click there now.)
+
+<p>
+
+<li> The source code for 
+<em><b>V</b></em>&nbsp;is of commercial quality, and I hope
+some of the easiest to read and understand code you will ever
+encounter (if you decide to look at the 
+<em><b>V</b></em>&nbsp;source code).
+
+<p>
+</UL>There is, of course, a price to pay for the ease of programming
+with 
+<em><b>V</b></em>. The main constraint is that you are somewhat
+restricted to following 
+<em><b>V</b></em>'s (and thus my own) view of the
+world. The 
+<em><b>V</b></em>&nbsp;model does not exactly conform to the native
+models of X, Windows, and the Mac, but it is a very good
+compromise.  For the most part applications developed with 
+<em><b>V</b></em>
+will in fact conform to the host look and feel, but may be
+lacking some of the bells and whistles of the most sophisticated
+commercial applications available for a given platform. For the
+vast majority of applications, this will not matter. You will end
+up with applications that look pretty good, and are likely to
+have a much cleaner and better interface than they would have
+otherwise.
+
+<p>
+If you are a C programmer, then the fact 
+<em><b>V</b></em>&nbsp;is a C++ library
+might be a problem. While it is a fully object-oriented C++
+framework, it can be used with C code if you know a bit about
+C++. Also, 
+<em><b>V</b></em>&nbsp;does not allow you to do everything you could if
+you programmed in the native windowing library. You won't have
+every single conceivable control, and some controls are slightly
+restricted in how you can use them.
+
+<p>
+And finally, why the name 
+<em><b>V</b></em>? First of all, it is a simple
+name. It follows the tradition of 
+<em>C</em> and 
+<em>X</em>. It makes
+naming the classes easier. And, my son's name is Van, which
+starts with a V. So 
+<em><b>V</b></em>&nbsp;it is.
+
+<hr><H3>Footnotes:</H3>
+
+<p><a name=tthFtNtAAB></a><a href="#tthFrefAAB"><sup>1</sup></a> Grammatik is a trademark of Novell, Inc.
+</BODY></HTML>

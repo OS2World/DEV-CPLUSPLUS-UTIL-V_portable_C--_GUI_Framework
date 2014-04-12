@@ -1,0 +1,130 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vPrinter</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vPrinter</H1>
+<HR>
+
+<A NAME="vPrinter"></A>
+A printer object, with a dialog to interactively set printer
+attributes.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/vprinter.h&#62;</tt>
+	<dt><b>Class name:</b></dt><dd> vPrinter
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+The <tt>vPrintDC</tt> class prints to a printer (or a file that
+will eventually be printed). Printers have such attributes as
+size of paper, page orientation, color capability, etc. By
+calling the <tt>vPrinter::Setup</tt> dialog before printing, the
+user will be given the option of setting various printer
+attributes.
+
+<p>
+The exact functionality of the <tt>Setup</tt> dialog will be
+platform dependent. By using the <tt>vPrinter</tt> class, you will
+get the behavior appropriate for the platform. If you want to use
+the <tt>vPSPrintDC</tt> class for PostScript support on Windows,
+you can use <tt>vPSPrinter</tt> directly.
+
+<p>
+You can use the various methods associated with a <tt>vPrinter</tt>
+to get printer attributes as needed to during drawing to
+the <tt>vPrintDC</tt>.
+
+<p>
+
+<h2>Methods</h2>
+
+<p>
+
+<H4>int GetCopies()</H4>
+
+<H4>void SetCopies(int s)</H4>
+Many printers support printing multiple copies of the same
+document. This attributes controls the number of copies printed.
+The <tt>Setup</tt> dialog will provide control of this 
+<em>if</em> it
+is supported.
+
+<p>
+
+<H4>char* GetDocName()</H4>
+Printer output may be directed to a file rather than the printer.
+If it is, this will return the name of the file the output will
+be sent to.
+
+<p>
+
+<H4>int GetPaper()</H4>
+
+<H4>char* GetPaperName()</H4>
+Printers can print a variety of papers. The user may be
+able to select which paper from the <tt>Setup</tt> dialog.
+The printers supported are defined in the <tt>vprinter.h</tt>
+header file (or the base class used by <tt>vPrinter</tt>).
+
+<p>
+
+<H4>int GetPortrait()</H4>
+
+<H4>void SetPortrait(int p)</H4>
+Many printers can print in either Portrait or Landscape orientation.
+This returns true if the printer will print in portrait.
+
+<p>
+
+<H4>int GetToFile()</H4>
+
+<H4>void SetToFile(int f)</H4>
+
+<p>
+Printer output may be directed to a file rather than the printer.
+This returns true if the user selected the option to send output
+to a file.
+
+<p>
+
+<H4>int GetUseColors()</H4>
+
+<H4>void SetUseColors(int c)</H4>
+Printers can be either black and white, or color. This
+returns true if the printer supports colors. You can
+make a color printer print black and white by setting
+this to false.
+
+<p>
+
+<H4>int Setup(char* fn = 0)</H4>
+This displays a modal dialog for the user to select desired
+printer characteristics. If a filename is supplied, that
+name will be used if the user selects print to file.
+If <tt>Setup</tt> returns false, you should abandon the
+print job. After you call <tt>Setup</tt>, you can then
+call <tt>vPrintDC::SetPrinter</tt> to associate the printer
+with the <tt>vPrintDC</tt>.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+See <A HREF="vprintdc.htm" TARGET="info"><tt>vPrintDC</tt></A>
+for an example of using <tt>vPrinter::Setup</tt>.
+
+</BODY>
+</HTML>

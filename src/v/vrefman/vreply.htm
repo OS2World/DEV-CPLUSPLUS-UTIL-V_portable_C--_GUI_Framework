@@ -1,0 +1,88 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vReplyDialog</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vReplyDialog</H1>
+<HR>
+
+<A NAME="vReplyDialog"></A>
+A utility class to get a text reply from the user.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>        <dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vReplyDialog">&lt;v/vreply.h&#62;</A></tt>
+        <dt><b>Class name:</b></dt><dd> vReplyDialog
+        <dt><b>Hierarchy:</b></dt><dd> vModalDialog -&#62;vReplyDialog
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This simple utility class can be used to obtain a text reply from
+the user. The utility displays a message, and then waits for the
+user to enter a reply into the reply field. The user completes the
+operation by pressing OK or Cancel.
+
+<p>
+
+<h2>New Methods</h2>
+
+<p>
+
+<H4>vReplyDialog(vBaseWindow* win)</H4>
+
+<H4>vReplyDialog(vApp* app)</H4>
+
+<p>
+The <tt>vReplyDialog</tt> constructor requires a pointer to a
+<tt>vBaseWindow</tt>, which includes all 
+<em><b>V</b></em>&nbsp;windows and dialogs,
+or a pointer to the <tt>vApp</tt> object.
+You will usually pass the <tt>this</tt> to the constructor.
+
+<p>
+
+<H4>int Reply(const char* prompt, char* reply, const int maxLen, char* dflt = "")</H4>
+You provide a <tt>prompt</tt> for the user. The text the user enters
+will be returned to the buffer <tt>reply</tt> of maximum length <tt>maxLen</tt>.
+<tt>Reply</tt> will return the value <tt>M_OK</tt> or <tt>M_Cancel</tt>.
+Use dflt to provide a default reply.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+The following is a simple example of using <tt>vReplyDialog</tt>.
+
+<p>
+<img src="fig/reply.gif"><br>
+<font size=-2>
+<pre>
+    #include &lt;v/vreply.h&#62;
+    ...
+    vReplyDialog rp(this);      // instantiate
+    char r[100];                // a buffer for reply
+
+    (void)rp.Reply("Please enter some text.",r,99);
+
+    vNoticeDialog note(this);   // instantiate a notice
+
+    if (*r)
+        (void)note.Notice(r);
+    else
+        (void)note.Notice("No text input.");
+</pre></font>
+
+
+</BODY>
+</HTML>

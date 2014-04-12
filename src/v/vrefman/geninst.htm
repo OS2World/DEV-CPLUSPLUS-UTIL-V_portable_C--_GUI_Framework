@@ -1,0 +1,1141 @@
+<HTML>
+<HEAD>
+  <TITLE> The V C++ GUI Installation Guide </TITLE>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+</HEAD>
+<BODY bgcolor="#ffffff">
+<CENTER>
+  <FONT SIZE=5>The V C++ GUI Framework</FONT><BR>
+  &nbsp; <BR>
+  <FONT SIZE=6>Installation Guide</FONT><BR>
+ </CENTER>
+<HR>
+<A name="Intro"></A>
+<H1>General Installation Notes</H1>
+<p>
+I believe that <b>V</b> is one of the easiest to program GUI frameworks
+you will find. However, because it has been designed to work on
+several platforms, each with differing file systems and C++ compilers,
+getting a working version of <b>V</b> takes a little effort.
+<p>
+Please remember that <b>V</b> is a free package, and is being
+done completely by volunteers. I am paying for the ObjectCentral
+web site that is the home of <b>V</b> out of my own pocket. Supporting
+a program like <b>V</b> takes a lot of time and effort. Mostly
+I want to spend that effort on improving the library itself.
+Thus, my philosophy on distribution is to keep the number of
+downloadable files to a minimum. For the core (X LessTif and MS-Windows)
+distribution, I've chosen to use gzipped tar files. If you have
+Linux or other Unix flavor, this is the natural format. If you
+use MS-Windows, then you can use the popular WinZip program which
+supports .tgz files, or download Windows versions of tar 
+and gunzip from the ObjectCentral ftp site.
+<p>
+The OS/2 and X gtk version are built by the volunteers that
+did those ports. I try to let them do what is easiest and
+best for them.
+<p>
+So, please take the time to read this section carefully. It
+should have the details you need to get a working version 
+of <b>V</b> for almost any supported platform. If you think there
+would be a better way, I'd appreciate any volunteer effort you'd
+like to put into a more automated process, and I'll try to
+include them on the ObjectCentral web site. Now to the details...
+<p>
+Beginning with <b>V</b> Version 1.21, the V distribution
+will consist of several parts.
+<UL>
+<LI><b>Full source</b>
+<br>
+The complete source of the V Library for MS-Windows and X Windows
+will be found on <tt>vsrc-1.24.tar.gz</tt>, a gzipped tar file suitable for either
+MS-Windows or X platforms such as Linux. The full source contains
+all the source and the make files and project files normally needed
+to get V compiled on your machine. Use the standard Linux/Unix
+<tt>gunzip</tt> and <tt>tar</tt> programs to extract the file.
+MS-Windows versions of these are available on ObjectCentral ftp site.
+WinZip also will extract gzipped tar files.
+</LI>
+<br>
+<br>
+<LI><b>Documentation</b>
+<br>
+As of Version 1.21, the documentation is maintained only in html format.
+The latest version of the documentation is included in the full
+V distribution.
+A printable version using
+Adobe Acrobat PDF format is also available. The PDF version has
+been automatically generated from the HTML source, and is called
+<tt>vref.pdf</tt>.
+</LI>
+<br>
+<br>
+<LI>
+<b>Binary distributions</b>
+<br>
+<b>V</b> has been designed to be easily installed on many platforms. This
+document describes some of the details you will need to know to install
+<b>V</b> on your system. This installation guide covers the
+distributions of <b>V</b> used by the most users. Some platforms
+are not explicitly covered, but there should be enough general
+information here to get you started.
+<p>
+It has been my policy to distribute <b>V</b> only in source format, and
+not include precompiled versions of the library or applications.
+There are two reasons for this. First, there are a bunch of C++ compilers
+out there, and they usually don't work together. It would take just
+too much effort to try them all. Second, I think getting 
+<b>V</b> to compile with your compiler on your system is a good exercise. 
+If you can get that far, then you should be able to produce a 
+<b>V</b> application with few problems.
+<p>
+However, that said, beginning with Version 1.21, the distribution 
+will also contain ready-to-use compiled versions of the library 
+and <b>V</b> utility applications
+for the platforms and compilers I have easy access to. Initially, these will include
+Mingw32 egcs, and perhaps Borland C++ for MS-Windows, and
+an elf binary for Linux systems. 
+<i>The binary versions will follow some weeks after the source code release!</i>
+The distributions will be split
+into three parts: executables for various <b>V</b> utility programs,
+the <b>V</b> include files, and finally the <b>V</b> library
+files for each compiler. See the ObjectCentral
+ftp site for latest binary versions. Instructions for installation
+of the binary versions are included later in this page.
+</LI>
+</UL>
+<H2>General Installation Philosophy</H2>
+<p>
+I think it is appropriate to discuss my general philosophy about
+the distribution of <b>V</b>, and how Version 1.21 represented a
+major change. First, it is important to remember that the distribution
+of V is essentially a one person effort. The X Athena and Motif versions,
+and the Windows WIN32 versions, as well as the documentation, are
+currently completely being done by me, Bruce Wampler. The OS/2 is the
+responsibility of Jon Hacker, and the X gtk version has been done
+by Sven Verdoolaege (skimo). Thus, there are really three distributions
+of V. 
+<p>
+Nevertheless, I'm still the main focal point of V, and am responsible
+for the main distribution, and approval of the other releases. Thus,
+some of the decisions about the distribution have been made to minimize
+the time I spend on distribution, and maximize the time I spend on
+adding features. Thus, I don't use an Install program on MS-Windows,
+and haven't RPM packaged V for Linux. I'd <i>more</i> than welcome any
+volunteers to do anything to make installation simpler.
+<p>
+Until the 1.21 release, V had been strictly a source code distribution.
+I've finally decided that is not the best decision. So, beginning
+with this version, I will provide precompiled binaries for
+several major compilers and platforms. <i>(Note: the release of
+the binary versions will follow some time after the source
+release.)</i> If you successfully build a version of V for one
+that I haven't provided, please let me know, and I will include
+your version on the distribution site.
+<p>
+Because of the history as a source only distribution, and because
+many V users will still have to compile it, this document will still
+be heavily oriented to telling you how to compile V on your system.
+If you are lucky enough to use a compiler supported by a binary
+distribution, then you are in good shape.
+<p>
+I've also been hesitant to consider <b>V</B> a major library on
+equal status with the standard C++ libraries. Again, I'm changing
+that idea, and beginning with V 1.21, the general philosophy will
+be to install <b>V</b> libraries, include files, and utility applications
+in the <i>same</i> directories used by X applications for X systems, and
+the main location of includes and libraries for MS-Windows.
+For most users, this will greatly simplify things. For some, it
+may mean an interaction with your system administrator to get V properly
+installed. I'd appreciate feedback on this new approach.
+<p>
+
+<H2>Directory Structure</H2>
+
+<p>
+This section describes the directory structure of the V source distribution.
+The <b>V</b> directory structure has been designed to 
+allow you to either install 
+<b>V</b> in a personal directory, or at a higher system level.
+
+<p>
+The file hierarchy is:
+
+<p>
+
+<DL compact><dt><b>/v</b></dt><dd> The main 
+<b>V</b> directory.
+
+<p>
+<dt><b>/v/appgen</b></dt><dd> <b>V</b> application generator program.
+
+<p>
+<dt><b>/v/bccide</b></dt><dd> MS-Windows build files for Borland C++.
+
+<p>
+<dt><b>/v/bccide/vdll</b></dt><dd> MS-Windows build files for Borland C++
+version of V DLL.
+
+<p>
+<dt><b>/v/bin</b></dt><dd> The <tt>/bin</tt> directory is used to hold the binaries
+of <b>V</b> sample programs during build time. No actual
+binaries are included on the distribution,
+but several subdirectories should be created when V is unpacked.
+
+<p>
+<dt><b>/v/bccide/vdll</b></dt><dd> MS-Windows build files for Borland C++
+version of V DLL. See the Readme.txt file.
+
+<p>
+<dt><b>/v/bmp2vbm</b></dt><dd> Source for a simple MS-Windows and OS/2 <tt>.bmp</tt> bitmap
+format to <tt>.vbm</tt> V bit map format converter.
+
+<p>
+<dt><b>/v/Configs</b></dt><dd> Various make configuration files for
+Linux/Unix and mingw32/cygwin versions.
+
+<p>
+<dt><b>/v/doc</b></dt><dd> The <b>V</b> documentation. The documentation
+included in the distribution is in HTML.
+
+<p>
+<dt><b>/v/draw</b></dt><dd> Source for the VDraw example program. Examples that
+are identical across platforms use a <tt>.cpp</tt> file extension.
+
+<p>
+<dt><b>/v/drawex</b></dt><dd> Very simple V draw example from C/C++ Users Journal
+article.
+
+<p>
+<dt><b>/v/examp</b></dt><dd> Source for a simple 
+<b>V</b> example.
+
+<p>
+<dt><b>/v/gnuwin32</b></dt><dd> Files that may be needed to compile and
+use V for the cygwin and gnuwin32 Windows compilers.
+
+<p>
+<dt><b>/v/iconed</b></dt><dd> Source for 
+<b>V</b> Icon editor.
+
+<p>
+<dt><b>/v/icons</b></dt><dd> Source for a large number
+<b>V</b> vbm bitmaps useful for tool bars.
+
+<p>
+<dt><b>/v/includew/v</b></dt><dd> Source for the MS-Windows <tt>*.h</tt> 
+<b>V</b> header files.
+
+<p>
+<dt><b>/v/includex/v</b></dt><dd> Source for the X <tt>*.h</tt> 
+<b>V</b> header files.
+
+<p>
+<dt><b>/v/lib</b></dt><dd> Compiled version of the 
+<b>V</b> library will be placed
+under appropriate subdirectories here during build.
+
+<p>
+<dt><b>/v/msvc</b></dt><dd> Project and make files for Microsoft VC++ 4.
+
+<p>
+<dt><b>/v/msvc6</b></dt><dd> Project and make files for Microsoft VC++ 6.
+
+<p>
+<dt><b>/v/objx</b></dt><dd> Compiled object code is saved under here.
+
+<p>
+<dt><b>/v/obj</b></dt><dd> Compiled object code for LessTif/Motif version 
+is saved under here.
+
+<p>
+<dt><b>/v/srcwin</b></dt><dd> The full C++ source for the Ms-Windows 
+<b>V</b> library. The files
+use a <tt>.cpp</tt> extension.
+
+<p>
+<dt><b>/v/srcx</b></dt><dd> The full C++ source for the X 
+<b>V</b> library. Most files use a <tt>.cxx</tt> extension.
+Files with a <tt>.cpp</tt> extension are identical to their counterparts
+in the <tt>/srcwin</tt> directory.
+
+<p>
+<dt><b>/v/test</b></dt><dd> The test program used to test 
+<b>V</b> functionality.
+
+<p>
+<dt><b>/v/tutor</b></dt><dd> The source code for the tutorial example.
+
+<p>
+<dt><b>/v/vide</b></dt><dd> The source code for VIDE, the V Integrated
+Development Environment.
+
+<p>
+<dt><b>/v/vopengl</b></dt><dd> Source for examples for V vBaseGLCanvasPane class
+that interfaces to OpenGL.
+
+<p>
+<dt><b>/v/watcom</b></dt><dd> Project and make files for Watcom C++ compiler.
+
+<p>
+</DL>
+<hr>
+
+<A name="MSWindows"></A>
+<H2>Microsoft Windows</H2>
+<p>
+Believe it or not, all the object code generated by the
+various compilers available for Windows is incompatible
+across compilers! This means it is not easy to
+distribute V already compiled for every compiler available.
+For one thing, I just can't afford to buy that many compilers.
+<p>
+This incompatibility means two 
+<em>important</em> things.
+First, you must use a library for V compiled with your compiler.
+I've tried to supply project or make files required for the major compilers, 
+but not all are available. The binary distribution also has precompiled
+versions for several major Windows compilers.
+
+<p>
+Second, when you compile your apps for V, you must be very careful 
+about the compilation model you
+specify. For Windows 3.1, the best model is usually called
+Large. (<b>WARNING!</b> V has not been tested with Windows 3.1
+since about version 1.16.)
+While WIN32 doesn't have the memory model problem,
+it does have calling convention and data alignment problems. You MUST be
+careful to compile the V library AND your own applications
+using the same memory model or calling conventions. These
+options are usually buried somewhere on an options menu.
+I can't provide exact information about this. It is your job
+to understand your compiler enough to do this.
+
+<p>
+I've selected a calling convention for the V project files
+I provide. You should check what they are, and be sure they
+match. I don't think they are always the default settings.
+
+<p>
+For example, the WIN32 version for the Borland compiler
+<em>requires</em> that <tt>word</tt> alignment be used. The compiler
+default is <tt>byte</tt>, so you will have to change this
+for your projects.
+The project examples supplied have generally had their options set
+as required. You should examine the settings, and use the same ones
+for your applications. You cannot mix compilers or even compiler
+code options.
+<p>
+It does seem, however, that you can build your applications with
+a data alignment bigger than <b>V</b>'s. <B>V</b> is built with
+<tt>word</tt> alignment, but apparently it is ok to build your
+apps with <tt>4 byte</tt> or <tt>8 byte</tt> alignment and use it with
+the default <tt>2 byte</tt> <b>V</b> library.
+
+<p>
+The standard distribution includes subdirectories for each compiler:
+Borland (<tt>/bccide</tt>), Microsoft (<tt>/msvc</tt>,<tt>/msvc6</tt>), Watcom
+(<tt>/watcom</tt>), and mingw32 (<tt>/gnuwin32</tt>). For the IDE based
+versions, you should be able to use the project files to get started.
+For the mingw32 distribution, please see the section below on mingw32.
+<p>
+
+<A NAME="precompiled"></A>
+<h2>General Instructions for Precompiled library</h2>
+<p>
+The binary distribution is found at
+<a HREF="ftp://objectcentral.com/bin-dist">
+<tt>ftp://objectcentral.com/bin-dist</tt></a>.
+
+The binaries
+are for the following compilers:
+<p>
+
+Mingw32 egcs.  This was compiled using the latest mingw32 egcs distribution.
+<p>
+
+Borland C++ 5.01 - This should work with BCC 5.01 and later.
+<p>
+
+<h3>How to do it</h3>
+<p>
+
+The idea is to use the standard <tt>/bin</tt>, <tt>/include,</tt> and 
+<tt>/lib</tt>
+directories used by your compiler. The <b>V</b> utility programs
+(vappgen, vide, etc.) are actually compiled with mingw32/egcs, and 
+should execute with any compiler. The <b>V</b>
+include files, which belong on <tt>.../include/v</tt> are also common across all
+Windows compilers. I've archived and compressed these with tar and gzip.
+Executables of these two utilities are available on the ObjectCentral ftp site under
+<tt>dosutils</tt> if you need them.
+<p>
+Finally, there is a separate version of the compiled static <b>V</b> library for
+each of the above compilers.
+<p>
+Download <tt>v122-win-util.tgz</tt> and <tt>v122-win-inc.tgz</tt> for 
+the common files.
+Download <tt>v122-win-lib-xxx.tgz</tt> with the appropriate <tt>xxx</tt> 
+for your compiler.
+<p>
+Then, copy <tt>v122-win-util.tgz</tt> to the proper <tt>/bin</tt> directory.
+This can actually be any directory in your path, but I think the 
+best convention is to put them
+on the bin directory of your compiler. Gunzip and untar the file:
+<p>
+<pre>
+    cd /wherever/bin
+    gunzip -d v122-win-util.tgz
+    tar -xvf v122-win-util.tar
+</pre>
+<p>
+Copy <tt>v122-win-inc.tgz</tt> to the <tt>/include</tt> directory used
+by your compiler. This directory will contain standard files such as
+<tt>windows.h</tt> and <tt>stdlib.h</tt>. Unpacking the <b>V</b> include
+files here will produce a subdirectory (<tt>.../include/v</tt>) for
+the <b>V</b> include files.
+
+<pre>
+   cd /whatever/include
+   gunzip -d v122-win-inc.tgz
+   tar -xvf v122-win-inc.tar
+</pre>
+<p>
+Finally, do the same for the compiled library files.
+<p>
+
+<pre>
+   cd /whatever/lib
+   gunzip -d v122-win-lib-xxxx.tgz
+   tar -xvf v122-win-lib-xxxx.tar
+</pre>
+
+<p>
+At this point, <b>V</b> should behave like any other library and include file
+used by your compiler, and will be easy to use. So far, the only special thing
+<b>V</b> requires is at LEAST word alignment. We've had pretty reliable reports
+that using 2-word or 4-word alignment will also work for your apps, even with
+word <b>V</b> libraries.
+<p>
+
+<A NAME="gnuwin32"></A>
+<H2>GNU g++ - mingw32/egcs</H2>
+<p>
+In my opinion, the best compiler available for Windows
+is the GNU g++ compiler. There are really two development
+environments that use the g++ compiler: gnuwin32 and Mingw32.
+The first is really the Cygnus environment, and uses the
+<tt>cygwin.dll</tt> to support many Unix-like functions
+on windows. The Mingw32 distribution is intended for
+native Windows development.
+<p>
+I have been using mostly the Mingw32 version to develop
+<b>V</b> for quite some time now. The latest version
+is GCC 2.95, which combines the egcs and standard 2.8
+gcc compiler. See
+<A HREF="http://www.xraylith.wisc.edu/~khan/software/gnu-win32/index.html">
+GNU g++ for mingw32 and cygwin32</A> by Mumit Khan for the
+latest info on the Mingw32 compiler.
+<p>
+<b>IMPORTANT NOTE ABOUT GCC 2.95</b>
+<p>
+There is a bug in the <tt>commdlg.h</tt> file
+with versions of Mingw32 GCC 2.95 released by Mumit Khan
+as of August 15, 1999. To fix this, you MUST edit
+the file <tt>C:\mingw32\i386-mingw32\include\commdlg.h</tt>
+and add the two lines noted below (assuming you've installed
+Mingw32 on <tt>C:\mingw32</tt>):
+<pre>
+<tt>
+#ifndef _COMMDLG_H
+#define _COMMDLG_H
+#pragma pack(push,1)    // add this for GCC 2.95
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+ ... rest of file definitions
+
+#ifdef __cplusplus
+}
+#endif
+#pragma pack(pop)       // add this for GCC 2.95
+#endif
+</tt>
+</pre>
+
+
+<p>
+
+<h3>How to compile your own Applications</h3>
+<p>
+After you have a working version of <b>V</b> built (and probably
+installed on the mingw32/egcs directory path), either by
+installing the precompiled version or building your own version,
+it is fairly easy
+to use and include the <b>V</b> library. The main thing is to
+use the required <tt>-l</tt> switches to g++ to load the proper
+libraries. Use:
+<br>
+<br>
+
+<tt>g++ $(YOUROBJECTS) -lV -lcomctl32 -mwindows</tt>
+<br>
+   -or, for OpenGL apps-
+<br>
+<tt>g++ $(YOUROBJECTS) -lV -lVgl -lcomctl32 -mwindows</tt>
+<br>
+<br>
+
+All the libraries needed for Windows are automatically included with the
+option <tt>-mwindows</tt> (you may also need to add <tt>-lcomctl32</tt>).
+<p>
+If you want to add icon resources, see the example vgen.rc file in
+the /v/appgen directory. You can replace the .ico file with whatever
+icon you want. You then need to add a dependency in your Makefile
+to compile the .rc file with windres, and include the resulting
+output file on the link line. The Makefile for vgen in /v/appgen
+includes an example of how to do this.
+<br>
+<h3>Instructions for rebuilding V for mingw32</h3>
+<p>
+
+<br>
+<ol>
+
+<li>
+Unzip the V Windows distribution. You must be sure to use
+   an unzipper that preserves file case, or manually rename all
+   the files to use lower case. While Windows doesn't care,
+   gnu make does.
+</li>
+<br>
+<br>
+
+<li>
+You must now create the proper version of /v/Config.mk.
+   Usually, this is a matter of copying the proper version
+   of Config.Mk from the /v/Configs directory.
+   For the mingw32 version, the file to copy is /v/Configs/CfgMing.mk.
+   Copy it to /v/Config.mk.
+<p>
+
+   The default version assumes that you have unpacked the V
+   distribution to c:/v, and that you have installed mingw32
+   on C:/mingw32. You can change this by editing the copied
+   version of /v/Config.mk.
+</li>
+<br>
+<br>
+<li>
+
+The Makefile in the /V root directory is intended for use
+   on Unix/Linux machines. It does NOT work for Windows.
+   However, the Makefiles on the directories with the V
+   library and other V applications do work on Windows, and
+   are used for both the X version on Linux/Unix, and for
+   the MS-Windows GNU WIN32 versions.
+<p>
+   Currently (August 1999), there remain some issues with
+   the GCC 2.95 release. The problem with <tt>commdlg.h</tt>
+   is noted above.
+<p>
+   You probably will have to do something with <tt>commctrl.h</tt>.
+   If you are using a GCC
+   version before the latest 2.95 (why are you doing that?),
+   then you MAY need to copy C:/v/gnuwin32/include/commctrl.h to
+   C:/mingw32/include/commctrl.h (or whereever the mingw32
+   /include directory is on your system.) You need this file to compile
+   V 1.18 and later for the Common Control dll. 
+<p>
+   You will also add -lcomctl32 to your link lines in your makefile.
+<p>
+   Also, if you choose to compile for OpenGL, you may
+   need to copy the entire gl subdirectory (found at
+   v/gnuwin32/include) to the GNU WIN32 include directory
+   (as a /include/gl subdirectory).
+</li>
+<br>
+<br>
+<li>
+cd to each of these directories and run `make' for each
+   of the following. (The top level Makefile in C:/v has X
+   specific stuff and doesn't work. Also, since make is
+   case sensitive, you might have to use `make -f makefile'.)
+<br>
+<br><dd>
+        srcwin		(required)
+<br><dd>
+        appgen		(useful - see documentation)
+<br><dd>
+        iconed		(useful - especially for icons)
+<br><dd>
+        icons		(shows predefined V icons you can use)
+<br><dd>
+        draw		(example only)
+<br><dd>
+        drawex		(example only)
+<br><dd>
+        texted		(example only)
+<br><dd>
+        tutor		(example only)
+<br><dd>
+	vide            (very useful IDE for mingw32!)
+</li>
+<br>
+<br>
+<li>
+ Putting the V headers in the mingw32 directory path has the
+   advantage of eliminating the need for extra include directives in
+   your makefiles.
+<p>
+   After you build V, you will find it easiest to copy libV.a from
+   v/lib to mingw32/lib/libV.a, as well as all the
+   V headers in from v/includew/v to mingw32/include/v. This 
+   will allow you to easily update versions of V, and to compile your
+   own applications with V.
+<p>
+   To do this, after you've built the V library, change to the
+   home /v directory, and enter:
+<br>
+<br><dd>
+       <tt>make installgnuwin32</tt>
+<br>
+<br>
+   This will copy all the required header, library, and binary
+   files to the mingw32 directories as defined in Config.mk.
+</li>
+<br>
+<br>
+<li>
+If you want to build OpenGL applications with mingw32, the header
+   files are located at gnuwin32/include. 
+</li>
+</ol>
+
+<br>
+
+<A NAME="cygwin32"></A>
+<H2>Cygnus cygwin</H2>
+<h3>Instructions for rebuilding V for Cygwin B20</h3>
+<p>
+One of the main features of the Cygwin support for the V library is the fact
+that it may be built for both X and Windows GUI targets.
+<p>
+NOTE: To use the X version you will have to download precompiled
+      library and header files of X11R6.4 from Cygwin32 Porting
+      Project's homepage at http://www-public.rz.uni-duesseldorf.de/~tolj,
+      which is also the official supporter and a X windows server
+      for your Win32 machine, i.e. X-Win32 from http://www.starnet.com.
+<p>
+
+<h4>TO REBUILD THE V LIBRARY (X and WINDOWS) FOR CYGWIN32</h4>
+<ol>
+<li>
+To extract the compressed v-1.24.tar.gz archive you will have to
+do the following within your bash shell:
+<br><tt><dd>
+gunzip v-1.24.tar.gz
+<br><dd>
+tar xf v-1.24.tar
+<br></tt>
+<br>
+Now you will have the V distribution within the subdirectory v/.
+</li>
+<br><br>
+<li>
+You will have to build either the X or the Windows version of V for
+Cygwin. You can build both, but you will have to build each separately,
+and copy the include and lib files after each build. Note that the
+X version uses the v/includex/v include files, while the MS-Windows
+version uses /v/includew/v files. It is not particularly easy to
+use both the X and Windows V libraries at the same time.
+</li>
+<br><br>
+<li>
+
+Making the X version: Copy /v/Configs/CfgCygX.mk to /v/Config.mk, and
+   edit it as follows:
+<dd>
+        - set HOMEV to the home directory of your V distribution
+<dd>
+        - set X11RV = X11R6.4 (if using our recommended X11 libraries)
+<dd>
+- Now you may type "make" and build the library and some example
+   applications.
+</li>
+<br><br>
+<li>
+Making the Windows GUI version: Copy /v/Configs/CfgCygW.mk
+   to /v/Config.mk and edit that file as follows
+<dd>
+        - set HOMEV to the home directory of your V distribution
+<p>
+</li>
+<li>
+   cd to each of these directories and run "make" for each
+   of the following. (Don't use the top level Makefile in /v since
+   this is used to build the X version).
+<br><dd>
+        srcwin		(required)
+<br><dd>
+        appgen		(useful - see documentation)
+<br><dd>
+        iconed		(useful - especially for icons)
+<br><dd>
+        icons		(shows predefined V icons you can use)
+<br><dd>
+        test            (tests V lib - not usually needed)
+<br><dd>
+        bmp2vbm         (not needed, functionality now included in iconed)
+<br><dd>
+        draw		(example only)
+<br><dd>
+        drawex		(example only)
+<br><dd>
+        examp		(example only)
+<br><dd>
+        texted		(example only)
+<br><dd>
+        tutor		(example only)
+<br><dd>
+        vide            (very useful IDE for cygwin32!)
+<br>
+</li>
+<br><br>
+<li>
+If you want to build OpenGL applications with cygwin32, the header
+   files are located at gnuwin32/include. 
+</li>
+</ol>
+<p>
+<h4>TO COMPILE YOUR OWN APPLICATIONS</h4>
+<p>
+
+Now that you have a working version of V built (and probably
+installed on the cygwin\bin directory path), it is fairly easy
+to use and include the V library. The main thing is to
+include the required -l switches to g++ to load the proper
+libraries. Use:
+<br><br><tt>
+
+g++ $(YOUROBJECTS) -s -e _mainCRTStartup -lV -lcomctl32 -mwindows
+
+</tt><br><br>
+<p>
+A similar model line for using the X version of the V library is:
+<br><br><tt>
+
+g++ $(YOUROBJECTS) -s -e _mainCRTStartup -L/usr/X11R6.4/lib -lV -lXaw -lXmu -lXt -lXext -lX11 -lICE -lSM
+
+</tt><br><br>
+<p>
+All the libraries needed for Windows are automatically included with the
+option -mwindows (you may need to add -lcomctl32).
+<p>
+If you want to avoid using the Cygwin DLL, you can also add the
+-no-cygwin switch, and link to the mingw32 libraries. See the Cygwin 
+documentation for more info. Also check out
+<a href="http://www.xraylith.wisc.edu/~khan/software/gnu-win32/mno-cygwin-howto.txt">
+Mumit Kahn's info</a>.
+<p>
+If you want to add icon resources, see the example vgen.rc file in
+the /v/appgen directory. You can replace the .ico file with whatever
+icon you want. You then need to add a dependency in your Makefile
+to compile the .rc file with windres, and include the resulting
+output file on the link line. The Makefile for vgen in /v/appgen
+includes an example of how to do this.
+<p>
+Please read the file /v/Configs/cygnus-readme.txt for the latest
+info on compiling V with Cygwin.
+<br>
+
+<A NAME="Borland"></A>
+<H2>Borland</H2>
+<p>
+Windows specific files for Borland 5.0 are kept on BCCIDE. That
+directory includes .IDE files for Borland C++, .RC, .DEF, and
+.ICO files. The project files assume that BCC is on drive C:.
+If you have BCC 4.5, or keep BCC on a drive other than C:, then
+you will have modify the project files to change the include
+file search paths. Note that the BCC 5.0 project files only work
+for WIN32. V will no longer be supported for 16 bit compilers.
+<p>
+The subdirectory <tt>/v/bccide/vdll</tt> contains Borland
+makefiles for building a DLL version with Borland C++.
+It is VERY easy. See the Readme.txt file.
+You use the provided makefiles using a DOS window.
+<t>
+Simply change to this directory, and run Borland's make
+on the Makefile in this directory. When you are done, you
+will have V122BCC.DLL (the DLL), and V122BCC.LIB (the load
+library).
+<p>
+Now you can build V applications using Borland C++, and link
+to the V122BCC.LIB, and include the V122BCC.DLL in the same
+directory as your executable.
+<p>
+<A NAME="Microsoft"></A>
+<H2>Microsoft Visual C++</H2>
+<p>
+This distribution now includes make/project files for Microsoft
+VC++. There are two versions: for
+MSVC 4.0, which were built using the cheap Standard Edition, and
+can be used with MSVC 5.0 as well; and MSVC 6.0.
+<p>
+Beginning with VC++ 6.0, Microsoft has done things to their
+C++ compiler that makes it really have trouble with the existing
+V code.  The main obnoxious thing they've done is revert to
+old style handling of loop variables. I've had to change a bunch
+of code to allow default settings to be used.
+<p>
+The following are some of the things required to get <b>V</b>
+to compile with MSVC++ 6.0 (These notes are based on using the Standard Edition.
+They could be different for the Professional versions. I don't claim
+to be an MSVC++ expert, and any better usage notes would be
+appreciated.)
+<ul>
+<li>The example workspace files assume <b>V</b> is found
+at <tt>C:\V</tt>. The following notes assume the same. Change
+references to <tt>C:\V</tt> to wherever you've installed V.
+
+<li>You will generally create a new, blank workspace for your
+projects.
+
+<li>To enable the compiler to find <b>V</b> header files,
+add <tt>C:\v\includew</tt> under <i>Additional include directories</i>
+under the <i>C/C++</i> tab of the Project Settings dialog.
+
+<li>One way for the linker to find the <b>V</b> library 
+is to add <tt>vlib.lib</tt> as the first file in the <i>Object/library
+modules</i> item of the <i>Link</i> tab of the settings dialog.
+You then need to add <tt>C:\v\msvc6\vlib\release</tt> (or
+whereever you've built the V library) to the <i>Additional
+library path</i> item. You can specify separate paths for debug
+and release versions of the V library if you need to, or simply
+use the release version for the "All Configurations" settings.
+There might be easier ways to specify how to use the V library,
+but this way worked for me.
+
+<li><b>Important:</b> You must add <tt>comctl32.lib</tt> to the
+<i>Object/library modules</i> list in the <i>Link</i> tab of
+the settings dialog. You can add this to the "All Configurations"
+settings if you wish.
+
+
+<li>If when you try to build the <tt>.exe</tt> of your project you
+get messages about incompatible library uses, add the names of the
+libraries listed to the <i>Ignore libraries:</i> item of the <i>Link</i>
+tab of the Project Settings dialog.
+
+</ul>
+
+<p>
+<A NAME="Watcom"></A>
+<H2>Watcom</H2>
+<p>
+Watcom project files are found in the WATCOM directory.
+There are various subdirectories with different WIN32 and
+Win3.1 project files.
+There is a subdirectory called WATCOM11 that has some
+contributed makefiles that are known to work with Watcom 11.
+<p>
+Unless I get significant feedback otherwise, I plan to drop
+support for Watcom with the next release of V. The supplier
+has recently notified all Watcom customers that it is dropping
+support for Watcom C++ completely. With the great free GCC 2.95
+now available, there is no compelling reason to stick with
+old, unsupported software.
+<p>
+<A NAME="OtherCompilers"></A>
+<H2>Other Compilers</H2>
+<p>
+If you want to compile V with a different compiler, it isn't
+too hard. To build the library, you include ALL the files in
+the <tt>v/srcwin</tt> directory. Specify  <tt>v/includew</tt> in the include
+search path. V has been designed to work only with the LARGE
+model for Win3.1. It works with whatever calling convention
+you need for WIN32.
+
+<p>
+The djcpp version has difficulty compiling 
+<b>V</b>. It was never intended to compile Win32 apps, and
+so <b>V</b> will not easily compile with djcpp.
+<p>
+<hr>
+<A name="XWindows"></A>
+<H2>X Windows</H2>
+Building <b>V</b> for various X Windows flavors of Unix system
+uses the standard gnu version of the Unix <tt>make</tt> tool. 
+(Note: you must use a <tt>make</tt> compatible with the gnu
+version of <tt>make</tt>. The <b>V</b> makefiles use features
+and conventions supported by the gnu version. Some native
+<tt>makes</tt> do not support all the features, and will generate
+error messages.)
+The main <tt>/v</tt>
+directory contains a <tt>Makefile</tt> and a file called
+<tt>Config.mk</tt>. The directory <tt>/v/Configs</tt> contains
+several versions of <tt>Config.mk</tt> that usually must be
+customized to build
+<b>V</b> for your system. The <tt>Makefile</tt> and the
+<tt>Config.mk</tt> files contain more information about building
+<b>V</b>.
+<p>
+Beginning with V Version 1.22, the main widget set supported for
+X is Motif/LessTif. Until 1.22, the Athena widget set had been
+the main one. However, as of version 0.88, LessTif seems to be
+stable enough to fully support V. Since this widget set looks
+much better than Athena, and since many Linux distributions are
+replacing the standard Athena with Athena3D (which breaks the
+look of V Athena), the LessTif version will now be the main
+version of V. V will continue to run under Athena, but it is
+likely that not all new features will be supported under Athena
+(e.g., multiple-list selection when that is added).
+Please see the section <A HREF="#Motif">Motif vs. Athena</a> below.
+<p>
+<A name="Linux"></A>
+<H2>Linux</H2>
+<p>
+<h3>Instructions for building V for Linux</h3>
+<p>
+
+<br>
+<ol>
+
+<li>
+Gunzip and tar the <b>V</b> distribution to a directory of your choice. 
+The files will extract to a <tt>/v</tt> subdirectory.
+</li>
+<br>
+<br>
+
+<li>
+You must now create the proper version of /v/Config.mk.
+   Usually, this is a matter of copying the proper version
+   of Config.mk from the /v/Configs directory.
+   This will be ConfigX.mk for the X Athena version, or ConfigM.mk for
+   the LessTif/Motif version. (Use ConfigM.mk if you have LessTif 0.88
+   or later, or if you have Motif.)
+<p>
+   The default version assumes that you have unpacked the <b>V</b>
+   distribution to <tt>$(HOME)/v</tt>, where <tt>HOME</tt> is the
+   standard environment variable.
+   You can change this by editing the copied
+   version of /v/Config.mk.
+</li>
+<br>
+<br>
+<li>
+From the main <tt>/v</tt> directory, run `make'. This should
+build the static version <b>V</b> library and all the <b>V</b>
+utility applications. (You can build a shared library version --
+see the comments in the Makefile.) The following utilities are
+built:
+<br>
+<br><dd>
+        appgen		(useful - see documentation)
+<br><dd>
+        iconed		(useful - especially for icons)
+<br><dd>
+        icons		(shows predefined V icons you can use)
+<br><dd>
+        draw		(example only)
+<br><dd>
+        drawex		(example only)
+<br><dd>
+        examp		(example only)
+<br><dd>
+        texted		(example only)
+<br><dd>
+        tutor		(example only)
+<br><dd>
+	vide            (very useful IDE)
+</li>
+<br>
+<br>
+<li>
+By default, the <b>V</b> makefile will try to compile the
+OpenGL library. If you don't have OpenGL or Mesa installed on
+your system, the makefile will generate a bunch of errors about
+missing OpenGL include files, and you can safely ignore them.
+
+</li>
+<br>
+<br>
+<li>
+   After you build V, you will find it easiest to install the library
+   and include files to standard places. To do this, first <tt>su</tt>
+   or logon as <tt>root</tt>. Then enter <tt>make&nbsp;installLinux</tt>.
+   This will install <b>V</b> to the standard X11 directories.
+</li>
+<br>
+<br>
+</ol>
+
+<br>
+<h3>How to compile your own Applications</h3>
+<p>
+After you have a working version of <b>V</b> built (and probably
+installed), either by
+installing the precompiled version or building your own version,
+it is fairly easy
+to use and include the <b>V</b> library. The <b>V</b> application
+generator, <tt>vgen</tt>, will build a makefile with the 
+proper includes and library switches. You can also use the
+provided sample makefiles as starting points.
+<p>
+You can also build your own makefiles.
+The main thing is to
+use the required <tt>-l, -L, and -I</tt> switches to g++ to load the proper
+libraries and include files. To compile, use:
+<br>
+<br>
+<tt>g++ $(YOURSRC) -I/usr/X11R6/include</tt>
+<br>
+<br>
+To link, use for LessTif/Motif:
+<br>
+<br>
+<tt>g++ $(YOUROBJECTS) -L/usr/X11R6/lib -lV -lXm -lXmu -lXt -lXext -lX11</tt>
+<br>
+or for Athena
+<br>
+<tt>g++ $(YOUROBJECTS) -L/usr/X11R6/lib -lV -lXaw -lXmu -lXt -lXext -lX11</tt>
+<br>
+<br>
+For OpenGL applications, add <tt>-lVgl -lGLw -lGLU -lGL</tt> to the library switches.
+<p>
+
+<A name="Unix"></A>
+<H2>Other Unix Flavors</H2>
+<p>
+A series of <tt>Makefiles</tt> is included with the 
+<b>V</b> distribution
+to build the library on various Unix systems. In the main
+<tt>/v</tt> directory is a file called <tt>Config.mk</tt> which
+usually needs to be customized before building. The prototype
+<tt>Config.mk</tt> files are contained in the subdirectory
+<tt>/v/Configs</tt>.
+There
+are two versions of <tt>Config.mk</tt> supplied: <tt>ConfigX.mk</tt>
+for the Athena widget based version, and <tt>ConfigM.mk</tt>
+for the Motif widget based version. Before you compile, you
+should copy the appropriate file to <tt>/v/Config.mk</tt>, edit it
+to customize it for your system, then type <tt>make</tt>
+from the <tt>/v</tt> directory. This will build the <b>V</b>
+library and all the utility programs.
+
+<p>
+The <tt>Config.mk</tt> file, and the various <tt>Makefiles</tt>
+contain lots of comments about building 
+<b>V</b> on your platform.
+Please read those files directly for more critical information
+about getting 
+<b>V</b> working on your system.
+
+<A name="gtk"></A>
+<H2>gtk</H2>
+<p>
+The gtk version of <b>V</b> is still a separate distribution.
+Please see the instructions included with it. It will eventually
+become the mainline <b>V</b> Linux distribution.
+<p>
+<A name="Motif"></A>
+<H2>Motif vs. Athena</H2>
+<p>
+Beginning with V 1.22, LessTif will become the standard widget
+set supported by <b>V</b>. You must have at least LessTif version
+0.88 to work with V, however. You also may be able to use a
+standard Motif library, but I've gotten mixed reports that
+V doesn't work correctly with real Motif libs.
+<p>
+I know I said I would provide minimal LessTif/Motif support in the
+V 1.21 release, but I've changed my mind. First, LessTif 0.88
+looks pretty stable. I've finally been able to chase down all but
+a couple of problems (visual, not functional) with LessTif.
+Programs built using this version look much better,
+and work better with the current X Window Managers (KDE specifically).
+And some late versions of Linux (Caldera, for example) provide
+the 3D Athena library by default, which ruins the look of V/Athena.
+<p>
+<hr>
+<A name="OS2"></A>
+<H2>OS/2</H2>
+<p>
+Directions for compiling on OS/2 are included in the OS/2
+distribution. Since the OS/2 version was just released,
+there are not as many prebuilt project or makefiles
+available. The mingw32 files should serve as a good
+basis for the EMX compiler. As users contribute
+feedback, this situation should change.
+<hr>
+<A name="OpenGL"></A>
+<H2>OpenGL</H2>
+<p>
+<b>V</b> will only work with OpenGL if you have it installed
+on your system. Beginning with <b>V 1.21</b>, OpenGL support
+has been split into a separate library file. This may cause
+some compilation errors from V makefiles if you don't have
+OpenGL, but you can ignore them.
+<p>
+<A NAME="MSWINGL"></A>
+<H2>OpenGL on Microsoft Windows</H2>
+<p>
+Windows comes standard with the OpenGL DLL. You must have
+the appropriate import library to use the DLL, which usually
+comes with the various compilers. The only problem seems to
+be with the gnu mingw32/cygwin compiler. The required include
+files are available under the <tt>/v/gnuwin32</tt> directory
+if you need them.
+<p>
+<A NAME="XWINGL"></A>
+<H2>OpenGL on X Windows</H2>
+<p>
+<b>V</b> seems to work flawlessly with Mesa on Linux, and
+with standard OpenGL on most other systems. Note that you
+must have the Motif or Athena OpenGL widget library (libGLw) built
+and available. If you don't have
+OpenGL or Mesa, you won't need libVgl.a.
+<p>
+
+<HR>
+<FONT SIZE=-1>
+This user guide, installation, and reference manual,
+<EM>The V C++ GUI Framework User Guide and Reference Manual</EM>,
+Version 1.24, may be reproduced and
+distributed, in whole or in part, subject to the following conditions:
+<P>
+<OL type="1">
+  <LI>
+    The copyright notice above and this permission notice must be preserved complete
+    on all complete or partial copies.
+  <LI>
+    You may not translate or create a derivative of this work without the author's
+    written permission.
+  <LI>
+    If you distribute this manual in part, you must provide instructions and
+    a means for obtaining a complete version.
+  <LI>
+    You may make a profit on copies of this work only if it is included as part
+    of an electronic distribution of other free software works (e.g., Linux or
+    GNU).
+  <LI>
+    Small portions may be reproduced as illustrations for reviews or quotations
+    in other works without this permission notice if proper citation is given.
+</OL>
+<P>
+My goal is to get as many people as can be helped using
+<B>V</B>. If the terms of this documentation copyright are
+unsatisfactory, please contact me and we can probably work something out.
+<P>
+<HR>
+<B>V User Guide and Reference Manual - Version 1.24 - 04Mar2000</B><BR>
+Copyright &copy; 1998-2000, Bruce E. Wampler<BR>
+All rights reserved.<P>
+Bruce E. Wampler<BR>
+521 Springridge Dr.<BR>
+Glenwood Springs, CO 81601<BR>
+<A HREF="mailto:bruce@objectcentral.com">bruce@objectcentral.com</A> <BR>
+<A href="http://www.objectcentral.com">www.objectcentral.com</A><BR>
+</FONT>
+</BODY></HTML>

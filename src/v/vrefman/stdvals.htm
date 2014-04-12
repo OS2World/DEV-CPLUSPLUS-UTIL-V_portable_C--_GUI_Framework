@@ -1,0 +1,252 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>Predefined ItemVals</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>Standard V Values</H1>
+<HR>
+
+<DL compact>	<dt><b>Predefined ItemVals</b></dt><dd> A useful collection of predefined values.
+Most are useful for defining dialogs, buttons, and menus.
+</DL>
+<p>
+
+<H2><A NAME="Predefined ItemVals"></A> Predefined ItemVals</H2>
+A useful collection of predefined values. Most are useful for defining
+dialogs, buttons, and menus.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/v_defs.h&#62;</tt>
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+When defining dialogs, menus, and command bars, you are required
+to provide an id for each item.  There are many common operations
+used in GUI designs, and 
+<em><b>V</b></em>&nbsp;provides various predefined values
+for building your programs. The natural interpretation of most
+of these values should be obvious, and the descriptions are kept
+to a minimum. Most of the definitions describe the accepted practice
+for menu or button items with the given title. While these <tt>ItemVal</tt>s
+can be used anywhere, some have ``standard'' usage.
+
+<p>
+
+<h2>Control Values</h2>
+
+<p>
+<B> M_About</B> Shows an informative message about current application.
+
+<p>
+ <B>M_All</B> Select all.
+
+<p>
+ <B>M_Cancel</B>l Cancel. Usually used with a dialog. 
+<em><b>V</b></em>&nbsp;will
+automatically reset dialog commands to their original state when
+a <tt>M_Cancel</tt> is selected from a <tt>vDialog</tt> descended
+object.
+
+<p>
+ <B>M_Clear</B> Used to clear a screen.
+
+<p>
+ <B>M_Close</B> Used to close a file. The user is usually
+prompted to save or ignore changes if any were made to the file. This
+is usually not used to close a menu.
+
+<p>
+ <B>M_Copy</B> Copy the highlighted text or item, and save into
+the clipboard.
+
+<p>
+ <B>M_Cut</B> Cut the highlighted text or item from the file, and
+usually save into the clipboard.
+
+<p>
+ <B>M_Delete </B>Delete the selected item or text - usually
+does not copy into the clipboard.
+
+<p>
+ <B>M_Done</B> Done with operation.
+
+<p>
+ <B>M_Edit</B> Typically a menu bar button to pulldown an edit menu.
+
+<p>
+ <B>M_Exit</B> Exit from the program - checking to see if files
+need to be saved, of course.
+
+<p>
+ <B>M_File</B> Typically a menu bar button to pulldown a file menu.
+
+<p>
+ <B>M_Find</B> Find a pattern.
+
+<p>
+ <B>M_FindAgain</B> Find pattern again.
+
+<p>
+ <B>M_Font</B> Typically a menu bar button to pulldown a font menu.
+
+<p>
+ <B>M_FontSelect</B> Select a font. (This is different from the
+<tt>M_Font</tt> value in that <tt>M_Font</tt> is intended as a main
+menu bar item, while this one is for a pulldown menu.
+
+<p>
+ <B>M_Format</B> Typically a menu bar button to pulldown a format menu, which
+allows the user to select formatting options.
+
+<p>
+ <B>M_Help</B> Show help.
+
+<p>
+ <B>M_Insert</B> Typically a menu bar button to pulldown an insert menu.
+
+<p>
+ <B>M_Line</B> M_Line is one of a few of these values
+that gets special treatment by the system.  It is required for
+defining line separators in menus.
+
+<p>
+<B> M_New</B> Used to create a new file.
+
+<p>
+ <B>M_No</B> Answer No.
+
+<p>
+<B> M_None</B> Select none.
+
+<p>
+ <B>M_OK</B> OK, accept operation or information. Causes return
+from dialog.
+
+<p>
+ <B>M_Open</B> Used to open an existing file.
+
+<p>
+ <B>M_Options</B> Typically a menu bar button to pulldown an options menu.
+
+<p>
+ <B>M_Paste</B> Paste the contents of the clipboard into the insertion
+point of the current file or item.
+
+<p>
+ <B>M_Preferences</B> Set preferences.
+
+<p>
+ <B>M_Print </B>Print current file.
+
+<p>
+<B> M_PrintPreview</B> On screen preview how the current file would look
+if printed.
+
+<p>
+ <B>M_Replace</B> Replace pattern.
+
+<p>
+ <B>M_Save</B> Used to save current file in its current name.
+
+<p>
+<B> M_SaveAs</B> Save current file under new name.
+
+<p>
+ <B>M_Search</B> Typically a menu bar button to pulldown a search menu.
+
+<p>
+ <B>M_SetDebug</B> Set debug stuff.
+
+<p>
+ <B>M_Test</B> Typically a menu bar button to pulldown a test menu.
+
+<p>
+ <B>M_Tools</B> Typically a menu bar button to pulldown a tools menu.
+
+<p>
+ <B>M_UnDo</B> Undo the last action.
+
+<p>
+ <B>M_View</B> Typically a menu bar button to pulldown a view menu, which
+allows the user to select different views of the document.
+
+<p>
+ <B>M_Window </B>Typically a menu bar button to pulldown a window menu, which
+lets the user select different windows.
+
+<p>
+ <B>M_Yes</B> Answer Yes.
+
+<p>
+
+<A NAME="Version Values"></A> <H2>Version Values</H2>
+A useful collection of predefined values to determine the
+version of V and the platform.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<em><b>V</b></em>defines several values useful for determining the revision of
+
+<em><b>V</b></em>, and the platform 
+<em><b>V</b></em>is compiled on.
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/v_defs.h&#62;</tt>
+</DL>
+<p>
+
+<h2>Version Values</h2>
+
+<p>
+ <B>V_VersMajor</B> The major version of 
+<em><b>V</b></em>, such as 1.
+
+<p>
+ <B>V_VersMinor</B> The minor release of 
+<em><b>V</b></em>, such as 12.
+
+<p>
+ <B>V_Version</B> A text string describing the version of
+
+<em><b>V</b></em>, such as 
+<em>V 1.12 - 8/4/96</em>.
+
+<p>
+ <B>V_VersionX</B> Defined if the is the standard X version of 
+<em><b>V</b></em>.
+
+<p>
+ <B>V_VersionMotif</B> Defined if the Motif version of 
+<em><b>V</b></em>.
+
+<p>
+ <B>V_VersionWindows</B> Defined if the Windows version of 
+<em><b>V</b></em>.
+
+<p>
+ <B>V_VersionWin95</B> Defined if the Windows 95 version of 
+<em><b>V</b></em>.
+
+<p>
+<B> V_VersionOS2</B> Defined for the OS2 version of 
+<em><b>V</b></em>.
+
+
+</BODY>
+</HTML>

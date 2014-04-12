@@ -1,0 +1,68 @@
+WCDIR = c:\wc105
+VDRIVE = e:
+VDIR  = \v
+
+BASEOBJ = $(VDRIVE)$(VDIR)\watcom\win32\brshdlg.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\coldlg.obj   &
+$(VDRIVE)$(VDIR)\watcom\win32\imageio.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\viedapp.obj  &
+$(VDRIVE)$(VDIR)\watcom\win32\viedcmdw.obj &
+$(VDRIVE)$(VDIR)\watcom\win32\viedcnv.obj
+
+BLANK = ""
+
+$(VDRIVE)$(VDIR)\watcom\win32\iconed.exe : $(BASEOBJ)  #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ @%write iconed.lk1 NAME iconed
+ @%append iconed.lk1 FIL brshdlg.obj,coldlg.obj,imageio.obj,viedapp.obj,viedcmdw.obj,viedcnv.obj
+ @%append iconed.lk1 
+
+#!ifneq BLANK ""
+# *wlib -q -n -b iconed.imp
+# @%append iconed.lk1 LIBR iconed.imp
+#!endif
+
+ *wlink d all SYS nt_win op m libp win32 libr vlib32 op maxe=25 op q op symf @iconed.lk1
+!ifneq BLANK ""
+ wrc -q -ad  iconed.exe
+!endif
+
+
+$(VDRIVE)$(VDIR)\watcom\win32\brshdlg.obj : $(VDRIVE)$(VDIR)\iconed\brshdlg.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\iconed\brshdlg.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\iconed -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\coldlg.obj : $(VDRIVE)$(VDIR)\iconed\coldlg.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\iconed\coldlg.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\includew&
+;$(VDRIVE)$(VDIR)\iconed -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\imageio.obj : $(VDRIVE)$(VDIR)\iconed\imageio.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\iconed\imageio.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\iconed -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\viedapp.obj : $(VDRIVE)$(VDIR)\iconed\viedapp.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\iconed\viedapp.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\iconed -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\viedcmdw.obj : $(VDRIVE)$(VDIR)\iconed\viedcmdw.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\iconed\viedcmdw.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\includ&
+ew;$(VDRIVE)$(VDIR)\iconed -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\viedcnv.obj : $(VDRIVE)$(VDIR)\iconed\viedcnv.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\iconed\viedcnv.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\iconed -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+

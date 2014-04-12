@@ -1,0 +1,504 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vDialog</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vDialog</H1>
+<HR>
+
+<A NAME="vDialog"></A>
+Class to build a modeless dialog.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vDialog">&lt;v/vdialog.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vDialog
+ 	<dt><b>Hierarchy:</b></dt><dd> (vBaseWindow,vCmdParent) -&#62;vDialog
+	<dt><b>Contains:</b></dt><dd> <A HREF="cmdobj.htm">CommandObject</A>
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+The <tt>vDialog</tt> class is used to build modeless dialogs. Since
+most dialogs will require a response to the commands they define,
+you will almost always derive your own subclass based on <tt>vDialog</tt>,
+and override the <tt>DialogCommand</tt> method to handle those
+commands. Note that <tt>vDialog</tt> is multiply derived from the
+<tt>vBaseWindow</tt> and the <tt>vCmdParent</tt> classes.
+
+<p>
+
+<h2>Constructor</h2> 
+<p>
+
+<H4>vDialog(vBaseWindow* parent)</H4>
+
+<H4>vDialog(vApp* parent)</H4>
+
+<H4>vDialog(vBaseWindow* parent, int isModal = 0, char* title = "")</H4>
+
+<H4>vDialog(vApp* parent, int isModal = 0, char* title = "")</H4>
+
+<p>
+A dialog is constructed by calling it with a pointer to a
+vBaseWindow or vApp, which is usually the 'this' of the object that
+creates the <tt>vDialog</tt>. The <tt>isModal</tt> parameter
+indicates if the dialog should be modal or modeless. You would
+usually use the default of 0. The modal flag is used by the
+derived <tt>vModalDialog</tt> class. The <tt>title</tt> parameter can
+be used to set a title for your dialog (see <tt>SetDialogTitle</tt>
+for information on titles). If you create a derived dialog class,
+you might provide a <tt>parent</tt> and a <tt>title</tt> in your
+constructor, and provide the 0 for the <tt>isModal</tt> flag in the
+call to the <tt>vDialog</tt> constructor.
+
+<p>
+The constructor builds an empty dialog. The <tt>AddDialogCmds</tt>
+method must be called in order to build a useful dialog, which
+you would usually do from within the constructor of your derived
+dialog class.
+
+<p>
+
+<em>IMPORTANT!</em> When you derive your own <tt>vDialog</tt> objects,
+you should write constructors for both the <tt>vBaseWindow*</tt> and
+<tt>vApp*</tt> versions. These two different constructors allow
+dialogs to be used both from windows directly, and from the
+<tt>vApp</tt> code as well. Normally, you would construct a dialog
+from a window. Occasionally, it will be useful to build a dialog
+from the vApp that applies to all windows, and not just the window
+that constructed it.
+
+<p>
+
+<H4>void vDialog::AddDialogCmds(CommandObject* cList)</H4>
+   
+This method is used to add a list of commands to a dialog.
+It is called after the dialog object has been created.
+You can usually do this in the constructor for your
+derived Dialog class. This method is passed an array
+of <tt>CommandObject</tt> structures.
+    
+
+<H4>void vDialog::SetDialogTitle(char* title)</H4>
+This can be used to dynamically change the title of any object
+derived from a <tt>vDialog</tt> object. Note that the title will
+not always be displayed. This depends on the host system. For
+example, the user can set up their X window manager to not show
+decorations on transient windows, which is how dialogs
+are implemented on X. You should write your applications to
+provide a meaningful title as they are often helpful when
+displayed.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+This example shows the steps required to use a dialog object.
+Note that the example uses the <tt>vDialog</tt> class directly,
+and thus only uses the default behavior of responding to the
+<tt>OK</tt> button.
+    
+ 
+<p>
+<img src="fig/dialog.gif"><br>
+<FONT SIZE=-2>
+<pre>
+#include &lt;v/vdialog.h&#62;
+    CommandObject cmdList[] =           // list of the commands
+      {
+        {C_Label, lbl1, 0, "Label",NoList,CA_MainMsg,isSens,0,0},
+        {C_Button, M_OK, M_OK, " OK ", NoList,
+            CA_DefaultButton, isSens,lbl1,0},
+        {C_EndOfList,0,0,0,0,CA_None,0,0}  // This ends list
+      };
+    ...
+    vDialog curDialog(this,0,"Sample Dialog"); // create dialog instance
+
+    curDialog.AddDialogCmds(cmdList);          // add the commands
+
+    curDialog.ShowDialog("Sample modeless dialog."); // invoke
+    ...
+
+</pre></FONT>
+This example creates a simple modeless dialog with a label and
+an OK button placed below the label (see the description
+of layout control below). <tt>ShowDialog</tt> displays the dialog,
+and the <tt>vDialog::DialogCommand</tt> method will be invoked with
+the id (2) and value (<tt>M_OK</tt>) of the OK button when it is
+pressed.
+
+<p>
+Use the <tt>vModalDialog</tt> class to define modal
+dialogs.
+
+<p>
+ The <tt>CommandObject</tt> structure includes the following:
+
+<p>
+<FONT SIZE=-2>
+<pre>
+    typedef struct CommandObject
+      {
+        CmdType cmdType;    // what kind of item is this
+        ItemVal cmdId;      // unique id for the item
+        ItemVal retVal;     // initial value
+                            //  depends on type of command
+        char* title;        // string for label or title
+        void* itemList;     // a list of stuff to use for the cmd
+                            //  depends on type of command
+        CmdAttribute attrs; // list of attributes of command
+        unsigned
+             Sensitive:1;   // if item is sensitive or not
+        ItemVal cFrame;     // if item part of a frame
+        ItemVal cRightOf;   // Item placed left of this id
+        ItemVal cBelow;     // Item placed below this one
+        int size;           // Used for size information
+	char* tip;          // tool tip string
+      } CommandObject;
+</pre></FONT>
+Placements of command objects within the dialog box are controlled
+by the <tt>cRightOf</tt> and <tt>cBelow</tt> fields. By specifying
+where an object goes in relation to other command objects in the
+dialog (using their <tt>cmdId</tt> value), it is simple to get 
+a very pleasing layout of the dialog.
+The exact spacing of command objects is controlled by the <tt>vDialog</tt>
+class, but the application can used <tt>C_Blank</tt> command
+objects to help control spacing.
+See <A HREF="cmdobj.htm#CommandObject">CommandObject</A> for
+more details.
+
+<p>
+The various types of command objects that can be added include
+(with suggested id prefix in parens):
+
+<p>
+<pre>
+    C_EndOfList:   Used to denote end of command list
+    C_Blank:       filler to help RightOfs, Belows work (blk)
+    C_BoxedLabel:  a label with a box (bxl)
+    C_Button:      Button (btn)
+    C_CheckBox:    Checked Item (chk)
+    C_ColorButton: Colored button (cbt)
+    C_ColorLabel:  Colored label (clb)
+    C_ComboBox:    Popup combo list (cbx)
+    C_Frame:       General purpose frame (frm)
+    C_Icon:        a display only Icon (ico)
+    C_IconButton:  a command button Icon (icb)
+    C_Label:       Regular text label (lbl)
+    C_List:        List of items (lst)
+    C_ProgressBar: Bar to show progress (pbr)
+    C_RadioButton: Radio button (rdb)
+    C_Slider:      Slider to enter value (sld)
+    C_Spinner:     Spinner value entry (spn)
+    C_TextIn:      Text input field (txi)
+    C_Text:        wrapping text out (txt)
+    C_ToggleButton: a toggle button (tbt)
+    C_ToggleFrame: a toggle frame (tfr)
+    C_ToggleIconButton:  a toggle Icon button (tib)
+</pre></FONT>
+These command values are passed to the
+<tt>vDialog::DialogCommand</tt> function, which you override to
+interpret commands. See 
+<A HREF="cmdobj.htm#Commands">Command Objects</A> for more details
+about the commands.
+<p>
+
+<H4>virtual void CancelDialog()</H4>
+This method is used to cancel any action that took place in the
+dialog.  The values of any items in the dialog are reset to their
+original values, and the  This method is automatically invoked
+when the user selects a button with the value <tt>M_Cancel</tt>
+and the <tt>DialogCommand</tt> method invoked as appropriate to
+reset values of check boxes and so on. <tt>CancelDialog</tt> can
+also be invoked by the application code.
+
+<p>
+
+<H4>virtual void CloseDialog()</H4>
+The <tt>CloseDialog</tt> is used to close the dialog. It can be
+called by user code, and is automatically invoked if the user
+selects the <tt>M_Done</tt> or <tt>M_OK</tt> buttons and the the
+user either doesn't override the <tt>DialogCommand</tt> or calls
+the default <tt>DialogCommand</tt> from any derived <tt>DialogCommand</tt>
+methods.
+
+<p>
+
+<H4>virtual void DialogCommand(ItemVal Id, ItemVal Val, CmdType Type)</H4>
+This method is invoked when a user selects some command item
+of the dialog. The default <tt>DialogCommand</tt> method will
+normally be overridden by a user derived class. It is useful to
+call the default <tt>DialogCommand</tt> from the derived method for
+default handling of the <tt>M_Cancel</tt> and <tt>M_OK</tt>
+buttons.
+
+<p>
+The <tt>Id</tt> parameter is the value of the <tt>cmdId</tt> field of
+the <tt>CommandObject</tt> structure. The <tt>Val</tt> parameter is
+the <tt>retVal</tt> value, and the <tt>Type</tt> is the <tt>cmdType</tt>.
+
+<p>
+The user defined <tt>DialogCommand</tt> is where most of the work
+defined by the dialog is done. Typically the derived
+<tt>DialogCommand</tt> will have a <tt>switch</tt> statement with a
+<tt>case</tt> for each of the command <tt>cmdId</tt> values defined
+for items in the dialog.
+
+<p>
+
+<H4>void DialogDisplayed()</H4>
+This method is called by the 
+<em><b>V</b></em> runtime system after a dialog
+has actually been displayed on the screen. This method is especially
+useful to override to set values of dialog controls with
+<tt>SetValue</tt> and <tt>SetString</tt>.
+
+<p>
+It is important to understand that the dialog does not get
+displayed until <tt>ShowDialog</tt> or <tt>ShowModalDialog</tt> has
+been called. There is a very important practical limitation
+implied by this, especially for modal dialogs. <b>The values of
+controls 
+<em>cannot</em> be changed until the dialog has been
+displayed, even though the <tt>vDialog</tt> object may exist.</b> Thus,
+you can't call <tt>SetValue</tt> or <tt>SetString</tt> until after
+you call <tt>ShowDialog</tt> for modeless dialogs, or <tt>ShowModalDialog</tt>
+for modal dialogs. Since <tt>ShowModalDialog</tt> does not return
+until the user has closed the dialog, you must override <tt>DialogDisplayed</tt>
+if you want to change the values of controls in a modal dialog
+dynamically.
+
+<p>
+For most applications, this is not a problem because the
+static definitions of controls in the <tt>CommandObject</tt> definition
+will be usually be what is needed. However, if you need to create
+a dialog that has those values changed at runtime, then the
+easiest way is to include the required <tt>SetValue</tt> and
+<tt>SetString</tt> calls inside the overridden <tt>DialogDisplayed</tt>.
+
+<p>
+
+<H4>void GetDialogPosition(int&amp; left, int&amp; top, int&amp; width, int&amp; height)</H4>
+Returns the position and size of <tt>this</tt> dialog. These values
+reflect the actual position and size on the screen of the dialog.
+The intent of this method
+is to allow you to find out where a dialog is so
+position it so that it
+doesn't cover a window.
+
+<p>
+
+<H4>virtual int GetTextIn(ItemVal Id, char* str, int maxlen)</H4>
+This method is called by the application to retrieve any text
+entered into any <tt>C_TextIn</tt> items included in the dialog
+box. It will usually be called after the dialog is closed.
+You call <tt>GetTextIn</tt> with the <tt>Id</tt> of the TextIn
+command, the address of a buffer (<tt>str</tt>), and the
+size of <tt>str</tt> in <tt>maxlen</tt>.
+
+<p>
+
+<H4>virtual int GetValue(ItemVal Id)</H4>
+This method is called by the user code to retrieve values of
+command items, usually after the dialog is closed.  The most
+typical use is to get the index of any item selected by the
+user in a <tt>C_List</tt> or <tt>C_ComboBox</tt>.
+
+<p>
+
+<H4>int IsDisplayed()</H4>
+This returns true if the dialog object is currently displayed,
+and false if it isn't. Typically, it will make sense only to
+have a single displayed instance of any dialog, and your code
+will want to create only one instance of any dialog. Since
+modal dialogs allow the user to continue to interact with the
+parent window, you must prevent multiple calls to <tt>ShowDialog</tt>.
+One way would be to make the command that displays the dialog to
+be insensitive. <tt>IsDisplayed()</tt> is provided as an alternative
+method. You can check the <tt>IsDisplayed()</tt> status before
+calling <tt>ShowDialog</tt>.
+
+<p>
+
+<H4>virtual void SetDialogPosition(int left, int top)</H4>
+Moves <tt>this</tt> dialog to the location <tt>left</tt> and
+<tt>top</tt>. This function can be used to move dialogs so
+they don't cover other windows.
+
+<p>
+
+<a name="SetValue"></a>
+<H4>virtual void SetValue(ItemVal Id, ItemVal val, ItemSetType type)</H4>
+This method is used to change the state of dialog command items.
+The <tt>ItemSetType</tt> parameter is used to control what is set.
+Not all dialog command items can use all types of settings. The possibilities
+include:
+
+<p>
+<b>Checked</b>
+The <tt>Checked</tt> type is used to change the checked status
+of check boxes. 
+<em><b>V</b></em> will normally handle checkboxes, but if
+you implement a command such as 
+<em>Check All</em>, you can
+use <tt>SetValue</tt> to change the check state according to
+<tt>ItemVal val</tt>.
+
+<p>
+<b>Sensitive</b>
+The <tt>Sensitive</tt> type is used to change the sensitivity of
+a dialog command.
+
+<p>
+<b>Value</b>
+The <tt>Value</tt> type is used primarily to preselect the item
+specified by <tt>ItemVal val</tt> in a list or combo box list.
+
+<p>
+<b>ChangeList, ChangeListPtr</b>
+
+Lists, Combo Boxes, and Spinners use the <tt>itemList</tt>
+field of the defining <tt>CommandObject</tt> to specify
+an appropriate list. <tt>SetValue</tt> provides two ways
+to change the list values associated with these controls.
+
+<p>
+The key to using <tt>ChangeListPtr</tt> and <tt>ChangeList</tt>
+is an understanding of just how the controls use the list.
+When a list type control is instantiated, it keeps a private
+copy of the pointer to the original list as specified
+in the <tt>itemList</tt> field of the defining <tt>CommandObject</tt>.
+
+<p>
+So if you want to change the original list, then
+<tt>ChangeList</tt> is used. The original list may be
+longer or shorter, but it must be in the same place.
+Remember that a NULL entry marks the end of the list.
+So you could allocate a 100 item array, for example,
+and then reuse it to hold 0 to 100 items.
+
+<p>
+Call <tt>SetValue</tt> with <tt>type</tt> set to <tt>ChangeList</tt>.
+This will cause the list to be updated. Note that you must not
+change the <tt>itemList</tt> pointer used when you defined the list
+or combo box. The contents of the list can change, but the
+pointer must be the same. The <tt>val</tt> parameter is not used
+for <tt>ChangeList</tt>. 
+
+<p>
+Sometimes, especially for regular list controls, a statically
+sized list just won't work. Using <tt>ChangeListPtr</tt> allows
+you to use dynamically created list, but with a small coding
+penalty. To use <tt>ChangeListPtr</tt>, you must first modify
+the contents of the <tt>itemList</tt> field of the original 
+<tt>CommandObject</tt> definition to point the the new list.
+Then call <tt>SetValue</tt> with <tt>ChangeListPtr</tt>. Note
+that this will both update the pointer, and update the
+contents of the list. You 
+<em>don't</em> need to call again with
+<tt>ChangeList</tt>.
+
+<p>
+The following illustrates using both types of list change:
+
+<p>
+<FONT SIZE=-2>
+<pre>
+
+  char* comboList[] = {
+    "Bruce", "Katrina", "Risa", "Van", 0 };
+  char* list1[] = {"1", "2", "3", 0};
+  char* list2[] = {"A", "B", "C", "D", 0};
+
+  // The definition of the dialog
+  CommandObject ListExample[] = {
+    {C_ComboBox,100,0,"",(void*)comboList,CA_None,isSens,0,0,0},
+    {C_List,200,0,"",(void*)list1,CA_None,isSens,0,0,0},
+    ...
+    };
+   ...
+
+    // Change the contents of the combo list
+    comboList[0] = "Wampler";  // Change Bruce to Wampler
+    SetValue(200,0,ChangeList);
+   ...
+    // Change to a new list entirely for list
+    // Note that we have to change ListExample[1], the
+    // original definition of the list control.
+    ListExample[1].itemList = (void*)list2;  // change to list2
+    SetValue(100,0,ChangeListPtr);
+   ...
+</pre></FONT>
+Note that this example uses static definitions of lists. It is
+perfectly fine to use completely dynamic lists: you just have
+to dynamically fill in the appropriate <tt>itemList</tt> field
+of the defining <tt>CommandObject</tt>.
+
+<p>
+Please see the description of <tt>DialogDisplayed</tt>
+for an important discussion of setting dialog control values.
+
+<p>
+
+<H4>virtual void SetString(ItemVal Id, char* str)</H4>
+This method is called to set the string values of dialog items. This
+can include the labels on check boxes and radio buttons and
+labels, as well as the text value of a Text item.
+
+<p>
+Please see the description of <tt>DialogDisplayed</tt>
+for an important discussion of setting dialog control values.
+
+<p>
+
+<H4>virtual void ShowDialog(char* message)</H4>
+After the dialog has been defined, it must then be displayed by
+calling the <tt>ShowDialog</tt> method. If a  <tt>C_Label</tt> was
+defined with a <tt>CA_MainMsg</tt> attribute, then the message
+provided to <tt>ShowDialog</tt> will be used for that label.
+
+<p>
+<tt>ShowDialog</tt> returns to the calling code as soon as the
+dialog is displayed. It is up to the <tt>DialogCommand</tt> method
+to then handle command input to the dialog, and to close the
+dialog when done.
+
+<p>
+Please see the description of <tt>DialogDisplayed</tt>
+for an important discussion of setting dialog control values.
+
+<p>
+
+<h2>Derived Methods</h2>
+
+<p>
+None.
+
+<p>
+
+<h2>Inherited Methods</h2>
+
+<p>
+None.
+
+<p>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="vmodald.htm">vModalDialog</A>,
+<A HREF="cmdobj.htm">Command Objects</A>
+<p>
+</BODY>
+</HTML>

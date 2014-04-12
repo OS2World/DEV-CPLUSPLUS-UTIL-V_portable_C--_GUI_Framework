@@ -1,0 +1,117 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vStatus</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vStatus</H1>
+<HR>
+
+<A NAME="vStatus"></A>
+Used to define label fields on a status bar.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vStatus">&lt;v/v_defs.h&#62;</A></tt>
+	<dt><b>Type name:</b></dt><dd> vStatus
+	<dt><b>Used by:</b></dt><dd> <A HREF="vwindow.htm">vWindow</A>
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+The <tt>vStatus</tt> structure is used to define the top level
+status bar included on a <tt>vCmdWindow</tt>, and the labels it
+contains. The <tt>vStatus</tt> array is usually passed to the
+<tt>vStatusPane</tt> constructor. See the section <tt>vPane</tt> for
+a general description of panes.
+
+<p>
+
+<h2>Definition</h2>
+
+<p>
+<font size=-2>
+<pre>
+typedef struct vStatus      // for status bars
+  {
+    char* label;            // text label
+    ItemVal statId;         // id
+    CmdAttribute attrs;     // attributes - CA_NoBorder
+    unsigned sensitive : 1; // if button is sensitive or not
+    int width;              // to specify width (0 for default)
+  } vButton;
+</pre></i></b></tt><font size=+0>
+<h2>Structure Members</h2>
+
+<p>
+ char* label Text of label field. See the description of
+the <tt>vWindow</tt> class for information on changing the text of
+a label.
+
+<p>
+ ItemVal id Id for the label. Use this value when changing
+value with <tt>SetString</tt> or <tt>SetValue</tt>.
+
+<p>
+ CmdAttribute attrs The current implementation only uses
+the <tt>CA_NoBorder</tt> attribute. If <tt>CA_NoBorder</tt> is
+supplied, the label will be drawn on the command bar without a border
+or box around it.  Not supplying <tt>CA_NoBorder</tt> (e.g.,
+<tt>CA_None</tt>) will result in a label with a border or box
+around it. In general, unbordered labels don't change, and
+bordered labels are used to show changing status.
+
+<p>
+ int sensitive If label is sensitive or not. Use
+predefined symbols <tt>isSens</tt> and <tt>notSens</tt> to specify
+the initial state. On some implementations, the label will be
+grayed if it is insensitive. The sensitivity can be changed
+using <tt>vWindow::SetValue</tt> as described in the section
+<tt>vWindow</tt>.
+
+<p>
+ int width This can be used to specify a fixed width for
+a label. Normally, the label will be sized to fit the length of the
+text. If you provide a non-zero width, then the label field will
+remain constant size.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+This shows a sample status bar with two fields. It is added
+to a <tt>vCmdWindow</tt> using <tt>AddPane</tt>. The value of the
+file name would be changed by calling    
+<tt>SetString(m_curFile, filename)</tt> somewhere in your program.
+
+<p>
+ <font size=-1><img src="fig/statbar.gif"><br></i></b></tt><font size=+0><font size=-2>
+<pre>
+static vStatus sbar[] =
+  {
+    {"Current file:", m_curMsg,CA_NoBorder,isSens,0},
+    {" ", m_curFile,CA_None,isSens,100},
+    {0,0,0,0,0}
+  };
+  ...
+  vStatusPane myStatusPane = new vStatusPane(sbar); // construct
+  AddPane(myStatusPane);
+</pre></i></b></tt><font size=+0>
+<h2>See Also</h2>
+
+<p>
+<A HREF="vwindow.htm">vWindow</A>, <A HREF="vpane.htm">vPane</A>
+
+
+
+</BODY>
+</HTML>

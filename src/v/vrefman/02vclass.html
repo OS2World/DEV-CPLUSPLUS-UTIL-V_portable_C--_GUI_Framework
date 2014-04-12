@@ -1,0 +1,103 @@
+<html>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<title>
+V FAQ (V CLASSES)
+</title>
+</HEAD>
+<body bgcolor="#ffffff">
+
+<a name="00top">
+<h1>
+V FAQ (V CLASSES)
+</h1>
+
+<menu>
+<li><a href="02vclass.html#01">About vAppWinInfo class</a>
+<li><a href="02vclass.html#02">How to use vTimer</a>
+</menu>
+
+<hr>
+
+<a href="#00top" name="01">
+<h2>About vAppWinInfo class</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+How do you use the vAppWinInfo class? An example?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+Well, vAppWinInfo largely turns out to be useless. It was
+intended for MVC apps, but it doesn't work for that very well.
+<p><dd>
+Beginning with V 1.21, the functions vApp::UpdateAllViews and
+vWindow::UpdateView have been added to help support MVC. See
+vApp in the Reference manual for a better discussion.
+<p>
+<hr>
+
+<a href="#00top" name="02">
+<h2>How to use vTimer</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+I want to call a screen update every few seconds.
+Is it best to call the routine from within the TimerTick routine,
+or send an update event to the cmdwin ?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+The key to coordinating a timer with a window is to create
+the timer object from the command window, and pass the
+'this' of the command window to the timer. The timer then
+uses the pointer to the command window to call the WindowCommand
+method of that window object to do whatever is needed on the timer
+event.
+<p>
+
+<dd>
+Consider the following code excerpts:
+<p>
+
+<pre>
+   // Derive a simple timer class that allows a command window
+   // pointer to be passed in.
+   class myCmdWindow;   // Whatever you command window class is
+   class myTimer : public vTimer
+      {
+      public:           //---------------------------------------- public
+        myTimer(myCmdWindow* cw) { cmdw = cw; }
+        ~myTimer() {}
+        virtual void TimerTick()
+           // Call the window's WindowCommand to respond to the timer
+	   {cmdw->WindowCommand(appropriateID, appropriateID, C_Button);}
+      private:          //--------------------------------------- private
+        myCmdWindow* cmdw;
+      };
+
+   // Then, in the command window
+
+//================>>> myCmdWindow::myCmdWindow <<<================
+  myCmdWindow::myCmdWindow(char* name, int height, int width) :
+    vCmdWindow(name, height, width)
+  { 
+    // Appropriate stuff to define window
+    // ...
+
+    // Now, create the timer to local myTimer _timer ptr.
+
+    _timer = new myTimer(this);         // create timer
+    _timer->TimerSet(1000);             // 1 second interval
+
+    // ....
+   }
+</pre>
+</body>
+</html>

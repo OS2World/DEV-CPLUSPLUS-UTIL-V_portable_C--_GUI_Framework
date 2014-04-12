@@ -1,0 +1,378 @@
+<HTML>
+<HEAD>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vWindow</title>
+<h1>vWindow</h1>
+<HR>
+<A NAME="vWindow"></A>
+A class to show a window on the display.
+
+<p>
+
+<H3>Synopsis</H3>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vWindow">&lt;v/vwindow.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vWindow
+ 	<dt><b>Hierarchy:</b></dt><dd> vBaseWindow -&#62;vWindow
+	<dt><b>Contains:</b></dt><dd> <A HREF="vdialog.htm">vDialog</A>, <A HREF="vpane.htm">vPane</A>
+</DL>
+<p>
+
+<H3>Description</H3>
+
+<p>
+The <tt>vWindow</tt> class is an aggregate class that usually has
+associated <tt>vPane</tt> objects - window panes, in other
+words. There several kinds of panes, including menu panes,
+command bar panes, status panes, and drawing canvas panes. As you
+would expect, classes derived from <tt>vWindow</tt> also include
+panes.
+
+<p>
+The <tt>vWindow</tt> class will probably never be used by your
+application - it serves primarily as a superclass for the
+<tt>vCmdWindow</tt> class. This class may be more useful in
+future versions of 
+<em><b>V</b></em>, but for now it is not really useful
+by itself. You will typically derive your own class from
+<tt>vCmdWindow</tt>, and override several of the methods
+defined by <tt>vWindow</tt> and <tt>vCmdWindow</tt>.
+
+<p>
+Menus and commands in the panes send messages to the <tt>WindowCommand</tt>
+and <tt>MenuCommand</tt> methods when the user clicks on a command
+or menu item contained in the window. The application program can
+also change attributes of the various menu items and commands
+associated with a window. Canvas panes are designed to handle
+their own interaction with the user (mouse events, etc.).
+
+<p>
+
+<H3>Constructor</H3> 
+<p>
+
+<H4>vWindow()</H4>
+
+<H4>vWindow(char* title)</H4>
+
+<H4>vWindow(char* title, int h, int w)</H4>
+
+<H4>vWindow(char* title, int h, int, WindowType wintype)</H4>
+  title Title to place in title bar.
+  h,w The height and width of the window.
+  wintype CMDWINDOW or WINDOW type for window.
+<br>
+
+<p>
+<br>
+The constructor for <tt>vWindow</tt> is normally called with a
+name, size, and possibly a window type. The name will be
+displayed in the window's title bar by default. The size is the
+initial size of the window's 
+<em>canvas</em> work area in pixels.
+The type may be <tt>CMDWINDOW</tt> or <tt>WINDOW</tt>. The constructor
+for <tt>vCmdWindow</tt> invokes the proper <tt>vWindow</tt> constructor.
+
+<p>
+
+<H3>Methods to Override</H3> 
+<p>
+<a name="KeyIn"></a>
+<H4>virtual void KeyIn(vKey key, unsigned int shift)</H4>
+<tt>KeyIn</tt> is invoked when a key is pressed while a window has
+focus. The <tt>key</tt> value is the <tt>vKey</tt> value of the key
+pressed, and <tt>shift</tt> indicates the shift state of the key.
+
+<p>
+Handling the keystroke is not necessarily trivial. Regular ASCII
+characters in the range from a Space (0x40) up to a tilde (&#126; )
+are passed to <tt>KeyIn</tt> directly, and shift will be 0, even
+for upper case letters. The current version of 
+<em><b>V</b></em> does not have
+explicit support for international characters, so values between 0x80 and
+0xFF are undefined, and correspond to whatever might be the local
+convention for the character set.  (This will be one thing for
+X and another for Windows - but you can count on the values
+for each platform. Thus, you can use non-English characters
+on each platform, even though they won't be the same values on X
+and Windows. I would like a portable solution for this. If any
+non-English users of 
+<em><b>V</b></em> have any ideas about this problem, I'd
+like to hear. The choice seems to be between the standard
+MS-DOS code page solution and the ANSI character set used
+on X platforms. I'm not ready to support multibyte characters
+for some time yet.) Values between 0xFF00 and 0xFFFF correspond to the
+various function keys and keypad keys found on a typical
+keyboard. The standard set by IBM PCs has determined what function keys
+are supported by <em><b>V</b></em>. The file <tt>&lt;v/vkeys.h&#62;</tt> has the
+definitions for the key codes supported. See the <a href="vkeys.htm">key code</a>
+list.
+
+<p>
+Besides getting a keycode for the non-ASCII keys, <tt>KeyIn</tt>
+also gives a shift code corresponding to the Control, Shift, and
+Alt modifier keys. (These are defined as <tt>VKM_Ctrl</tt>,
+<tt>VKM_Shift</tt>, and <tt>VKM_Alt</tt>.) Pressing the F4 key
+would return the code for F4 (vk_F4), while the keystroke Alt-F4
+will return the code for the F4 key, and the shift code set to
+<tt>VKM_Alt</tt>. More than one bit of the shift code can be
+set - the shift values are really bit values. Control keys from
+the normal character set (Ctrl-A, etc.) are passed as their true
+control code, but 
+<em>not</em> the <tt>VKM_Ctrl</tt> shift set.
+
+<p>
+In addition, you also need to check for the <tt>VKM_Alt</tt>
+modifier applied to regular Ascii keys.  The keystroke Alt-K will
+be mapped to a 
+<em>lower case</em> Ascii 'k' with the <tt>VKM_Alt</tt>
+bit set in <tt>shift</tt>.  The top row keys (1,2, etc.) can also
+be pressed with the  <tt>VKM_Ctrl</tt> bit set in <tt>shift</tt>,
+and your program will need to deal with these.  It will quite
+often be the case that your program simply ignores many of these
+values.
+
+<p>
+<tt>KeyIn</tt> will also return a value when only a modifier key is
+pressed. For example, pressing the Alt key returns a key value of
+<tt>vk_Alt</tt>. A macro defined in <tt>&lt;v/vkeys.h&#62;</tt>
+called <tt>vk_IsModifer(x)</tt> can be used to determine if a key
+<tt>x</tt> is a modifier. Your program can usually ignore modifier
+keys.
+
+<p>
+If you have defined any keystroke combinations to be accelerators
+for menu commands, your program will never see those keystrokes
+in <tt>KeyIn</tt>. Instead, they are intercepted by the system and
+mapped to the appropriate command to pass to the <tt>MenuCommand</tt>
+method.
+
+<p>
+Note that the keystrokes are not displayed by the system. It is
+up to your program to handle keystrokes and to do something
+useful with them.
+
+<p>
+You should call <tt>vWindow::KeyIn</tt> from your derived method
+with any keystrokes you don't handle. The <tt>vWindow::KeyIn</tt>
+method passes these unhandled keystrokes up to the <tt>vApp::KeyIn</tt>
+method. Thus, you will have the choice of either handling
+keystrokes in the window or in the app class.
+
+<p>
+
+<H4>virtual void MenuCommand(ItemVal itemId)</H4>
+<tt>MenuCommand</tt> is called when a menu command is selected.
+This virtual function allows menu commands to be distinguished
+from other commands in a window, although it is not usually
+necessary to do so. The default method simply passes the menu
+command along to the <tt>WindowCommand</tt> method, so you don't
+need to override this method if you don't distinguish between
+menu and command events.
+
+<p>
+
+<a name=UpdateView></a>
+<h4>virtual void UpdateView(vWindow* sender, int hint, void* pHint)</h4>
+This is used to implement MVC. See the discussion of 
+<A HREF="vapp.htm#MVC">MVC</A> in the <tt>vApp</tt> class. <tt>UpdateView</tt> is called by
+the derived <tt>vApp</tt> in response to the <tt>UpdateAllViews</tt>
+message from some other view of the model.
+<p>
+The hints are passed to <tt>UpdateView</tt> to help define what action
+the view needs to take. The originator window is
+identified by <tt>sender</tt>. Generally, <tt>hint</tt> would have a value
+set to an <tt>enum</tt> defined in your derived <tt>vApp</tt> class.
+These values would hint about which kind of change is made so that only
+appropriate actions is taken by the appropriate views. The <tt>pHint</tt>
+is typically a pointer to the object representing the model.
+<p>
+
+<H4>virtual void WindowCommand(ItemVal Id, ItemVal Val, CmdType Type)</H4>
+This method is invoked when a user activates a command object in
+a command pane. The <tt>Id</tt> of the command object is passed in
+in the <tt>Id</tt> field, and the value and type (e.g., C_Button
+or C_CheckBox) of the command are passed in in the <tt>Val</tt>
+and <tt>Type</tt> parameters. Note that command objects in a
+command pane are really no different than the command objects in a
+dialog. Most of the discussion for handling these commands is
+covered in the sections on dialogs. See <tt>vCommandPane</tt> and 
+<tt>vDialog::DialogCommand</tt> for more details about the values
+passed to <tt>WindowCommand</tt>.
+
+<p>
+<tt>WindowCommand</tt> is also called by the default <tt>MenuCommand</tt>
+in response to menu picks. The <tt>Id</tt> is the id of the item
+that generated the call.
+
+<p>
+The default behavior of <tt>WindowCommand</tt> is to call the
+<tt>AppCommand</tt> method. However, you will almost always
+override the default <tt>WindowCommand</tt> method.
+
+<p>
+
+<H4>virtual void WorkSlice()</H4>
+
+<p>
+See <tt>vApp::WorkSlice</tt> for a description of this method.
+
+<p>
+
+<H3>Utility Methods</H3> 
+<p>
+
+<H4>virtual void AddPane(vPane* pane)</H4>
+This method is used to add the pane <tt>pane</tt> to a window.
+Panes will be displayed in the order they are added. You can add
+exactly one menu pane, plus canvas, command, and status panes.
+You typically first create a given pane (e.g., <tt>myPane = new
+XPane(PaneDef))</tt>, and then add the pane to the window with
+<tt>AddPane(myPane)</tt>.
+
+<p>
+
+<H4>void GetPosition(int&amp; left, int&amp; top, int&amp; width, int&amp; height)</H4>
+Returns the position and size of <tt>this</tt> window. These values
+reflect the actual position and size on the screen of the window.
+On X, this is the whole <tt>vCommandWindow</tt> frame. On the
+Windows MDI version, it is the size and position of just the
+drawing canvas and its scroll bars. The intent of this method
+is to allow you to find out where the active window is so
+you can move a window, or position a dialog so that it
+doesn't cover a window.
+It is most useful when used in
+conjunction with <tt>SetDialogPosition</tt>.
+
+<p>
+
+<H4>virtual int GetValue(ItemVal itemId)</H4>
+This method is used to retrieve the value of a menu or command
+object in a menu or command pane.  The <tt>itemId</tt> is the id of
+the item as defined in the menu or command bar definition.
+For menu items, this will return the menu checked state.
+For other command objects, the value returned will be appropriate
+as described in the 
+<em>Dialog Commands</em> section.
+
+<p>
+
+<H4>virtual void RaiseWindow(void)</H4>
+This method will raise the window to top of all windows on the
+display.  Raising a window is often a result of mouse actions of
+the user, but this method allows a buried window to be moved to
+the top under program control. You will need to track which
+window instance you want raised, possibly through the <tt>vAppWinInfo</tt>
+object.
+
+<p>
+
+<H4>virtual void SetValue(ItemVal itemId, int Val,
+ItemSetType what)</H4>
+This method is used to change the state of command window items.
+The item with <tt>itemId</tt> is set to <tt>Val</tt> using the
+<tt>ItemSetType</tt> parameter to control what is set. Not all
+command items can use all types of settings. See <tt>vWindow::GetValue</tt>
+and <tt>vDialog::SetValue</tt> for a more complete description.
+
+<p>
+If a menu item and a command item in the same window share the
+same id, they will both be set to the same value (this usually
+applies to sensitivity). Only the controls in the window that
+sent this message are changed.
+
+<p>
+
+<H4>virtual void SetValueAll(ItemVal itemId, int Val,
+ItemSetType what)</H4>
+This method is similar to <tt>SetValue</tt>, except that
+the control with the given <tt>itemId</tt> in 
+<em>ALL</em> currently
+active windows is set. This is useful to keep control values
+in different windows in sync.
+
+<p>
+
+<H4>virtual void SetPosition(int left, int top)</H4>
+Moves <tt>this</tt> window to the location <tt>left</tt> and
+<tt>top</tt>. This function is of limited usefulness.
+<tt>SetDialogPosition</tt> is more useful.
+
+<p>
+
+<H4>virtual void SetString(ItemVal itemId, char* title)</H4>
+This can be used to change the label on a command bar button,
+status bar label, or menu item. The item identified by <tt>itemId</tt>
+will have its label changed to <tt>title</tt>.
+
+<p>
+
+<H4>virtual void SetStringAll(ItemVal itemId, char* title)</H4>
+This method is similar to <tt>SetString</tt>, except that
+the string with the given <tt>itemId</tt> in 
+<em>ALL</em> currently
+active windows is set. This is useful to keep control strings
+in different windows in sync.
+
+<p>
+
+<H4>virtual void SetTitle(char* title)</H4>
+Set the name of the window shown on its title bar to <tt>title</tt>.
+
+<p>
+
+<H4>virtual void ShowPane(vPane* wpane, int OnOrOff)</H4>
+You can show or hide a command, status, or canvas pane with this
+method. The pane must first be defined, created, and added
+to the command window (which will show the pane). You can then
+hide the pane later by calling this method with the pointer to
+the pane and <tt>OnOrOff</tt> set to 0. A 1 will show the pane.
+Note that in some environments (e.g., X), the window may show up
+again in a different position in the window. For example, if you
+had a command bar above a status bar, and then hide the command
+bar, it will be placed under the status bar when you show it
+again. This is a ``feature'' of X.
+
+<p>
+
+<H4>virtual void ShowWindow(void)</H4>
+You 
+<em>must</em> call <tt>ShowWindow()</tt> after you have added all the
+panes to the window. You usually call <tt>ShowWindow()</tt> in the
+constructor to your <tt>vCmdWindow</tt> class after you have created
+all the panes and have used <tt>AddPane</tt> to add them to the window.
+
+<p>
+
+<H3>Other Methods</H3> 
+<p>
+
+<H4>virtual void CloseWin()</H4>
+This method is called by the <tt>vApp::CloseAppWin</tt> method
+as part of closing down a window. The default <tt>vWindow::CloseWin()</tt>
+method's behavior is to take care of some critical housekeeping
+chores. You will normally never override this method. However, it
+is remotely conceivable that there will be an occasion you need
+to do something really low level after a window has been
+destroyed by the host GUI environment. In that case, your method
+
+<em>must</em> call the immediate superclass <tt>vWindow::CloseWin()</tt>, and
+then do whatever it has to do. Normally, you handle such details
+in your class's <tt>CloseAppWin</tt> method.
+
+<p>
+
+<H3>See Also</H3>
+
+<p>
+<A HREF="vcmdwin.htm">vCmdWindow</A>
+
+
+</BODY>
+</HTML>
+

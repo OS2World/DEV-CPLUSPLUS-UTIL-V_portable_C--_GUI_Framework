@@ -1,0 +1,21 @@
+Things to do to improve VIDE:
+
+    (Feb 2, 2000)
+
+* Keep file names currently open. Should re-open in
+   same size, position, but that is harder. Easiest way
+   to do this is to allow up to 8 or 12 files and save
+   them in the vide.ini file.
+
+* Recent files. Save up to 16 in list, save in .ini file.
+
+* grep: This shouldn't be too hard, really. Just spawn
+   grep, send results to the status window, and support
+   right click to go to that file.
+
+* emacs emulation
+
+* preserve bps across sessions?
+
+  perhaps show current state on status bar...
+

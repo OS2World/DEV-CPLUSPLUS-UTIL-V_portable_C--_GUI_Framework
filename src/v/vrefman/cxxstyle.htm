@@ -1,0 +1,462 @@
+<HTML> <HEAD>
+  <TITLE> V Reference Manual - C++ Coding Style Guidelines </TITLE>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+ </HEAD>
+<BODY bgcolor="#ffffff">
+                                          
+
+<H1>The V C++ Coding Style Guidelines</H1>
+I have developed the following guidelines for writing C++ code
+over my long career as a programmer. All of 
+<em><b>V</b></em>&nbsp;has been written
+using these guidelines, and I believe that using them is a big
+first step leading to readable, portable, and reliable code.
+Of course, just following these guidelines won't automatically
+give you that, but I think they are still necessary.
+
+<p>
+
+<H2>Readability</H2>
+The ultimate goal of style guidelines is to help you to write code
+that is readable. While this means code that is readable by you,
+it mostly means code that is readable by others. Remember,
+
+<em>code has a life of its own!</em> No matter how small the project
+may seem, or how temporary, most code ends up being used and reused
+much longer than you might think. The real cost of software
+is often in the long term maintenance. While you may end up maintaining
+your own code, often it will be someone else. Even if it is you,
+after a few months, or even weeks, you will have likely forgotten
+just exactly what you were doing when you wrote the code to begin
+with.
+
+<p>
+The point of this is to emphasize the importance of producing readable
+code. Generally, readable code is inviting to look at. It is visually
+pleasing, just as a well designed book is well laid out and visually
+pleasing to look at.  Your code should have plenty of visual attributes
+that make it easy to read.  This means lots of whitespace, consistent
+indentation, abundant, well formatted comments, and visual
+separation of important sections of code. Much of the structure
+of your code should be visually obvious without having to read it.
+Many of the following guidelines are intended to help
+you produce readable code.
+
+<p>
+
+<H2>Naming</H2>
+It is critical to choose meaningful names for your variables and
+functions. Avoid short, two or three letter names unless those
+names are really meaningful. While you may want to use short,
+abbreviated names to avoid typing, this habit will make your
+code more difficult to read later. While you should avoid
+short names, consistently using names that are too long can
+present problems, too. This can lead to code that must be
+split across multiple lines because the names are too long.
+Even so, it is probably better to trend to overly long names
+than short, abbreviated names.
+
+<p>
+Names should use both upper and lower case letters, using
+a case change to indicate word breaks. For example, a name
+like <tt>maxLength</tt> is more readable than <tt>MAXLENGTH</tt>,
+<tt>maxlength</tt>, or even <tt>max_length</tt>. In general,
+using mixed case is better than using underscores. Underscores are
+better used to indicate special classes of variables (see Class
+Definitions below).
+
+<p>
+
+<H2>Files</H2>
+Each C++ module should be split into two files - the <tt>.h</tt> header
+file which contains <tt>class</tt> definitions and variable declarations,
+and a <tt>.c</tt> or <tt>.cpp</tt><a href="#tthFtNtAAB" name=tthFrefAAB><sup>1</sup></a> file that contains
+source code for the functions.
+
+<p>
+Generally, each class will have its own <tt>.h</tt> and <tt>.cpp</tt>
+files. Utility helper functions that go with a class can be included
+in the same file as the class. Other functions that do not go with
+a class should be collected into logical groups and kept in 
+a separate file. In general, files should not be much larger than
+twenty to forty thousand characters long.
+
+<p>
+
+<H2>Include Files</H2>
+
+<p>
+Include files or header files (<tt>.h</tt>) files must each have
+a <tt>#define</tt> statement that prevents problems caused by
+multiple inclusion. The standard way to do this is:
+
+<p>
+
+<font size=-2>
+<pre>
+//
+//  myclass.h - header file for myclass class definition
+//
+#ifndef MYCLASS_H              // Check to prevent
+#define MYCLASS_H              // multiple inclusion
+
+    ... definitions go here
+
+#endif                         // last line of file
+</pre></font>
+Files are included from the source file by placing the #include
+statement near the beginning of the source file, starting in
+column one.
+
+<p>
+<font size=-2>
+<pre>
+
+#include "myclass.h"      // includes start in column 1
+
+</pre></font>
+
+<H2>Function Definitions</H2>
+All functions should have a prototype definition for use
+by others. For class methods, this will be part of the class
+declaration. For other functions, this should also be in a
+<tt>.h</tt> file. The parameters of all prototypes should include
+both the 
+<em>type</em> and the 
+<em>name</em> of each parameter since
+the name often conveys extra useful information.
+
+<p>
+The body of each method or function should use this convention:
+
+<p>
+<font size=-2>
+<pre>
+//==================&#62;&#62;&#62; myClass::myMethod &lt;&lt;&lt;===================
+  void myClass::myMethod(const int size)
+  {
+    // An introductory block of comments explaining the purpose
+    // and interface to this function. You can also include an
+    // author and modification history here if appropriate.
+
+    ... declare variables used throughout the function
+
+    ... body of function
+  }
+</pre></font>
+Each function should include the separator line to visually
+separate the body of the function from others in the same file.
+The preferred indentation for the function name is two spaces,
+with the enclosing { and } braces on separate lines, also
+indented two spaces. An acceptable alternative style is to
+have these lines start in the first column.
+
+<p>
+Following the opening { should come an introduction to the
+function. Variables required by the entire function follow
+the opening comments.  Following that is the body of the function.
+Make liberal use of whitespace for visual separation.
+
+<p>
+
+<H2>Indentation</H2>
+The preferred indentation scheme is based on groups of four
+spaces, with braces indented two additional spaces. It is
+acceptable to keep braces lined up with the outer statement
+rather than indenting two extra, but all braces 
+<em>must</em>
+be on a line by themselves. This spacing works well with
+standard eight character tab stops - your code will either
+be indented on even tab stops, or on tab stops plus four.
+
+<p>
+Except for the most trivial cases of short, related assignment
+statements, each statement should be on a separate line.
+The body of loops and conditional statements should always
+use braces - never use a simple statement. There are two reasons
+for this. First, using braces on separate lines adds whitespace,
+which adds to the readability. Second, code is inevitably modified,
+and by always using braces, you will be more likely to add
+a statement in the proper place. As a special case for
+initializer loops with no code body, it is acceptable to use just
+a semicolon rather than braces.
+
+<p>
+The old K&amp;R style of placing the opening brace at the end
+of the line is not acceptable. Most importantly, you lose
+the visual impact of lined up braces when you do this. It
+also tends to compress the code, and extra whitespace really
+helps make code more readable.
+
+<p>
+When calling functions that require long, complex argument
+lists, it is often advisable to place each argument on a
+separate line accompanied by an explanatory comment.
+
+<p>
+Use a blank between keywords and the associated left paren:
+<tt>if (test)</tt>.  Don't put a space for function calls:
+<tt>function(param);</tt>. Don't use parens for the returned
+value of a <tt>return</tt> statement. This helps to visually
+distinguish a <tt>return</tt> from a function call.
+
+<p>
+The following code demonstrates indentation for various
+C++ statements:
+
+<p>
+<font size=-2>
+<pre>
+//=====================&#62;&#62;&#62; sample &lt;&lt;&lt;=====================
+  int sample(int action)
+  {
+    // This meaningless sample demonstrates indentation.
+    // The code should not considered to do anything useful
+    // other than demonstrating indentation.
+
+    char* name;                 // explain each variable
+    int set;                    // with useful comment
+
+    if (action)                 // indent 4, space after if
+      {                         // the { in 2
+        set = doSomething(action);
+      }                         // always use {}'s
+    else
+      {
+        set = SomethingElse(action);
+      }
+
+    switch (set)                // example for switch
+      {
+        case 1:                 // case in +4 from switch
+          {                     // always use braces for cases!
+            getName1(name); 
+            break;
+          }
+
+        case 2:                 // Try to comment each case
+          {
+            int temp = len(name);  // try to declare as needed
+            fixName(temp,name);
+            break;
+          }
+
+        default:                // Good idea to have default
+            break;
+      }
+
+    // Prefix some blocks with comments like this
+    // to describe what a section of code does
+    // Note that 'char* cp' is preferred to 'char *cp'.
+    // Take advantage of C++ scope rules, and declare
+    // variables (e.g., len) as close to use as possible.
+    for (int len = 0, char* cp = name ; *cp ; ++cp)
+      {
+        ++len;                 // all loops use {}'s
+        tryThat(set,cp);       // and meaningful comments!
+      }
+
+    while (IsStillOK(name))    // indent like for
+      {
+        Complex(name,          // a complex function call
+            set,               // can explain each parameter
+            len);              // for easier maintenance
+      }
+
+    int status = (checkName(name)) ? len    // sample ?:
+                                   : len / 2;
+
+    return status;             // no parens on return
+  }
+</pre></font>
+<H2>Comments</H2>
+It is difficult to over comment your code. Comments are
+one of the most helpful things you can do to make your code
+easier to maintain. A 1 to 1 ratio of comments to code should
+be considered a bare minimum, with a ratio of more comments than
+code probably a better thing.
+
+<p>
+I claim it is almost impossible to have too many comments. A few
+expert programmers may disagree with this philosophy, and say that
+well written code can be self-commenting. The problem is that
+this is not really true. Assume, for example, that you are using
+a standard software library, such as <tt>Xt</tt> or 
+<em><b>V</b></em>. You may know the
+library backwards and forwards, and it may seem perfectly clear
+to you what some code is doing. But assume that someone else
+will be maintaining the code later. They may not know the library
+as well, and what is obvious and self-commenting to you will
+be gibberish to them. A few well placed comments explaining what
+you are doing will be very helpful.
+
+<p>
+In order to write really effective comments, you must
+comment 
+<em>as you write the code</em>! Do not go back and
+add comments after the code is written. You can go back and
+improve and expand your comments, but you should comment as
+you go. A few seconds taken to add a comment as you write the
+code can save many minutes or even hours later.
+
+<p>
+Comments should be meaningful and correct. If you change code,
+be sure you change the comments to correspond! If you are in the
+habit of commenting as you write, this will not be so hard.
+
+<p>
+Make the layout of your comments visually pleasing. Use whitespace
+to separate sections of code. Line up block comments near the
+left, and try to keep short per line comments lined up on
+the right without going too far right. Line them up on a tab
+stop if possible.
+
+<p>
+Above all, remember that what seems obvious to you at the moment
+is likely to be forgotten even a week or two later.  And keep in
+mind that someone else is likely to modify or study your code
+later.  Don't keep secrets. If you had to look something up, or
+have other information that might make the code more
+understandable, put that in a comment.  If you are doing
+something tricky or obscure (which you should avoid, but
+sometimes can't avoid), explain what is going on! You might be
+teaching a valuable trick to whoever is working with your code
+later!
+
+<p>
+My own code has more comments than almost any other code I've seen.
+Time after time, when someone else has had to use or maintain my
+code, I've gotten feedback that it is very easy to understand and
+modify. I attribute much of this positive feedback to the abundant
+comments found in my code.
+
+<p>
+
+<H2>Class Definitions</H2>
+
+<p>
+The standards for class definitions are based on keeping
+braces on separate lines, and on not using implicit assumptions.
+Thus, a class will have braces on separate lines, either indented
+two (the preferred style), or lined up with the class statement.
+
+<p>
+There should always be all three <tt>public</tt>, <tt>protected</tt>,
+and <tt>private</tt> sections in that order, even if a section is
+empty. This order assumes it is more useful to have the public
+stuff at the top for easier readability. And even if a section
+is empty, that conveys information about the definition of the class.
+The prototypes for member functions should include both the type
+and name (e.g., <tt>int OnOrOff</tt>).
+
+<p>
+There should almost never be public access to class variables.
+Provide methods to access and set variables of the class. You
+may find it helpful to prefix class variables (especially private
+class variables) with an underscore (_variableName) to indicate
+the variable is private to the class.
+
+<p>
+The following example shows indentation and layout of a class
+definition. Note the visual separator for public, protected, and
+private, and the alignment with the braces.
+
+<p>
+<font size=-2>
+<pre>
+    class myClass : public superClass    // name here
+      {
+        friend int FriendFunction(int ival);  // friends at top
+
+      public:    //-------------------------- public
+
+        myClass();          // constructor and destructor
+        virtual ~myClass(); // first
+
+        // simple methods can be inline
+        int getVal() { return _val; }
+        virtual void service(int iParam);    // prototype
+
+      protected:  //------------------------- protected
+
+        // even an empty section conveys information
+
+      private:    //------------------------- private
+
+        int _val;           // _ for class variables
+      };
+</pre></font>
+<H2>C++ Language Features</H2>
+
+<p>
+With C++, it is preferred to use <tt>const</tt> definitions
+of symbolic values rather than <tt>#defines</tt>.
+
+<p>
+Use <tt>const</tt> parameters whenever possible.
+
+<p>
+Declare variables as you need them, preferably inside
+a code block, rather than all at the top of a function.
+This makes your code much more maintainable, and helps
+avoid errors introduced by bad reuse of a variable,
+especially in loops.
+
+<p>
+For each <tt>new</tt> operation, there 
+<em>must</em> be a
+corresponding <tt>delete</tt> operation. These <tt>new</tt>
+and <tt>delete</tt> pairs will often be found in the
+constructor and destructor for your objects.
+
+<p>
+
+<em>Always</em> define copy constructors and an assignment operator
+for each class if they use pointers and dynamic memory allocation
+using <tt>new</tt>. Some of the biggest problems in C++ code
+involves objects with pointers to dynamically allocated
+space. You should use either deep copy semantics or reference
+counts to avoid creating objects with dangling pointers.
+
+<p>
+When using 
+<em><b>V</b></em>&nbsp;use the debug macros as much as possible.
+It is especially helpful to use <tt>UserDebug</tt> statements
+in constructors and destructors.
+
+<p>
+
+<H2>Software Portability</H2>
+Always remember that your code might someday be ported to a
+different system. Keep this in mind when writing your code.
+These guidelines will help to make your code more portable.
+
+<p>
+Don't use nonstandard or nonportable language features. For
+example, templates are not yet universally portable. Avoid
+using them.
+
+<p>
+Use restrictive names when naming files. The most conservative
+approach is to use single case names limited to 8 characters
+for the name part, and 3 for the extension. This should
+get better as time goes by, but for now this is still
+a pretty good idea.
+
+<p>
+If you must use system calls, abstract them and isolate them
+in a single place.
+
+<p>
+Don't go behind the back of 
+<em><b>V</b></em>&nbsp;to access X directly.
+
+<p>
+Avoid conversions that are Big and Little Endian dependent.
+If you need them, isolate them.
+<hr><H3>Footnotes:</H3>
+
+<p><a name=tthFtNtAAB></a><a href="#tthFrefAAB"><sup>1</sup></a> The naming conventions for
+C++ source files has not really been standardized yet. Common
+alternatives for .cpp include .C and .cxx.
+</BODY></HTML>

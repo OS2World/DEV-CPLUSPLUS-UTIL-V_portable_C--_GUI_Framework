@@ -1,0 +1,96 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vOS</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vOS</H1>
+<HR>
+<A NAME="vOS"></A>
+A class to interface with the host operating system in a platform
+independent fashion.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>
+	<dt><b>Header:</b></dt><dd> <tt>&lt;v/vos.h&#62;</tt>
+	<dt><b>Class name:</b></dt><dd> vOS
+</DL>
+
+<p>
+<h2>Description</h2>
+
+<p>
+
+This class is meant to provide a fairly platform independent way
+of interfacing with common system dependent functions.
+
+
+<h2>Methods</h2>
+
+<p>
+
+<H4>int vDeleteFile(const char* filename)</H4>
+Deletes the specified file.
+
+<H4>int vChDrive(int drive)</H4>
+On MS-Windows, changes to the specified disk drive, where
+"A:"==0, "B:"==1, and so on. This method has no effect on X.
+
+<H4>int vGenEnvVal(char* name, char* val, int maxlen)</H4>
+Returns to <tt>val</tt> the value of the environment
+variable specified in <tt>name</tt>. <tt>val</tt> has a
+maximum length of <tt>maxlen</tt>. The return value is <tt>false</tt>
+on failure to find the variable.
+
+<H4>int vGetUserName(char* s, int len)</H4>
+Returns to <tt>s</tt> a system dependent string corresponding
+to the current User Name.
+
+<H4>void vGetHostName(char* s, int len)</H4>
+Returns to <tt>s</tt> a system dependent string corresponding
+to the host name of the system.
+
+<H4>long vGetPid()</H4>
+Returns a system dependent value corresponding
+to the current process id.
+
+
+<H4>int vGetCWD(char* s, int len)</H4>
+Returns to <tt>s</tt> a system dependent string corresponding
+to the current working directory.
+
+<H4>int vChDir(const char* path)</H4>
+Changes active directory to the one specified by <tt>path</tt>.
+
+<h4>int vRunProcess(const char* cmd, const char* StdOut, const char* StdErr,
+      int Wait, int minimize)</H4>
+<p>
+This function is used to start an external process. <tt>cmd</tt> is
+used to specify the complete command line, e.g., "prog -s x.tmp".
+<tt>StdOut</tt> and <tt>StdErr</tt> may be used to specify a file
+name. If supplied, then standard out and standard error of the
+process will be redirected to those files. If <tt>Wait</tt> is true,
+then <tt>vRunProcess</tt> won't return until the process has terminated.
+If <tt>minimize</tt> is true, then the process will be started in
+a minimized state. <tt>vRunProcess</tt> return the exit code of the
+process.
+
+
+<H2>Comments</H2>
+
+<P>
+
+<H2>See Also</H2>
+
+<P>
+
+
+</BODY>
+</HTML>

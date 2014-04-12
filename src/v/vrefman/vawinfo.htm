@@ -1,0 +1,82 @@
+<HTML>
+<HEAD>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vAppWinInfo</title>
+
+<H1>vAppWinInfo</H1>
+<HR>
+
+<A NAME="vAppWinInfo"></A>
+A utility class to for global data.
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vAppWinInfo">&lt;v/vawinfo.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vAppWinInfo
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This class is not very useful. It was originally intended
+to be used as a base class for deriving
+your own <tt>myAppWinInfo</tt> class
+to serve as a controller data base for the MVC architecture, but it
+turns out that it isn't really that useful for that. The class
+will remain as a part of V. If you find a really useful
+application for this class, please let us know! There are
+new methods associated with <tt>vApp</tt> that are much better for
+MVC support.
+
+<p>
+
+<em><b>V</b></em>&nbsp;makes using a <tt>AppWinInfo</tt> object easier by
+automatically tracking it when you create each new window with
+<tt>NewAppWin</tt>. You can then easily retrieve the <tt>AppWinInfo</tt>
+object associated with each window by using the <tt>vApp::getAppWinInfo</tt>
+method.
+
+<p>
+
+<h2>Constructor</h2> 
+<p>
+
+<H4>vAppWinInfo(char* infoName = "", void* ptr = 0)</H4>
+You can provide two values for the <tt>vAppWinInfo</tt> constructor.
+The first is a pointer to a character string which you can use
+to store some name meaningful to you application. The second is a
+<tt>void *</tt> pointer, and can be used to point to anything you
+want. The constructor makes a copy of the name string, but just
+copies the void pointer and does not copy the object pointed to.
+
+<p>
+
+<h2>Utility Methods</h2>
+
+<p>
+
+<H4>virtual char* infoName()</H4>
+Returns a pointer to the name supplied to the constructor.
+
+<p>
+
+<H4>virtual void* getPtr()</H4>
+Returns the value of the pointer name supplied to the constructor.
+
+<p>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="vapp.htm">vApp</A>
+<p>
+
+
+</BODY>
+</HTML>

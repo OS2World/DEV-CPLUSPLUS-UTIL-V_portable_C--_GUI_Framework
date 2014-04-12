@@ -1,0 +1,298 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vColor</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vColor</H1>
+<HR>
+
+<A NAME="vColor"></A>
+A class for handling and specifying colors.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vColor">&lt;v/vcolor.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vColor
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+The 
+<em><b>V</b></em>&nbsp;color model allows you to specify colors as an RGB value.
+The intensity of each primary color, red, green, and blue are
+specified as a value between 0 and 255. This allows you to
+specify up to 2<sup>24</sup> colors. Just how many of all these
+colors you can see and how they will look on your display will
+depend on that display. Even so, you can probably count  on
+(255,0,0) being something close to red on most displays. Given
+this 24 bit model, the <tt>vColor</tt> class allows you to define
+colors easily.
+
+<p>
+In order to make using colors somewhat easier, 
+<em><b>V</b></em>&nbsp;has defined
+a standard array of 16 basic colors that you can
+access by including <tt>v/vcolor.h&#62;</tt>. This array is called
+<tt>vStdColors</tt>. You index the array using the symbols <tt>vC_Black</tt>,
+<tt>vC_Red</tt>, <tt>vC_DimRed</tt>, <tt>vC_Green</tt>, <tt>vC_DimGreen</tt>,
+<tt>vC_Blue</tt>, <tt>vC_DimBlue</tt>, <tt>vC_Yellow</tt>,
+<tt>vC_DimYellow</tt>, <tt>vC_Magenta</tt>, <tt>vC_DimMagenta</tt>,
+<tt>vC_Cyan</tt>, <tt>vC_DimCyan</tt>, <tt>vC_DarkGray</tt>,
+<tt>vC_MedGray</tt>, and <tt>vC_White</tt>. For example, use the standard color
+<tt>vStdColors[vC_Green]</tt> to represent green. You can also get a
+<tt>char</tt> for the color by using the symbol to index the
+<tt>char* vColorName[16]</tt> array.
+
+<p>
+The file <tt>&lt;v/vcb2x4.h&#62;</tt> contains definitions for
+8 color buttons in a 2 high by 4 wide frame. The file
+<tt>&lt;v/vcb2x8.h&#62;</tt> has a 2 by 8 frame of all 16 standard colors.
+You can specify the size of each button in the frame by
+defining <tt>vC_Size</tt>. The default is 8. You can also specify
+the location in a dialog of the color button frame by defining
+the symbols <tt>vC_Frame, vC_RightOf,</tt> and <tt>vC_Below</tt>.
+The ids of each button in the frame correspond to the color
+indexes, but with a <tt>M</tt> prefix (e.g., <tt>M_Red</tt> for
+<tt>vC_Red</tt>). See the example in <tt>v/examp</tt> for and example
+of using the standard color button frames.
+
+<p>
+Also note that unlike most other 
+<em><b>V</b></em>&nbsp;objects, it makes perfect
+sense to assign and copy <tt>vColor</tt> values. Thus, assignment,
+copy constructor, and equality comparison operators are provided.
+
+<p>
+
+<h2>Constructor</h2> 
+<p>
+
+<H4>vColor(unsigned int rd 0, unsigned int gr = 0, unsigned int
+bl = 0)</H4>
+The class has been defined so you can easily initialize a color
+either by using its constructor directly, or indirectly via an
+array declaration. Each color has a red, green, and blue value in
+the range of 0 to 255.
+
+<p>
+<font size=-2>
+<pre>
+  // Declare Red via constructor
+  vColor btncolor(255, 0 , 0);   // Red
+
+  // Declare array with green and blue
+  vColor GreenAndBlue[2] =
+    {
+      (0, 255, 0),              // Green
+      (0, 0, 255)               // Blue
+    };
+</pre></font>
+<h2>Utility Methods</h2> 
+<p>
+
+<H4>BitsOfColor()</H4>
+
+<p>
+This method returns the number of bits used by the machine
+to display to represent color. A value of 8, for example,
+means the computer is using 8 bits to show the color.
+
+<p>
+
+<H4>ResetColor(unsigned int rd = 0, unsigned int gr = 0,
+unsigned int bl = 0)</H4>
+
+<H4>ResetColor(vColor&amp; c)</H4>
+Like the <tt>Set</tt> method, this method will set all three values
+of the color at once. However, 
+<em><b>V</b></em>&nbsp;tries to preserve entries in
+the system color palette or color map with <tt>ResetColor</tt>.
+You can also pass a <tt>vColor</tt> object.
+
+<p>
+Consider the following code excerpt:
+
+<p>
+<font size=-2>
+<pre>
+    vColor aColor;        // A V Color
+    vBrush aBrush;
+    int iy;
+
+    ...
+
+    for (iy = 0 ; iy &lt; 128 ; ++iy)
+      {
+        aColor.Set(iy,iy,iy);     // Set to shade of gray
+        aBrush.SetColor(aColor);  // Set brush
+        canvas.DrawLine(10,iy+100,200,iy+100);  // Draw line
+      }
+    ...
+
+</pre></font>
+This example will use up 128 color map entries on some systems
+(X, for example). Once a system has run out of entries, 
+<em><b>V</b></em>&nbsp;will
+draw in black or white. When these systems run out of new color
+map entries, the color drawn for new colors will be black or
+white. 
+
+<p>
+<font size=-2>
+<pre>
+    vColor aColor;        // A V Color
+    vBrush aBrush;
+    int iy;
+
+    ...
+
+    for (iy = 0 ; iy &lt; 128 ; ++iy)
+      {
+        aColor.ResetColor(iy,iy,iy);     // Set to shade of gray
+        aBrush.SetColor(aColor);  // Set brush
+        canvas.DrawLine(10,iy+100,200,iy+100);  // Draw line
+      }
+    ...
+
+</pre></font>
+This example accomplishes the same as the first, but does not use
+up color map entries. Instead, the entry used for <tt>aColor</tt>
+is reused to get better use of the color map. If your application
+will be working with a large number of colors that will vary,
+using <tt>ResetColor</tt> will minimize the number of color map accesses.
+
+<p>
+On some systems, and systems with a full 24 bits of color,
+<tt>ResetColor</tt> and <tt>Set</tt> work identically.
+
+<p>
+
+<em>WARNING</em>: If you intend to use <tt>ResetColor</tt> on a
+<tt>vColor</tt> object, then <tt>ResetColor</tt> is the only way
+you should change the color of that object. You should not
+use the color assignment operator, or <tt>Set</tt>. <tt>ResetColor</tt>
+needs to do some unconventional things internally to
+preserve color palette entries, and these can be incompatible
+with regular assignment or <tt>Set</tt>. You can, however,
+safely use such a <tt>vColor</tt> object with any other <tt>vColor</tt>
+object. For example:
+
+<p>
+<font size=-2>
+<pre>
+    vColor c1, c2;
+
+    c1.ResetColor(100,100,100);    // You can use c1 with others.
+    c2 = c1;                       // OK, but this = now makes c2
+                                   // incompatible with ResetColor.
+    c2.ResetColor(200,200,200);    // DON'T DO THIS
+</pre></font>
+<H4>Set(unsigned int rd = 0, unsigned int gr = 0, unsigned int bl = 0)</H4>
+
+<p>
+Set all three values of the color at once.
+
+<p>
+
+<H4>void SetR(unsigned int rd = 0)</H4>
+Set the Red value.
+
+<p>
+
+<H4>void SetG(unsigned int gr = 0)</H4>
+Set the Green value.
+
+<p>
+
+<H4>void SetB(unsigned int bl = 0)</H4>
+Set the Blue value.
+
+<p>
+
+<H4>unsigned int r()</H4>
+
+<p>
+Get the Red value.
+
+<p>
+
+<H4>unsigned int g()</H4>
+
+<p>
+Get the Green value.
+
+<p>
+
+<H4>unsigned int b()</H4>
+
+<p>
+Get the Blue value.
+
+<p>
+
+<H4>int operator ==</H4>
+
+<p>
+Compare two color objects for equality.
+
+<p>
+
+<H4>int operator !=</H4>
+
+<p>
+Compare two color objects for inequality.
+
+<p>
+
+<h2>Notes about color</h2>
+
+<p>
+The color model used by 
+<em><b>V</b></em>&nbsp;attempts to hide most of the
+details for using color. However, for some applications
+you may end up confronting some of the sticky issues of
+color.
+
+<p>
+Most machines in use in 1996 will not support all 2<sup>24</sup>
+colors that can be represented by the RGB color specification.
+Typically, they devote 8 or 16 bits to each pixel. This
+means that the 24-bit RGB colors must be mapped to the
+smaller 8-bit or 16-bit range. This mapping is usually
+accomplished by using a palette or colormap.
+
+<p>
+
+<em><b>V</b></em>&nbsp;tries to use the default system color palette provided by the
+machine it is running on. On some systems, such as X, it is
+possible to run out of entries in the color map. Others, like
+Windows, map colors not in the color palette to dithered colors.
+
+<em><b>V</b></em>&nbsp;provides two methods to help with this problem. First,
+<tt>vColor::BitsOfColor()</tt> tells you how many bits are used by
+the running system to represent color. The method  
+<tt>vColor::ResetColor(r,g,b)</tt> can be used to change the value
+of a color without using up another entry in the system color
+map. For now, these methods should allow you to work with color
+with pretty good flexibility. Eventually, 
+<em><b>V</b></em>&nbsp;may include more
+direct support for color palettes.
+
+<p>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="commands.htm#C_ColorButton">C_ColorButton</A>, <A HREF="vcanvas.htm">vCanvas</A>
+
+</BODY>
+</HTML>

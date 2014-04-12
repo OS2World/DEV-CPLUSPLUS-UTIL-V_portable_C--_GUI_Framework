@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vFontSelect</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vFontSelect</H1>
+<HR>
+<A NAME="vFontSelect"></A>
+A utility class to select or set a file name.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>        <dt><b>Header:</b></dt><dd> <tt>&lt;v/vfontsel.h&#62;</tt>
+        <dt><b>Class name:</b></dt><dd> vFontSelect
+        <dt><b>Hierarchy:</b></dt><dd> vModalDialog -&#62;vFontSelect
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This class provides the <tt>FontSelect</tt> method to set
+the font being used. This class provides a platform
+independent way to change fonts. Depending on the platform,
+the user will be able to select many or most of the fonts
+available on the platform. On Windows, for example, the standard
+Windows font selection dialog is be used. On X, a relatively
+full set of fonts are available.
+
+<p>
+
+<h2>Methods</h2>
+
+<p>
+
+<H4>vFontSelect(vBaseWindow* win)</H4>
+
+<H4>vFontSelect(vApp* app)</H4>
+
+<p>
+The <tt>vFontSelect</tt> constructor requires a pointer to a
+<tt>vBaseWindow</tt>, which includes all 
+<em><b>V</b></em>&nbsp;windows and dialogs,
+or a pointer to the <tt>vApp</tt> object.
+You will usually pass the <tt>this</tt> to the constructor.
+
+<p>
+
+<H4>int FontSelect(vFont&amp; font, const char* msg="Select Font", int fixedOnly=0)</H4>
+This method displays a dialog that lets the user select font
+characteristics. If possible, the native font selection dialog
+will be used (e.g., Windows). If possible, the font selection
+will include fixed width fonts only if <tt>fixedOnly</tt> is true.
+The font dialog will display the
+current characteristics of the <tt>font</tt> object, and change
+them upon successful return. A <tt>false</tt> return means the user
+selected Cancel, while a <tt>true</tt> return means the user
+finished the selection with an OK.
+
+
+
+</BODY>
+</HTML>

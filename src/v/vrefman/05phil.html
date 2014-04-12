@@ -1,0 +1,447 @@
+<html>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<title>
+V FAQ (PHILOSOPHY)
+</title>
+</HEAD>
+<body bgcolor="#ffffff">
+
+<a name="00top">
+<h1>
+V FAQ (PHILOSOPHY)
+</h1>
+
+<menu>
+<li><a href="05phil.html#01">V in the Computer Science Classroom</a>
+<li><a href="05phil.html#02">Why does V use static tables for menus?</a>
+<li><a href="05phil.html#03">Programming for Windows vs. Unix and X</a>
+<li><a href="05phil.html#04">V vs. wxWindows</a>
+<li><a href="05phil.html#05">Using V for commercial applications</a>
+</menu>
+
+<hr>
+
+<a href="#00top" name="01">
+<h2>V in the Computer Science Classroom</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+Is V suitable for CS classes that use C++?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+V has been used in the classroom at the University of New
+Mexico, and at several other places. It was used for two UNM CS courses, 
+a Senior level software engineering class, and a Junior level
+design and programming class.
+<p>
+
+<dd>
+I used V for my software engineering class, and it was
+excellent for that. It let the students get big projects done
+with truly neat interfaces. This is the FIRST time I've been able
+to teach software engineering and have projects that both use C++
+<em>and</em> have a nice user interface. I really didn't want to use
+Tcl/Tk for a real software engineering class.
+<p>
+
+<dd>V has also been used in the Junior level programming class. It is
+when the students first tackle real programs using C++.
+The students used V to build some
+simple, but real programs that required some design. I didn't
+teach the class, but as I recall, one project involved putting
+a spinning wheel on the screen, and controlling position and
+spin rate using various V controls.  The problems students
+had with V involved the standard problems with programming
+in general, how to really use classes, constructors, destructors,
+etc., and general GUI issues. V itself was really never a
+hindrance - just struggling students.
+<p>
+
+<dd>
+Personally, I really feel V is PERFECT for that level of class.
+If you want to use a real programming language (all debates aside,
+C++ is real compared to a scripting language), and would like
+the students to be able to generate GUI programs, I really don't
+know of any alternative to V in an academic environment where
+freeware is important.
+<p>
+
+<dd>
+For the first time, students really were able to fairly easily
+generate GUI programs with C++ code. They found this VERY
+rewarding and fun. More so that with the old INPUT/OUTPUT
+stuff that we were limited to before. And not only that, a
+lot of students are getting their own Linux boxes now, and
+that makes V even better for them.
+<p>
+
+<dd>
+I hate to sound like a salesman, but the results I saw at
+UNM and have had reported to me at other colleges and universities
+make me wish that CS departments all around the country
+knew about V, and would consider using it.  There are a couple
+of other freeware GUI frameworks (wxWindows and YACL), but neither
+is as simple or clean as V. (You can even use V code for case
+study, it is very clean.)  I really don't think there is
+anything missing from V for student projects. And the manual
+is good enough so as to not generate tons of V questions for
+the instructor.  (I would get literally ONLY 3 or 4 V questions per
+semester from my software engineering class - they really
+just asked project questions.)
+<p>
+
+<dd>
+Well, I've rambled, but I would like to encourage you to take
+a serious look at V and consider it for your classes.
+<p>
+<hr>
+
+<a href="#00top" name="02">
+<h2>Why does V use static tables for menus?</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+Why have you used static tables of structures to initialize Menu
+and Command panes ?
+<p>
+
+<dd>
+Doesn't object oriented programming include hiding of data structures?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+One can stick strictly to a paradigm, and end up with something
+that is obscure and difficult to program with, or one can bend
+the rules and end up with something far simpler and easier to use.
+
+<dd>
+The ability to easily define menus, dialogs, command bars, and
+status bars using structures (which are usually static, but
+don't have to be) gives a very simple and easy way to define
+these things. After looking at some other OO GUI frameworks,
+I decided they were too hard to get started with, and that
+you ended up with code that was too hard to maintain. Keeping
+all the definitions for V control objects in a single declaration
+is much simpler.
+<p>
+
+<dd>
+The declarations for menus and dialogs actually are replacements
+for the resource definitions usually found in the native GUI
+toolkits. For example, V does not use standard Windows .RC files
+to define menus and dialogs. You will find many similarities
+in the elements included in a V dialog CommandObject declaration
+and a Windows .RC file.
+<p>
+
+<dd>
+Underneath it all, however, all the controls are implemented as
+C++ objects, and the details of the implementation of each
+control object for each platform are hidden. The definitions of
+dialogs and menus are platform independent, and easy to define,
+modify, and maintain.
+<p>
+<hr>
+
+<a href="#00top" name="03">
+<h2>Programming for Windows vs. Unix and X</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+This last is kind of a shot in the dark, but.... I'm trying to do most
+of my development on Linux, but also engineer the code for Windows
+compatibility.  The portability section in the coding style guidelines
+appendix has some good information, but what I was wanting to know
+mostly was how the Windows programming environment differs from the
+Unix-type environment in terms of memory management, pointer usage,
+and the like.  Can you recommend a good book on programming in Windows
+to help ease me into this (eventual) port?  If it can explain the
+difference between 16-bit and 32-bit Windows (and the differences
+between Win32s, Win 95, and Win NT in particular) it would be even
+more helpful.  Also, I'm not exactly up on the MDI/SDI thing, either.
+<p>
+<font size=+2>A:</font>
+
+<dd>
+Windows comes in just two basic flavors, Windows 3.1, which has a
+bunch of very ugly properties left over from the segmented
+architecture of the Intel 8086, and the 32-bit varieties, which
+includes Win32s, Win 95, and Win NT. Win 95 has some nice
+dialog controls, but for now V is not using them. Other than
+that, all these are really WIN32 platforms.
+<p>
+
+<dd>
+As a programmer, there is really only one major issue you have
+to deal with. The Windows 3.1 platform is basically a 16-bit
+platform, and thus limits data objects to a maximum size of
+64K bytes. You can have a whole bunch of 64K objects, but
+each object can be at most 64K. There are also some limits
+(not hard to hit...) on the amount of static data allowed,
+again tied to 64K. This one seems to vary from compiler to
+compiler, but can be hit by defining a lot of big static
+V Icons. I had some problems with the V Icon Editor, for
+example.)
+<p>
+
+<dd>
+The bottom line on Windows 3.1 is that you have to use
+what is called Large Model to compile V applications,
+and think about the 64K limit for any single data object.
+You can't assume that you can compare pointers for
+objects allocated separately (but then you shouldn't
+assume that anyway), so using pointers in 3.1 really
+doesn't create additional problems.
+<p>
+As of <b>V</b> 1.21, official support for 3.1 has been
+abandoned. There have been enough new features added
+that have just made keeping V 3.1 compatible too difficult.
+<p>
+
+<dd>
+The WIN32 platform solves all these problems by using
+the linear addressing available on all Intel chips
+since the 80386. The WIN32 API to the system is
+almost compatible with the older 3.1 API, but there
+are some major incompatibilities, and some of that
+16-bit ugliness remains. But fortunately, V hides
+all of that. For regular old C++ programming, use
+'new' and pointers just as you would on a real computer
+with a real operating system (like Linux or SunOS!).
+<p>
+
+<dd>
+I personally don't have much positive to say about
+Microsoft (some of it stemming from personal experience
+back when I was involved with my own PC software
+company), so I've really avoided using Visual C++,
+but V users have reported V will compile with it.
+I like Borland C++ the best, but Watcom's C++ 10.6
+isn't bad, and for one price you get 3.1, 95, NT,
+and OS/2 support. If you are associated with an
+academic institution, you can get Watcom for only
+$100, a really great deal. For NT and 95, the
+Cygnus port of gcc is getting pretty reasonable, too,
+but it isn't quite native.
+<p>
+
+<dd>
+I've found the Charles Petzold books the most useful for
+getting going, but I also think that Herbert Schildt's
+books are pretty good, and would maybe be my first
+choice today. There are a lot of BAD Windows books,
+and books by either of these two authors are a pretty
+safe bet.
+<p>
+<hr>
+
+<a href="#00top" name="04">
+<h2>V vs. wxWindows</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+How would you compare V against wxWindows ?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+V and wxWindows are quite similar in their goals. Naturally,
+I prefer V. WxWindows has been around a bit longer than V,
+and has some tools not available in V.
+WxWindows is less fixed in the
+look and feel of the apps it generates. WxWindows originally used
+Motif and OpenLook implementation for X, and has recently
+switched to gtk. V uses
+a customized version of the free Athena widgets, and as of 1.21,
+also supports gtk.
+
+<p>
+
+<dd>
+V, on the other hand, pretty much imposes a look and feel.
+It turns out that this look and feel is the standard
+Windows look and feel, as well as the Motif look and feel.
+Thus, when
+using the Xt Athena version, you end up with Windows/Motif
+like apps. I think this is a good thing.
+<p>
+
+<dd>
+You can see a result of this approach in how V builds dialogs.
+While wxWindows uses a generic window for both drawing canvases
+and dialogs, V uses different objects for each. Thus, on
+X, you get a different kind of shell widget used for dialogs
+and canvases, while on Windows you get a real Windows dialog
+box with its specialized look. Thus your apps will look more native.
+<p>
+
+<dd>
+The last I looked, V also had more controls for its dialogs.
+Adding controls to dialogs and windows is done differently.
+In wxWindows, you add each object via a line of code. V lets
+you define whole dialogs and menus simply using a static
+array. I think this latter approach is much easier to program.
+<p>
+
+<dd>
+The visual look of V is more polished. This shows especially
+in the dialogs. The Windows version has a very nice 3D look
+for all dialog components, and the shading and color choices
+look much more like polished apps than the standard app colors
+generated by wxWindows apps. The X version also uses nice shading,
+and allows you to change the color design using an X resource file.
+<p>
+
+<dd>
+Finally, if you look at the source code, I'm confident you will
+find the V code much more readable and well structured. The
+wxWindows code seems much less polished, and really lacks comments.
+This may be a matter of style - I am a strong believer in
+the concept that it is almost impossible to over comment code.
+I believe this leads to more maintainable code.
+<p>
+<hr>
+
+<a href="#00top" name="05">
+<h2>Using V for commercial applications</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+I've read the GNU License, and I'm not sure if I can use
+V for commercial applications. What are the restrictions
+for using V for a commercial app?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+The short answer is yes, you can use V for commercial
+applications. The following are the relevant sections
+of the GNU LIBRARY GENERAL PUBLIC LICENSE contained
+in the file <tt>COPYING.LIB</tt>:
+<p>
+
+<<<<< BEGIN EXCERPT of GNU License >>>>>>
+<p>
+
+<dd>
+The precise terms and conditions for copying, distribution and
+modification follow.  Pay close attention to the difference
+between a "work based on the library" and a "work that uses the
+library".  The former contains code derived from the library,
+while the latter only works together with the library.
+<p>
+
+[stuff deleted]
+<p>
+
+<dd>
+5. A program that contains no derivative of any portion of the
+Library, but is designed to work with the Library by being
+compiled or linked with it, is called a "work that uses the
+Library".  Such a work, in isolation, is not a derivative work of
+the Library, and therefore falls outside the scope of this
+License.
+<p>
+
+<dd>
+However, linking a "work that uses the Library" with the Library
+creates an executable that is a derivative of the Library
+(because it contains portions of the Library), rather than a
+"work that uses the library".  The executable is therefore
+covered by this License. Section 6 states terms for distribution
+of such executables.
+<p>
+
+[stuff deleted]
+<p>
+
+<dd>
+6. As an exception to the Sections above, you may also compile
+or link a "work that uses the Library" with the Library to
+produce a work containing portions of the Library, and distribute
+that work under terms of your choice, provided that the terms
+permit modification of the work for the customer's own use and
+reverse engineering for debugging such modifications.
+<p>
+
+[NOTE: This language is much more restrictive than it may appear.
+The reverse engineering is allowed ONLY for debugging
+modifications to the library. There is nothing to imply that
+allowing reverse engineering extends to your work, so your
+protection remains intact.]
+<p>
+
+<dd>
+You must give prominent notice with each copy of the work that
+the Library is used in it and that the Library and its use are
+covered by this License.  You must supply a copy of this
+License.  If the work during execution displays copyright
+notices, you must include the copyright notice for the Library
+among them, as well as a reference directing the user to the copy
+of this License.  Also, you must do one of these things:
+<p>
+
+[Several options for supplying access to the library, and object
+code for using modified libraries.]
+<p>
+
+<<<< END EXCERPT >>>>
+<p>
+
+<dd>
+My interpretation of all this is that you can pretty much protect
+your commercial software. You need to acknowledge that you are
+using V, and provide access to V. This can easily be accomplished
+by providing a link to the V Web site.
+<p>
+
+<dd>
+Possibly the most objectionable part requires that you allow
+users to relink the work using a modified version of V. This
+provision can be satisfied by providing access to the the object
+code files only upon request. You are also allowed to charge for
+that access. Between these, I don't think there is much real
+impact on using V for a commercial package.
+<p>
+
+<dd>
+So, by my interpretation, you can comply with the GNU license by
+doing the following:
+<p>
+
+<dd>
+1. Acknowledge the use of V, and supply a reference to the
+V Web site.
+<p>
+
+<dd>
+2. Supply a copy of the GNU LIBRARY GENERAL PUBLIC LICENSE.
+The license implies that the object code is available for
+relinking for an appropriate charge. I don't think you
+need to explicitly state this anywhere else. You can also
+make it clear that only the V library uses that GNU
+LIBRARY GENERAL PUBLIC LICENSE, and that your commercial
+software uses a different license.
+<p>
+
+<dd>
+3. Being prepared for the very unlikely event someone will
+   actually want to pay for access to the object code to
+   relink to a modified version of V.
+<p>
+</body>
+</html>

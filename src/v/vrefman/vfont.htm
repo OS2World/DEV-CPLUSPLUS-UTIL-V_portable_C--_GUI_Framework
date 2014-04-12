@@ -1,0 +1,226 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vFont</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vFont</H1>
+<HR>
+<A NAME="vFont"></A>
+Various screen fonts are available in 
+<em><b>V</b></em>.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Class:</b></dt><dd> <tt>vFont</tt>
+	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vFont">&lt;v/vfont.h&#62;</A></tt>
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+Fonts are difficult to make portable. 
+<em><b>V</b></em>&nbsp;has adopted a font
+model that is somewhat portable, yet allows you to take advantage
+of various fonts available on different platforms. In fact, it
+is possible to write your programs to use the <tt><A HREF="vfontsel.htm">vFontSelect</A></tt>
+dialog class, and pretty much ignore many of the details of
+selecting fonts. The main characteristics of fonts your program
+will have to deal with are the height and width of text displayed
+on a canvas. These values are provided by 
+<tt>vDC::TextHeight</tt> and <tt>vDC::TextWidth</tt>. Use these
+values to calculate how much space a text string will take
+up on the screen or page.
+
+<p>
+Fonts are associated with drawing canvases. For example, the
+<tt>vCanvasPane::SetFont</tt> method is used to set the font used
+by the canvas pane. The sizes of the actual fonts will probably
+differ on different kinds of canvases. Specifically, your program
+should not depend on getting the same <tt>TextWidth</tt> value
+for screen and printer canvases for the same font.
+
+<p>
+The class <tt>vFont</tt> is used to define font objects, and the
+characteristics of the font are set either by the class
+constructor when the font is instantiated, or by using the  
+<tt>vFont :: SetFontValues</tt> method. The utility class <tt>vFontSelect</tt>
+can be used to interactively set font characteristics.  The
+characteristics associated with a font are described in the
+following sections. Remember, however, that <tt>vFontSelect::FontSelect</tt>
+can be used to set these attributes.
+
+<p>
+
+<H4>Font Family</H4>
+
+<p>
+Each font belongs to a font family. There are eight font families
+defined by 
+<em><b>V</b></em> with the <tt>vFontID</tt> attribute of the font object.
+Font families typically correspond to some typeface name such
+as 
+<em>Helvetica</em> or 
+<em>Times Roman</em>, but use more generic names.
+There are three system fonts, <tt>vfDefaultSystem</tt>, <tt>vfDefaultFixed</tt>,
+and <tt>vfDefaultVariable</tt>. These default fonts are defined by
+the specific platform. <tt>vfDefaultSystem</tt> will usually be a
+fixed space font, and is often settable by the user. On X, for
+example, the default system font can be changed by using a
+<tt>-fn fontname</tt> switch when starting the application. The
+<tt>vfDefaultSystem</tt> font will have fixed attributes, and will
+not be changeable by the program. The <tt>vfDefaultFixed</tt>
+(fixed spacing) and  <tt>vfDefaultVariable</tt> (variable spacing)
+fonts are also system specified, but can usually have their
+attributes, such as size and weight changed.
+
+<p>
+
+<em><b>V</b></em>&nbsp;also supports five other font families. The <tt>vfSerif</tt> font
+is a seriffed font such as <tt>Times Roman</tt>. The <tt>vfSanSerif</tt>
+is a serifless font such as <tt>Swiss</tt> or <tt>Lucidia</tt>. Both
+of these are variable spaced fonts. The <tt>vfFixed</tt> is a fixed
+space font, often called <tt>Courier</tt> on the host platform.
+The <tt>vfDecorative</tt> font usually contains symbols or other drawing
+characters. It is not very portable across platforms. Finally,
+
+<em><b>V</b></em>&nbsp;supports a font family called <tt>vfOther</tt>. This is used when
+the system supports other fonts that are selectable via the
+<tt>vFontSelect</tt> dialog class. Windows supports a wide variety of fonts,
+while X does not support any additional fonts.
+
+<p>
+
+<H4>Font Style</H4>
+
+<p>
+
+<em><b>V</b></em>&nbsp;supports two kinds of font styles: <tt>vfNormal</tt> for normal
+fonts, and <tt>vfItalic</tt> for italic fonts.
+
+<p>
+
+<H4>Font Weight</H4>
+
+<p>
+
+<em><b>V</b></em>&nbsp;supports two kinds of font weights: <tt>vfNormal</tt> for
+normal weight fonts, and <tt>vfBold</tt> for boldface fonts.
+
+<p>
+
+<H4>Point Size</H4>
+
+<p>
+
+<em><b>V</b></em>&nbsp;supports a wide range of point size, usually ranging from 8 point
+to 40 or 72 point fonts. Not all point sizes are supported on each
+platform. How each point size maps to space on the screen or page
+also vary from platform to platform.
+
+<p>
+
+<H4>Underlining</H4>
+
+<p>
+You can also specify that a font is underlined.
+
+<p>
+
+<H4>Angled text</H4>
+
+<p>
+You can specify that a font is to be drawn at something other
+than horizontally, left to right. If you need a vertical font,
+for a graph perhaps, you can specify an angle in the font
+constructor. This means you must use one of V's
+standard fonts, and can't use the font select dialog. You
+also can't dynamically change the angle on the fly. If you
+need text at more than one angle, you need to create multiple
+instances of a vFont.
+
+<p>
+You specify the angle in degrees, with 0 representing
+standard horizontal text. Using 90 degrees gives vertical
+text, reading from bottom to top. Using 180 gives upside
+down horizontal text, and 270 gives vertical text, top
+to bottom. A simple example:
+
+<p>
+<font size=-2>
+<pre>
+    vFont font90(vfSansSerif,10,vfNormal,vfNormal,0,90);
+    myCanvas-&#62;SetFont(font90);
+    myCanvas-&#62;DrawText(200,150,"Vertical Text");
+</pre></font>
+The Windows version supports any arbitrary angle. The X
+version only supports 90, 180, and 270. Because X does
+not provide native support for non-horizontal text, the
+initial implementation of angled text (V Version 1.18)
+simulates angled text by drawing standard horizontal
+characters vertically or backwards. It doesn't look
+too bad, and is better than having to do it yourself.
+Real vertical text will probably be supported someday,
+and I will probably forget to remove this note when
+that happens, so go by the release notes.
+
+<p>
+
+<h2>Methods</h2>
+
+<p>
+
+<H4>vFont(vFontID fam = vfDefaultFixed, int size = 10,
+vFontID sty = vfNormal, vFontID wt = vfNormal, int und = 0,
+int angle = 0)</H4>
+The constructor is used to declare a font with the specified
+family, size, style, weight, underline, and angle.
+
+<p>
+
+<H4>Assignment (=)</H4>
+Changes the value of an existing font to the right hand side.
+
+<p>
+
+<H4>vFontID GetFamily()</H4>
+Returns the family of the font object.
+
+<p>
+
+<H4>int GetPointSize()</H4>
+Returns the point size of the font object.
+
+<p>
+
+<H4>vFontID GetStyle()</H4>
+Returns the style of the font object.
+
+<p>
+
+<H4>vFontID GetWeight()</H4>
+Returns the weight of the font object.
+
+<p>
+
+<H4>int GetUnderlined()</H4>
+Returns the underline setting of the font object.
+
+<p>
+
+<H4>void SetFontValues(vFontID fam = vfDefaultFixed, int size =
+10, vFontID sty = vfNormal, vFontID wt = vfNormal, int und = 0)</H4>
+Changes the attributes of the font object. For example, the font
+selection dialog uses this method to change the font attributes.
+Note that you can't use this method to set font angles.
+
+
+</BODY>
+</HTML>

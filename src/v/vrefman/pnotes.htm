@@ -1,0 +1,325 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+  <TITLE> V Reference Manual - Platform Notes </TITLE>
+</HEAD>
+
+<body bgcolor="#ffffff">
+<H1><A NAME="PlatformNotes">Platform Notes</H1></A>
+<HR>
+
+<H2><A NAME="PlatformX"></A>X Window System</H2>
+The current X Athena implementation of 
+<em><b>V</b></em> uses the Athena widget set with
+some modified versions of some widgets from the Xaw3d widget set. 
+These modifications can conflict visually with the standard
+Xaw3d widgets, so applications may not look ideal if libXaw3d is used.
+<p>
+The Motif version was developed with LessTif, and you must use
+at least LessTif version 0.88.
+<p>
+
+<H3>Compilers</H3>
+
+<p>
+The <tt>makefile</tt> provided with 
+<em><b>V</b></em> uses the GNU C++ compiler,
+<tt>g++</tt>. 
+<em><b>V</b></em> does not use templates or other C++ features that
+can cause portability problems. The current version has been
+built and tested using <tt>g++</tt> Version 2.8 although it
+did work back to Version 2.6.3, but
+not earlier versions. There is no inherent reason that 
+<em><b>V</b></em> should
+not compile with other C++ compilers.
+
+<p>
+
+<H3>The X Makefile</H3>
+The <tt>Makefile</tt> is the main way to build X versions of 
+<em><b>V</b></em>.
+It has comments that should help you to build the X version of 
+<em><b>V</b></em>.
+See the <a href="geninst.htm#XWindows">Installation</a> for more instructions for installing 
+<em><b>V</b></em>
+on a *nix platform. All of the customizations for a given platform
+have been isolated into one of the configuration files <tt>Config.mk</tt>
+in the <tt>/v/Configs</tt> directory.
+
+<p>
+<em><b>V</b></em> has successfully been compiled on most current
+X platforms available,
+including Linux, SunOS, Solaris, AIX, SGIs, and DEC Alphas. The standard
+distribution includes a <tt>Makefile</tt>
+that can be easily configured for these platforms. The makefile requires
+GNU make! The secret is to examine <tt>Config.mk</tt> and add and modify
+the definitions at the beginning as needed for your platform. (For Linux,
+this will usually be a no op, since Linux is the default configuration.)
+Examine the definitions already there, and then add a section with
+the locations defined as needed for your platform. Then use an <tt>ARCH=</tt>
+definition on the <tt>make</tt> line (or make your platform the default.)
+
+<p>
+
+<H3>X Resources</H3>
+
+<em><b>V</b></em> makes limited used of X resources. The main use is to define
+the basic color schemes for the ATHENA version of controls and dialogs. The following
+resources are used:
+
+<p>
+
+<DL compact><dt><b>vDialogBG</b></dt><dd> The color used for the background of dialogs and
+command bars.
+
+<p>
+<dt><b>vStatusBarBG</b></dt><dd> The color used for the background of the status
+bar.
+
+<p>
+<dt><b>vMenuBarBG</b></dt><dd> The background color of the menu bar and menu drop
+downs.
+
+<p>
+<dt><b>vControlBG</b></dt><dd> The background color for some controls, such as
+sliders and scroll bars.
+
+<p>
+<dt><b>vControlFace</b></dt><dd> The color used for the faces of various
+controls such as buttons.
+
+<p>
+<dt><b>vLightControlShadow</b></dt><dd> The color used for the light shadow
+on 3D controls.
+
+<p>
+<dt><b>vDarkControlShadow</b></dt><dd> The color used for the dark shadow on
+3D controls.
+
+<p>
+</DL>By varying just the above X resources, you can really change
+the visual look of your 
+<em><b>V</b></em> app.
+The <tt>/v/srcx</tt> directory contains several files of the
+form <tt>vRes*</tt> that contain various color schemes.
+The default color scheme is contained in <tt>vResDefault</tt>
+(but you don't need to load it - it is the default).
+The file <tt>vResBlueMtf</tt> contains the color scheme similar
+to Motif. This is the contents of <tt>vResDefault</tt>:
+
+<p>
+
+<pre>
+*vDialogBG: gray75
+*vStatusBarBG: gray80
+*vMenuBarBG: gray70
+*vControlBG: gray80
+*vControlFace: gray70
+*vLightControlShadow: gray87
+*vDarkControlShadow: gray50
+</pre>To use one of these, or your own, resource files, you can
+use the command <tt>xrdb -merge vResColorscheme</tt>. You
+can also add the lines to your <tt>.Xresources</tt> file.
+This works only for the Athena version.
+<p>
+For the Motif version, the easeies way to control how
+things look is with the <tt>-bg</tt> background switch when
+you start the application. For example, if you started VIDE
+with the command <tt>vide -bg gray75</tt>, all the controls
+will be based on the gray75 color, and gives a very nice result.
+
+<p>
+The X program name is the name you supply to the <tt>vApp</tt> constructor.
+
+<p>
+
+<H3>X Bugs</H3>
+
+<p>
+The PostScript print driver does not draw shapes with hatched
+brushes.
+
+<p>
+The PostScript drawing canvas does not support <tt>CopyFromMemoryDC</tt>.
+
+<p>
+Source code uses two naming conventions - <tt>.cxx</tt> and
+<tt>.cpp</tt>. Gnu g++ version 2.6 and later support both
+file extensions. G++ version 2.5 doesn't like <tt>.cpp</tt>,
+so you might have to rename those files to <tt>.cxx</tt>,
+
+<p>
+There seems to be problems with colors on X Pseudocolor systems.
+
+<p>
+
+<H2><A NAME="tth_sEcE.2"></A> Microsoft Windows</H2>
+The current implementation of 
+<em><b>V</b></em> for MS-Windows is for Windows 
+WIN32 (Windows 9x and NT). As of <b>V 1.21</b>, official
+support for Windows 3.1 has been dropped. It is unknown
+if <b>V</b> actually still works or not on 3.1.
+We will refer to this version as <tt>Vwin</tt> in this
+description. 
+The Windows version of 
+<em><b>V</b></em> is available in the standard distribution tar file
+on the <b>V</b> ftp
+site. You will need a version of <tt>gunzip</tt> and
+<tt>tar</tt> to extract <b>V</b>. These are available on the
+ObjectCentral ftp site as well.
+
+<p>
+
+<H3>Directories</H3>
+
+<p>
+The directory structure of 
+<em><b>V</b></em> under MS-Windows is similar to the X version.
+On the distribution, the MS-Windows hierarchy is found under the <tt>/v</tt>
+directory. (We will use Unix / notation for files instead of the
+usual MS-Windows backslash notation. Most MS-Windows compilers handle
+the / correctly, and / is used throughout the 
+<em><b>V</b></em> source files.)
+When you unzip the archive, a subdirectory <tt>/v</tt> will be
+built.
+
+<p>
+Under <tt>/v</tt> are <tt>/bin/win</tt> for the example 
+<em><b>V</b></em> MS-Windows
+binaries, <tt>/draw</tt> for the VDraw example program, <tt>/examp</tt>
+for a simple example program, <tt>/includew/v</tt> for the 
+<em><b>V</b></em>
+<tt>.h</tt> header files, <tt>/lib/win</tt> for the MS-Windows compiled
+library, <tt>/obj/win*</tt> for the object files, <tt>/srcwin</tt>
+for the MS-Windows version of the source code, <tt>/test</tt> for the
+test driver program, and <tt>/tutor</tt> for the source code to the
+tutorial included in this reference manual.
+
+<p>
+For MS-Windows, the 
+<em><b>V</b></em> library source files use a <tt>.cpp</tt> extension.
+The example programs also use <tt>.cpp</tt>. The source for most of the
+example programs is identical for the MS-Windows and X versions! However,
+the source for the library <tt>.cpp</tt> and <tt>.h</tt> files are different
+for each platform, so you must be careful not to mix the X and MS-Windows
+versions of source code and header files.
+
+<p>
+
+<H3>Compilers</H3>
+
+<p>
+
+<em><b>V</b></em> has been successfully been compiled using
+Borland C++ 4.5 for Win3.1 and WIN32; Borland C++ 5.02 for WIN32;
+Watcom 10.6 for Win3.1 and WIN32; the GNU-WIN32 gnu g++
+compiler (both with Cygwin and mingw32); and Microsoft VisualC++
+under several versions. See the 
+<A HREF="geninst.htm#MSWindows">Installation notes</A>
+for more specific information about the various compilers.
+<p>
+Several Borland <tt>.ide</tt> files are included on the directory 
+<tt>/vwin/bccide</tt>. The <tt>.ide</tt> files assume 
+<em><b>V</b></em> is built on
+drive C:, so you may have to modify it if you want to build 
+<em><b>V</b></em>
+on your own system. If you are using another compiler, then you
+need to compile 
+<em>every</em> <tt>.cpp</tt> file found on the
+<tt>/srcwin</tt> directory.
+
+<p>
+Project files for compiling with Watcom C++ are included in
+the directory <tt>v/watcom</tt>. Unlike the Borland versions,
+the object code and libraries are built directly on these
+<tt>watcom</tt> directories.
+
+<p>
+The required changes and makefiles required for the <tt>mingw32</tt> compiler
+will be made available on the 
+<em><b>V</b></em>web site.
+
+<p>
+
+<H3>MDI/SDI Models</H3>
+
+<em><b>V</b></em> for MS-Windows supports both the MS-Windows MDI and SDI models. 
+By default, 
+<em><b>V</b></em> uses MDI, and will bring up the main MDI window,
+and open the first MDI child window. There currently is no way to
+have a main MDI window with no active MDI child windows - when
+you exit the last window, the application closes. The menu,
+command bar, and status bars will change to the ones defined by
+each child window as each child window is activated.
+
+<p>
+
+<em><b>V</b></em> will automatically append a <tt>Window</tt> menu item to the main
+menu. The built in <tt>Window</tt> menu supports the standard cascade
+and tile MDI operations, as well as showing a list of MDI children.
+
+<p>
+You can also get MS-Windows applications to look like the standard
+SDI model. If you want an SDI app, you control this in the
+static declaration of the <tt>vApp</tt> object:
+
+<p>
+
+<pre>
+  static testApp* tApp = new testApp("Vtest",1);
+</pre>The second parameter controls MDI or SDI. A default parameter
+is defined by 
+<em><b>V</b></em>as 0 to indicate the MDI model. If you specify
+a 1, then 
+<em><b>V</b></em>will take an SDI look. It actually does this
+by using the MDI code, but maximizing the canvas window,
+removing the extra buttons from the menu bar, and not
+adding the <tt>Window</tt> menu. It is impossible for the
+user to tell that this is really an MDI application, but
+
+<em><b>V</b></em>does not strictly enforce this. If you create more than
+a single <tt>vCmdWindow</tt> object, unpredictable things will
+happen under the SDI simulation. It is up to you to not do that.
+
+<p>
+Since X doesn't have an MDI/SDI equivalent, it is harmless
+to specify SDI to an X version of your app.
+
+<p>
+
+<H3>Icons</H3>
+
+<p>
+As stated in the main part of this manual, 
+<em><b>V</b></em> does not use resource files.
+This is true for the MS-Windows versions. However, there is one reason you
+might want to include a <tt>.RC</tt> file with a 
+<em><b>V</b></em> MS-Windows application,
+and that is to allow you to define the icons used with the application.
+(These are MS-Windows icons, and are 
+<em>not</em> the same things as
+<tt>vIcons</tt>.)
+
+<p>
+Typical MS-Windows MDI applications use two icons - one for when the whole application
+is iconized, and one when each child window is iconized. If you don't supply a
+<tt>.RC</tt> file, you will get the default MS-Windows icons. The 
+<em><b>V</b></em> distribution
+supplies two default icons of its own, called <tt>vapp.ico</tt> and <tt>vwindow.ico</tt>.
+By including the definitions <tt>vAppIcon</tt> <tt>ICON</tt> <tt>vapp.ico</tt> and
+<tt>vWindowIcon</tt> <tt>ICON</tt> <tt>vwindow.ico</tt> in the <tt>.RC</tt> file,
+
+<em><b>V</b></em> will load and use those icons for the application and each child window
+respectively. You can substitute whatever two icons you want for your application
+by specifying different <tt>.ico</tt> files for
+the <tt>vAppIcon</tt> and <tt>vWindowIcon</tt> names in the <tt>.RC</tt> file.
+
+<p>
+
+<H3>DEF File</H3>
+
+<p>
+MS-Windows applications are typically compiled using a <tt>.DEF</tt> file. You
+can modify any of the <tt>.DEF</tt> files included with 
+<em><b>V</b></em> sample programs.
+

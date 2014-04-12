@@ -1,0 +1,68 @@
+WCDIR = c:\wc105
+VDRIVE = e:
+VDIR  = \v
+
+BASEOBJ = $(VDRIVE)$(VDIR)\watcom\win32\TESTAPP.OBJ &
+$(VDRIVE)$(VDIR)\watcom\win32\VTCANVAS.OBJ   &
+$(VDRIVE)$(VDIR)\watcom\win32\VTCMDWIN.OBJ  &
+$(VDRIVE)$(VDIR)\watcom\win32\VTCW2.OBJ     &
+$(VDRIVE)$(VDIR)\watcom\win32\VTDIALOG.OBJ &
+$(VDRIVE)$(VDIR)\watcom\win32\VTTOGDLG.OBJ
+
+BLANK = ""
+
+$(VDRIVE)$(VDIR)\watcom\win32\test.exe : $(BASEOBJ)  #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ @%write test.lk1 NAME test
+ @%append test.lk1 FIL TESTAPP.obj,VTCANVAS.obj,VTCMDWIN.obj,VTCW2.obj,VTDIALOG.obj,VTTOGDLG.obj
+ @%append test.lk1
+
+#!ifneq BLANK ""
+# *wlib -q -n -b test.imp
+# @%append test.lk1 LIBR test.imp
+#!endif
+
+ *wlink d all SYS nt_win op m libp win32 libr vlib32 op maxe=25 op q op symf @test.lk1
+!ifneq BLANK ""
+ wrc -q -ad  test.exe
+!endif
+
+
+$(VDRIVE)$(VDIR)\watcom\win32\TESTAPP.obj : $(VDRIVE)$(VDIR)\test\TESTAPP.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\test\TESTAPP.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\test -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\VTCANVAS.obj : $(VDRIVE)$(VDIR)\test\VTCANVAS.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\test\VTCANVAS.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\includew&
+;$(VDRIVE)$(VDIR)\test -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\VTCMDWIN.obj : $(VDRIVE)$(VDIR)\test\VTCMDWIN.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\test\VTCMDWIN.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\test -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\VTCW2.obj : $(VDRIVE)$(VDIR)\test\VTCW2.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\test\VTCW2.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\test -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\VTDIALOG.obj : $(VDRIVE)$(VDIR)\test\VTDIALOG.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\test\VTDIALOG.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\includ&
+ew;$(VDRIVE)$(VDIR)\test -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\VTTOGDLG.obj : $(VDRIVE)$(VDIR)\test\VTTOGDLG.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\test\VTTOGDLG.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\test -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+

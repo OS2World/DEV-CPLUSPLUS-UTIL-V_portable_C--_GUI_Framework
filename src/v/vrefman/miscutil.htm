@@ -1,0 +1,64 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>Misc Utilities</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>Miscellaneous Utilities</H1>
+<HR>
+<A NAME="Utility Programs"></A>
+ 
+<h2>bmp2vbm</h2>
+
+<p>
+The utility <tt>bmp2vbm</tt> converts a Window or OS/2 <tt>.bmp</tt>
+format bitmap file into a <tt>.vbm</tt> 
+<em><b>V</b></em>icon bitmap format file.
+The <tt>.vbm</tt> file is then used with a <tt>vIcon</tt> object
+definition. The <tt>bmp2vbm</tt> utility will not convert all
+<tt>.bmp</tt> files. Specifically, it can't handle old format
+<tt>.bmp</tt> files, nor can it handle compressed <tt>.bmp</tt> files.
+
+<p>
+Windows has many tools to generate <tt>.bmp</tt> files. For X,
+the widely available tool <tt>xv</tt> can generate <tt>.bmp</tt>
+files from various source formats.
+
+<p>
+<tt>Bmp2vbm</tt> is a command line tool - run it from a Unix prompt,
+or from an <tt>MSDOS</tt> box on Windows. The command line format is:
+<tt>bmp2vbm inputname outputname iconname</tt>. You should specify only
+the base file names: <tt>bmp2vbm</tt> will automatically supply
+the <tt>.bmp</tt> and <tt>.vbm</tt> extension. The <tt>iconname</tt>
+specifies the name used to generate the date (e.g., <tt>iconname_bits</tt>).
+
+<p>
+
+<H2><A NAME="Other Utilities"></A>Other Utilities</H2>
+
+The directory <tt>v/icons</tt> includes over 30 different monochrome
+icons in <tt>.vbm</tt> format suitable for building command pane
+tool bars. Most of these icons were derived from various
+Windows sources, and I would encourage their use for the
+standard functions they define. Some of these include
+creating a new file (new.vbm), opening an existing file (open.vbm),
+cut, copy, and paste (*.vbm), printing (print.vbm), and so on.
+
+<p>
+There is a demo program in the <tt>v/icons</tt> directory that
+can be compiled and used to see what all the icons look like.
+All the icons are 16 by 16 bits, and
+will match standard buttons in height on Windows. The height of 
+standard buttons on X depends on the default system font.
+
+<p>
+As usual, contributions of other 
+<em><b>V</b></em>icons is more than welcome.
+I hope to build up the icons directory to several hundred icons.
+<p>
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,96 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vPen</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vPen</H1>
+<HR>
+<A NAME="vPen"></A>
+A class to specify the pen used to draw lines and shapes.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vPen">&lt;v/vpen.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vPen
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+Pens are used to draw lines and the outlines of shapes. Pens have
+several attributes, including color, width, and style.
+
+<p>
+
+<h2>Methods</h2>
+
+<p>
+
+<H4>vPen(unsigned int r = 0, unsigned int g = 0, unsigned int b = 0, 
+int width = 1, int style = vSolid)</H4>
+The constructor for a pen allows you to specify the pen's color,
+width, and style. The default will construct a solid black pen of
+width 1.
+
+<p>
+
+<H4>int operator ==, !=</H4>
+
+<p>
+You can use the operators <tt>==</tt> and <tt>!=</tt> for comparisons.
+
+<p>
+
+<H4>vColor GetColor()</H4>
+This method returns the current color of the pen as a <tt>vColor</tt> object.
+
+<p>
+
+<H4>int GetStyle()</H4>
+This method returns the current style of the pen.
+
+<p>
+
+<H4>void GetWidth()</H4>
+This gets the width of the line the pen will draw.
+
+<p>
+
+<H4>void SetColor(vColor&amp; c)</H4>
+You can use this method to set the pen color by passing
+in a <tt>vColor</tt> object.
+
+<p>
+
+<H4>void SetStyle(int style)</H4>
+This method is used to change the style of a pen. Styles include:
+
+<p>
+
+<DL compact>	<dt><b>vSolid</b></dt><dd> The pen draws a solid line.
+	<dt><b>vTransparent</b></dt><dd> The pen is transparent. A transparent
+pen can be used to avoid drawing borders around shapes. When drawing
+text, a transparent pen draws the text over the existing background.
+	<dt><b>vDash</b></dt><dd> The pen draws a dashed line.
+	<dt><b>vDot</b></dt><dd> The pen draws a dotted line.
+	<dt><b>vDashDot</b></dt><dd> The pen draws an alternating dash and dotted line.
+</DL>
+<p>
+
+<H4>void SetWidth(int width)</H4>
+This sets the width of the line the pen will draw.
+
+<p>
+
+
+
+</BODY>
+</HTML>

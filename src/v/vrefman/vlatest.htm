@@ -1,0 +1,810 @@
+<HTML> <HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+  <TITLE> V Reference Manual - Latest Features </TITLE>
+ </HEAD>
+<BODY bgcolor="#ffffff">
+<H1>The Latest Version: What's New?</H1>
+<HR>
+This page will cover the latest version of 
+<em><b>V</b></em>. The
+current release is Version 1.24.
+See <a href="install.htm" target="main">Installing V</a> for installation
+instructions.
+
+<p>
+<H2>New Features - V Version 1.24</H2>
+
+<H4>New vApp features</H4>
+<ul>
+<li>A new method, <tt>showAppWin</tt>, was added to allow
+dialog-only V apps. The details are explained in
+<a href="vapp.htm#vApp::showAppWin">vApp::showAppWin</a>.
+<li>Drag and Drop support added for Windows only. Limited
+support for Drag and Drop on Windows has been added. For now,
+the support is rather limited. If you drag a file to an open
+V GUI app, the method <tt>vApp:DropFile(const char* fn)</tt> will
+be called with the dropped file name in fn. You can override
+DropFile in your own vApp class. The DropFile method only provides
+the name of the file dropped. It does not tell you which window
+the file was dropped on, nor does it give you where it was dropped.
+Maybe later. No support for the X versions yet.
+</ul>
+<H4>DLL support for Windows</H4>
+<p>
+The V library will now correctly and easily build as a DLL for
+Windows. Only the MinGW version is explicitly supported, but it should
+also build for Borland or MSVC.
+<p>
+<H4>Major Motif Bug Fixes</H4>
+<p>
+V now seems to actually work with Motif. For small, single-window
+apps, earlier versions worked quite will. However, there were serious
+bugs when trying to close windows using the window manager close button.
+There were also problems when using the CloseAppWin method. These
+seem to be fixed and work quite well now.
+
+<H2>New Features - V Version 1.23</H2>
+
+<H4>New vTextCanvas features</H4>
+
+<ul>
+<li>New <tt>ChrAttr</tt> text attributes: <tt>ChBlackOnBG</tt> and <tt>ChWhiteOnBG</tt>
+for text. These attributes are ORed with other <tt>ChColors</tt>
+will use the color for the <i>background</i>, and use White or
+Black for the text color.
+<li><tt>virtual void DrawAttrsText(const char* text, const ChrAttr* attr);</tt> -
+Draws text according to the <tt>ChrAttr</tt> array instead of a single
+attribute.
+</ul>
+<H2>New Features - V Version 1.22</H2>
+
+<H4>vPopupMenu</H4>
+
+A new class to support Popup Menus has been added.
+
+<H4>LessTif/Motif support</H4>
+
+LessTif is now the main widget set supported for the X version.
+Athena support will continue at a reduced level.
+
+<H4>VIDE enhancements</H4>
+
+At the development of <b>VIDE</b> continues, minor
+features are being added to the V library. Mostly this
+has been bug fixes or feature additions to the vTextEdit class.
+
+<H2>New Features - V Version 1.21</H2>
+
+<H4>New User Guide</H4>
+
+The <b>V User Guide</b> has been completely reformatted
+for HTML. The LaTeX version and its ugly converted HTML version
+have been abandoned. The new version uses style sheets, and has
+lots of hyperlinks to make it a truly great online manual.
+<p>
+Still HTML has limitations. One feature I want to add is
+the ability to put the reference for all classes on a single
+page so that it can easily be printed by the browser. Unfortunately,
+HTML does not have a universially supported mechanism similar
+to #include. So it goes.
+
+
+<H4>vSList Class</H4>
+
+The <tt>vSList</tt> class has been added to help make
+using lists for <tt>C_List</tt> objects easier. See
+<a href="vslist.htm">vSList</a>.
+
+<H4>New MVC Support</H4>
+
+A <b>V</b> user, Tyge Løvset, suggested some new methods for
+<tt>vApp</tt> and <tt>vWindow</tt> that make implementing
+MVC with <b>V</b> very easy. See <a href="vapp.htm#MVC">vApp MVC</a>. 
+
+<H4>OpenGL Library Separated</H4>
+
+Because many Linux systems are configured without OpenGL or Mesa,
+the <b>V</b> OpenGL canvas has been moved to its own library.
+This is true for the MS-Windows version, too.
+
+<H4>MS-Windows: MDI Empty Frame Support</H4>
+
+A new method has been added to <tt>vApp</tt> to allow <b>V</b>
+apps to work like standard MDI apps when all command windows
+have been closed. See <a href="vapp.htm#vApp::CloseLastCmdWindow">
+<tt>vApp::CloseLastCmdWindow</tt></a>.
+
+<H4>MS-Windows: Transparent Icons</H4>
+
+Support for transparent icons in MS-Windows has been added.
+See <a href="vicon.htm">vIcon</a>.
+
+<H4>MS-Windows: Cygwin and mingw32 support improved</H4>
+
+Support for the GNU Cygnus and mingw32 compilers has been improved.
+
+<H4>MS-Windows: DLL for Borland C++</H4>
+
+You can now build a <b>V</b> DLL with at least Borland C++.
+I haven't gotten MSVC++ or the gnu win32 compilers to do this
+yet. Contributions welcome!
+
+<H4>MS-Windows: Windows 3.1 no longer officially supported</H4>
+
+I don't know how many users this will affect, but it has become
+impossible for me to support Windows 3.1 any longer. I haven't
+tested V with Windows 3.1 since about V 1.16, so I don't even
+know if 1.21 does or does not work with Windows 3.1. If you
+need 3.1 support, your are welcome to try it. If you send a diff
+file, I will be happy to provide that to others, and incorporate
+the changes for the next release. However, I will be unable to
+continue to confirm 3.1 compliance.
+
+<H4>VIDE Improved</H4>
+
+The VIDE and the V AppGen utilites have been improved.
+
+<H2>New Features - V Version 1.20</H2>
+
+<H4>New Features for C_List</H4>
+
+<p>
+The number of rows displayed can now be controlled by using the
+<tt>CommandObject</tt> element <tt>size</tt>. By specifying the
+attribute <tt>CA_Size</tt> and providing a value for the <tt>size</tt>
+element, you can specify how many rows to show. If you don't
+specify a size, 8 rows will be displayed. 
+<em><b>V</b></em>will support between
+1 and 32 rows. Note the that the <tt>size</tt> element is the last
+one of a <tt>CommandObject</tt>, and can left out of a declaration,
+which results in the compiler generating a zero value, giving the
+default 8 rows.
+
+<p>
+The width in pixels (approximately) of the list can be controlled
+by specifying the <tt>CA_ListWidth</tt> attribute and providing
+a value to the <tt>retVal</tt> parameter, which is otherwise unused
+for a list object. This implementation isn't perfect - you may
+have to play with the interaction between the width you specify,
+and the font used in a list control.
+
+<p>
+
+<H4>Tool Tips</H4>
+
+<p>
+Support for Tool Tips was added in V Version 1.18.
+You can easily add Tool Tips by adding the appropriate
+text to your existing <tt>CommandObject</tt> definitions of tool bars
+and dialogs. The new definition of a <tt>CommandObject</tt> follows:
+
+<p>
+<font size=-2>
+<pre>
+typedef struct CommandObject
+  {
+    CmdType cmdType;    // what kind of item is this
+    ItemVal cmdId;      // unique id for the item
+    ItemVal retVal;     // initial value of object
+    char* title;        // string
+    void* itemList;     // used when cmd needs a list
+    CmdAttribute attrs; // list of attributes
+    int Sensitive;      // if item is sensitive or not
+    ItemVal cFrame;     // Frame used for an item
+    ItemVal cRightOf;   // Item placed left of this id
+    ItemVal cBelow;     // Item placed below this one
+    int size;           // Used for size information
+    char* tip;          // ToolTip string
+  } CommandObject;
+</pre></font>
+<br>
+char* tip
+<p>
+The tip parameter is used to specify an optional ToolTip string
+for use with a command object. If you provide a string here,
+that string will be automatically displayed after the user holds
+the mouse over that control. The exact delay before the tip
+is shown, and the format of the tip box is somewhat platform
+dependent, and all platforms might not support tool tips.
+(Currently, only OS/2 does not support tips.) Note that if you
+use a tip, you must be sure to include a value (usually 0) for
+the size parameter!
+
+<p>
+
+<H4>void vBeep()</H4>
+
+<p>
+This utility routine will sound an audible beep.
+
+<p>
+
+<H4>void vGetcmdIdIndex(ItemVal cmdId, CommandObject *cmdObj)</H4>
+Sometimes when you work with a CommandObject array to define a
+dialog, you need to access the elements of a particular item in
+the array. This is especially true for manipulating lists.
+This routine will return the index into a CommandObject array
+of an entry with the supplied <tt>ItemVal cmdId</tt>.
+<BR>
+<BR>
+<HR>
+<H2><A NAME="ReleaseNotes"></A>Release Notes - V Versions</H2>
+
+<p>
+
+<DL compact><dt><b>Version 1.00</b></dt><dd>
+This version was local to the University of New Mexico on January 10, 1996.
+Versions 1.01, 1.02, and 1.03 were local maintenance releases.
+
+<p>
+<dt><b>Version 1.04</b></dt><dd>
+This was the first major public release of 
+<em><b>V</b></em>, and was announced
+to the world on February 14, 1996.
+
+<p>
+<dt><b>Version 1.05</b></dt><dd>
+This version had several bug fixes obtained from feedback of the
+public release.
+
+<p>
+<dt><b>Version 1.06</b></dt><dd>
+
+<p>
+This was an X only release, and added 3D controls.
+
+<p>
+<dt><b>Version 1.07</b></dt><dd>
+
+<p>
+This release was never formally announced, and included some
+of the changes listed for version 1.07.
+
+<p>
+<dt><b>Version 1.08</b></dt><dd>
+
+<p>
+The 4/15/96 release added several significant features to 
+<em><b>V</b></em>:
+
+<p>
+
+<UL>
+<li> The <tt>vMemoryDC</tt> drawing canvas, including new methods
+<tt>CopyFromMemoryDC</tt> and <tt>DrawColorPoints</tt>.
+
+<p>
+
+<li> Internal revisions for handling of color, including adding
+<tt>vColor::ResetColor</tt> to allow reuse of color maps, and 
+<tt>vColor::BitsOfColor</tt> to get color capability. These
+revisions allow 
+<em><b>V</b></em>apps to make more effective use of default
+color maps.
+
+<p>
+
+<li> <tt>vPen::SetColor(r,g,b)</tt> and <tt>vBrush::SetColor(r,g,b)</tt>
+are being dropped in favor of the <tt>vColor</tt> forms. These calls
+break the hidden management of color maps, and while still included
+in the code, should 
+<em>not</em> be used. Support for the <tt>(r,g,b)</tt>
+form will be dropped entirely in future versions of 
+<em><b>V</b></em>.
+
+<p>
+
+<li> <tt>C_ToggleIconButton</tt> was added to allow a pressed in
+button interface look in place of check boxes and radio buttons.
+
+<p>
+
+<li> Documentation for <tt>ChangeColor</tt> and <tt>C_ColorLabel</tt>
+was added, although the functionality has been there for a while.
+
+<p>
+
+<li> The WIN32 port was finished, and the X and MS-Windows versions
+are now in sync.
+
+<p>
+</UL><dt><b>Version 1.09</b></dt><dd>
+Added <tt>C_ToggleButton</tt> and
+<tt>C_ToggleFrame</tt> controls. It also includes a large
+number of 
+<em><b>V</b></em>icons suitable for building command pane
+tool bars.
+
+<p>
+<dt><b>Version 1.10</b></dt><dd>
+The 5/29/96 release of 
+<em><b>V</b></em> includes the following enhancements
+and changes:
+
+<p>
+
+<UL>
+<li> The 
+<em><b>V</b></em> Icon Editor - an icon editor to
+create icons for various 
+<em><b>V</b></em> controls.
+
+<p>
+
+<li> Inclusion of accelerator key support in menus.
+
+<p>
+
+<li> Addition of the <tt>ChangeListPtr</tt> set type to allow
+completely dynamic lists, combo boxes, and spinners.
+
+<p>
+
+<li> Addition of <tt>DrawLines</tt>, <tt>DrawPoints</tt>, and
+<tt>DrawRectangles</tt> to <tt>vCanvas</tt>.
+
+<p>
+
+<li> Several bug fixes for both MS-Windows and X, some relatively
+major.
+
+<p>
+
+<li> The canvas page scroll messages were changed
+on the X version to correspond to the behavior of the MS-Windows version.
+A page scroll message is sent only at the completion of
+a scroll, not continuously as before. It is usually rather
+difficult to implement nice continuous scrolling, so this
+approach seems more useful to more people. This is the only
+known change that might affect compatibility with previous
+
+<em><b>V</b></em>applications.
+
+<p>
+
+<li> Addition of a directory for outside contributions.
+
+<p>
+</UL><dt><b>Version 1.11</b></dt><dd>
+
+<p>
+The 7/4/96 release of 
+<em><b>V</b></em> has several minor bug fixes for the
+MS-Windows and X versions. It also adds the <tt>WorkSlice</tt> methods
+to support applications that require computations to continue
+even if the user is not entering commands to the application.
+
+<p>
+<dt><b>Version 1.12</b></dt><dd>
+
+<p>
+This was a bug fix release for MS-Windows. The X version was
+unchanged, but renumbered for consistency.
+
+<p>
+<dt><b>Version 1.13</b></dt><dd>
+
+<p>
+This 8/24/1996 release of 
+<em><b>V</b></em> is a major release with several
+new features, and some significant bug fixes that can change
+the behavior of existing 
+<em><b>V</b></em>applications. The following includes
+a list of changes:
+
+<p>
+
+<UL>
+<li> The 
+<em><b>V</b></em> Application Generator, <tt>vgen</tt> is now included
+with the standard distribution. It will generate a simple
+
+<em><b>V</b></em> application as a starting skeleton for new apps.
+
+<p>
+
+<li> The values being passed by 
+<em><b>V</b></em> to <tt>vCanvasPane::VPage</tt> and
+<tt>HPage</tt> were incorrect on the X version. The documentation states
+that the values for <tt>Top</tt> should be in the range 0 to 100.
+The MS-Windows version worked correctly, but the X version was
+passing a range of 0 to (100-Shown). This bug actually has
+been in the X version since the switch to 3D Controls. With
+version 1.13, both MS-Windows and X work the same.
+
+<p>
+
+<li> The MS-Windows version of <tt>vDC::DrawText</tt> was fixed to
+work according to the documentation. It had been drawing text
+with the x,y as the upper left corner of the text. Beginning
+with 1.13, it now draws at the lower left corner as specified
+in the documentation.
+
+<p>
+
+<li> Two functions, <tt>GetHScroll</tt> and <tt>GetVScroll</tt>,
+were added to <tt>vCanvasPane</tt> to make dealing with
+scroll bars easier.
+
+<p>
+
+<li> A new standard using <tt>enums</tt> for generating IDs for
+controls has been adopted beginning with 1.13.
+
+<p>
+
+<li> <tt>C_TextIn</tt> controls now allow you to specify the
+width of the control in characters using the <tt>size</tt> field.
+This is described in Chapter 6.
+
+<p>
+
+<li> In <tt>vCanvasPane</tt>, new parameters (with default
+values for backward compatibility) were added to
+<tt>CopyFromMemoryDC</tt> to allow subregions to be copied.
+
+<p>
+
+<li> Using a <tt>vTransparent</tt> pen when drawing text
+now results in leaving the existing background when drawing, and
+a <tt>vSolid</tt> pen overwrites with the current background
+color.
+
+<p>
+
+<li> There was a conflict on MS-Windows with using <tt>VK_</tt> for
+key names. The MS-Windows version was changed long ago, and now
+the X version also uses lower case letters (e.g., <tt>vk_Tab</tt>).
+
+<p>
+</UL><dt><b>Version 1.14</b></dt><dd>
+
+<p>
+The major addition to 10/6/96 
+<em><b>V</b></em>Release 1.14 is the addition of
+the <tt>vTextEditor</tt> class, which is a very good first pass at
+a complete editing canvas. The editor is complete, can be
+extended to support custom command sets or file management.
+It is missing cut, copy, and paste, which will be implemented
+as general support for these is added to 
+<em><b>V</b></em>. The code for
+<tt>vTextEditor</tt> is based on <tt>vTextCanvasPane</tt>, and
+is identical for the X and MS-Windows versions.
+
+<p>
+Also, for the X Version, support for OpenGL has been added.
+This support is found in the distribution directory
+<tt>v/vxgl</tt>. While the 
+<em><b>V</b></em>OpenGL canvas pane seems
+very robust, it is still somewhat experimental. I would
+like any feedback on its use and design.
+
+<p>
+Other changes, mostly bug fixes, include:
+
+<p>
+
+<UL>
+<li> X version: The little close button on the left of the
+menu bar has been dropped by popular request. It seems most people
+didn't like it. If you do, you can still get it by defining
+the symbol USE_CLOSE_BUTTON. Instead, 
+<em><b>V</b></em>now supports the
+X WM_DELETE_WINDOW protocol. This protocol is supported
+slightly differently by different window managers, but
+accomplishes the same thing as the old close button.
+
+<p>
+
+<li> X version: There was a minor bug in how the
+scroll bars worked when <tt>top == 0</tt>.
+
+<p>
+
+<li> X version: The method used to get the size of a window
+was changed, and should now give correct values.
+
+<p>
+
+<li> X version: There was a bug in drawing radio buttons
+that only showed up on some systems.
+
+<p>
+
+<li> X version: There was a bug in changing the current
+selection in combo boxes.
+
+<p>
+
+<li> X version: There was a bug in setting colors for the
+PostScript DC.
+
+<p>
+
+<li> X and MS-Windows: There were several bugs in
+<tt>vTextCanvasPane</tt> exposed by the implementation
+of <tt>vTextEditor</tt>.
+
+<p>
+
+<li> X version: There was a bug in the key mapping that would
+cause a program to terminate if an unrecognized key was pressed.
+
+<p>
+
+<li> MS-Windows: The method to determine the size of the MDI
+frame and client windows was improved (I hope!).
+
+<p>
+
+<li> MS-Windows: A bug with the work timer was fixed. The interaction
+between the work timer, check events, and the MS-Windows message
+loop was changed to work better.
+
+<p>
+
+<li> MS-Windows: The argument order of ClearRect was fixed to correspond
+to X and the documentation.
+
+<p>
+
+<li> MS-Windows: There was a bug that didn't allow SetValue to work
+correctly for some controls.
+
+<p>
+
+<li> MS-Windows: A bug in handling the MS-Windows caret in text
+canvases was fixed. This one was a bit subtle, but nasty in
+possible side effects. Also, EnterFocus and LeaveFocus did not work correctly.
+
+<p>
+
+<li> MS-Windows: A bug in setting text colors on NT and Windows 3.1 was fixed.
+The bug did not manifest itself on Windows 95.
+
+<p>
+</UL><dt><b>Version 1.15</b></dt><dd>
+
+<p>
+Release of V Version 1.15 has some non-backward compatible
+changes. In previous versions of V, there were inconsistencies in
+the order of width and height parameters. These have all been now
+changed to consistently use a width/height order. (Except for
+vIcon, which still use height/width.) The decision to fix this
+order came from a general consensus of the V mail list.
+
+<p>
+You will need to change your code to reflect the new changes.
+The following things must be changed:
+
+<p>
+1. Any calls to the constructor of a base or derived vCmdWindow
+will need the width and height order swapped.
+
+<p>
+2. Calls or overrides of vApp::NewAppWin need the
+order of width and height swapped.
+
+<p>
+3. Calls to vCanvasPane::SetHeightWidth(h,w) need to be
+changed to vCanvasPane::SetWidthHeight(w,h).
+
+<p>
+4. Calls or overrides of all versions of Redraw(x,y,h,w)
+need to be changed to Redraw(x,y,w,h).
+
+<p>
+5. Calls or overrides of all versions of Resize(h,w)
+need to be changed to Resize(w,h). (The vTextCanvas
+row/column versions retain their row/column order.)
+
+<p>
+Also, the makefiles have been revised for more flexible
+building on different *nix platforms.
+
+<p>
+A new method, vDialog::DialogDisplayed has been added to
+allow dynamic setting of dialog control values.
+
+<p>
+<dt><b>Version 1.16</b></dt><dd>
+
+<p>
+Version 1.16 has no significant changes in V functionality.
+It mostly has some bug fixes. The only major change is
+the release of a completely new set of Makefiles for
+the Unix version. These new makefiles were contributed by
+a V user, and are much cleaner than the old versions.
+
+<p>
+A summary of the changes:
+
+<UL>
+<p>
+
+<li> A small change to the code generated by vAppGen.
+
+<li> A fix to scrolling in the V Icon Editor.
+
+<li> Some changes to the v_defs.h file for MS-Windows, including
+compatibility changes needed for Microsoft VC++. Project files were
+added for MSVC++.
+
+<li> The == and != operators for brushes, fonts, pens, and colors were
+changed to use reference parameters consistently.
+
+<li> Various minor changes to enhance compiler compatibility, both
+on MS-Windows and X.
+
+<li> VReply was fixed to work over multiple shows.
+
+<li> A void* was added to vAppWinfo.
+
+<li> Vmemdc had height and width switched.
+
+<li> Sizing of buttons on MS-Windows was fixed for Windows 95.
+
+<li> A resource leak was fixed for MS-Windows.
+
+<li> A major bug that showed up only under Microsoft VC++ was
+fixed.
+
+<li> Initialization of text in strings was fixed for MS-Windows.
+
+<li> Changing the values of radio buttons on MS-Windows now works.
+
+<li> Spinners now honor the size specification.
+
+<li> A tab keystroke now works correctly on MS-Windows.
+
+<li> A bug in 
+
+<li> Various new tests were added to the test program.
+
+<li> A couple of bugs were fixed in the X OpenGL V interface.
+</UL>
+<p>
+<dt><b>Version 1.17</b></dt><dd>
+
+<p>
+Version 1.16 has proven to be remarkably stable. A few minor bugs
+have been reported and corrected for Version 1.17. Some
+enhancements have been added, the most significant allows you
+to specify the number of rows displayed in a list box.
+
+<p>
+A summary of the changes:
+
+<UL>
+<p>
+
+<li> Lists by default display 8 rows, buy you can now specify and
+size between 1 and 32 rows.
+
+<li> A bug in Windows when closing multiple windows was fixed.
+
+<li> The vReply dialog has been changed to allow a default string in
+the input field.
+
+<li> Direct printing to <tt>lpr</tt> has been added to the X version.
+
+<li> The PostScript driver was modified to print better lines.
+</UL>
+<p>
+<dt><b>Version 1.18</b></dt><dd>
+
+<p>
+Release 1.18 has a major enhancements to 
+<em><b>V</b></em>. The main addition is
+support for Tool Tips - little boxes with text info that are automatically
+displayed when the user holds the mouse over a control. Tool Tip
+support is 
+<em>very</em> trivial to add to your programs, and greatly
+enhances the user interface.
+
+<p>
+There are some minor enhancements, and a few bug fixes. Beginning with
+the 1.18 release, there will be a separate document that summarizes
+the changes for that version. This will simplify the upgrade path for
+past users.
+
+<p>
+<dt><b>Version 1.19</b></dt><dd>
+
+<p>
+Release 1.19 has some minor enhancements, and a few bug fixes. The main
+enhancement is the addition of password support for text in controls.
+There have also been some improvements to <tt>vgen</tt>, especially for
+support for the <tt>mingw32</tt> MS-Windows compiler. The support for
+the <tt>mingw32</tt> compiler has been improved.
+
+<p>
+<dt><b>Version 1.20</b></dt><dd>
+
+<p>
+Release 1.20 is has some major new features.
+
+<p>
+
+<UL>
+<li> Support for OpenGL. OpenGL is now supported on both X and MS-Windows.
+While the interface to the <tt>vBaseGLCanvasPane</tt> class has not changed,
+the X version was revised to be properly derived from <tt>vCanvasPane</tt>,
+and is now included as a standard class in the library.
+
+<p>
+
+<li> The clipboard is finally supported - at least for text.
+
+<p>
+
+<li> The text editor class has been improved. The included
+text editor based on the class now supports C++ syntax highlighting.
+
+<p>
+
+<li> The first version of the V Integrated Development Environment
+for the GNU g++ compiler has been included. It currently works
+with makefiles you generate. It will be improved to include full
+project management, a class browser, a dialog builder, and other
+neat features.
+
+<p>
+
+<li> <tt>Vgen</tt>, the 
+<em><b>V</b></em>shell application generator, has been
+improved, and also includes support for generating OpenGL app shells.
+
+<p>
+
+<li> There has been a serious bug ever since version 1.00 when
+closing multiple windows. The <tt>void vApp::CloseAppWin</tt> class
+did not properly allow the user to cancel the close sequence by the app.
+This class has been changed to <tt>int vApp::CloseAppWin</tt>, and
+if your override returns 0, the exit process will now be properly
+aborted. Unfortunately, this means you must change all of you
+apps to conform to the new <tt>int</tt> type.
+
+<p>
+
+<li> The <tt>vApp::xxAll</tt> methods were broken on the X version.
+
+<p>
+
+<li> A problem with tool tips on MS-Windows with multiple
+opens and closes on dialogs has been fixed.
+
+<p>
+
+<li> The startup code has been separated to allow easier building
+of DLLs.
+
+<p>
+
+<li> On MS-Windows, the <tt>Esc</tt> key is now the same as clicking
+the <tt>Cancel</tt> button. This has not been implemented on X yet.
+This change potentially causes a problem with MS-Windows apps.
+MS-Windows handles the <tt>Esc</tt> key by reserving the value 2.
+Unfortunately, there is no way to tell if the 2 is from the <tt>Esc</tt>
+key or from a menu or dialog command item you've defined with the
+value 2. So, you must change the value of any button or command object
+you have with the id value of 2 to something else. Sorry.
+
+<p>
+</UL></DL>
+<H2><A NAME="tth_sEcE.4"></A> Future Plans</H2>
+
+<p>
+
+<UL>
+<li> The VIDE will be enhanced. It will be released as a separate
+package, apart from the standard 
+<em><b>V</b></em>library.
+</UL>
+
+<p>
+
+
+</font>
+
+</BODY></HTML>

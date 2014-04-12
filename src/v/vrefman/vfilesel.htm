@@ -1,0 +1,132 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vFileSelect</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vFileSelect</H1>
+<HR>
+
+
+<A NAME="vFileSelect"></A>
+A utility class to select or set a file name.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>        <dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vFileSelect">&lt;v/vfilesel.h&#62;</A></tt>
+        <dt><b>Class name:</b></dt><dd> vFileSelect
+        <dt><b>Hierarchy:</b></dt><dd> vModalDialog -&#62;vFileSelect
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This utility class provides a dialog interface for selecting
+filenames. It can be used either to select an input file name,
+or verify or change an output file name. This utility does not
+open or alter files - it simply constructs a legal file name for
+use in opening a file.
+
+<p>
+
+<h2>Methods</h2>
+
+<p>
+
+<H4>vFileSelect(vBaseWindow* win)</H4>
+
+<H4>vFileSelect(vApp* app)</H4>
+
+<p>
+The <tt>vFileSelect</tt> constructor requires a pointer to a
+<tt>vBaseWindow</tt>, which includes all 
+<em><b>V</b></em>&nbsp;windows and dialogs,
+or a pointer to the <tt>vApp</tt> object.
+You will usually pass the <tt>this</tt> to the constructor.
+
+<p>
+
+<H4>int FileSelect(const char* prompt, char* filename, const
+int maxLen, char** filterList, int&amp; filterIndex)</H4>
+
+<H4>int FileSelectSave(const char* prompt, char* filename, const int
+maxLen, char** filterList, int&amp; filterIndex)</H4>
+You provide a <tt>prompt</tt> for the user, such as ``Open File.'' The
+user then uses the dialog to select or set a file name. <tt>FileSelect</tt>
+returns <tt>True</tt> if the user picked the OK button, and <tt>False</tt>
+if they used the Cancel button.
+
+<p>
+The filename will be filled in to the <tt>filename</tt> buffer of
+maximum length <tt>maxLen</tt>. The full path of the file will be
+included with the file name.
+
+<p>
+You can also provide a list of filter patterns to filter file
+extensions. If you don't provide a filter list, the default filter
+of ``*'' will be used. Each item in the filter list can include a list
+of file extensions separated by blanks. You can provide several
+filtering options. The first filter in the list will be the default.
+Only leading ``*'' wild cards are supported.
+
+<p>
+The <tt>filterIndex</tt> reference parameter is used to track which
+filter the user selected. After <tt>FileSelect</tt> returns, <tt>filterIndex</tt>
+will be set to the index of the filter list that the user last
+selected. For the best interface, you should remember this value for
+the next time you call <tt>FileSelect</tt> with the same filter list so
+that the user selected filter will be preserved.
+
+<p>
+You should use <tt>FileSelect</tt> to open a new or existing file. If
+the user is being asked to save a file (usually after picking a
+
+<em>Save As</em> menu choice), use the <tt>FileSelectSave</tt> method. On
+some platforms, there will be no difference between these two
+methods (X, for example). On other platforms (Windows, for example),
+different underlying system provided file dialogs are used. To your
+program, there will be no difference in functionality.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+The following is a simple example of using <tt>vFileSelect</tt>.
+
+<p>
+<img src="fig/filesel.gif"><br>
+<font size=-2>
+<pre>
+    static char* filter[] =     // define a filter list
+      {
+        "*",                    // all files
+        "*.txt",                // .txt files
+        "*.c;*.cpp;*.h",        // C sources
+        0
+      };
+    static int filterIndex = 0;    // to track filter picked
+    char name[100];
+
+    vFileSelect fsel(this);     // instantiate
+
+    int oans = fsel.FileSelect("Open file",name,99,filter,filterIndex);
+
+    vNoticeDialog fsnote(this); // make an instance
+
+    if (oans && *name)
+        (void)fsnote.Notice(name);
+    else
+        (void)fsnote.Notice("No file name input.");
+</pre></font>
+
+
+</BODY>
+</HTML>

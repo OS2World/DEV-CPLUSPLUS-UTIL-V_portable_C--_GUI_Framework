@@ -1,0 +1,107 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vBrush</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vBrush</H1>
+<HR>
+<A NAME="vBrush"></A>
+A class to specify the brush used to fill shapes.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vBrush">&lt;v/vbrush.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vBrush
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+Brushes are used to fill shapes. Brushes have
+two attributes, including color and style.
+
+<p>
+
+<h2>Methods</h2>
+
+<p>
+
+<H4>vBrush(unsigned int r = 0, unsigned int g = 0, unsigned
+int b = 0, int style = vSolid)</H4>
+The brush constructor allows you to set the initial color and
+style of the brush. The default constructs a solid black brush.
+
+<p>
+
+<H4>int operator == , !=</H4>
+
+<p>
+You can use the operators <tt>==</tt> and <tt>!=</tt> for comparisons.
+
+<p>
+
+<H4>vColor GetColor()</H4>
+This method returns the current color of the brush as a <tt>vColor</tt> object.
+
+<p>
+
+<H4>int GetFillMode()</H4>
+This method returns the fill mode of the brush (either <tt>vAlternate</tt>
+or <tt>vWinding</tt>).
+
+<p>
+
+<H4>int GetStyle()</H4>
+This method returns the current style of the brush.
+
+<p>
+
+<H4>void SetColor(vColor&amp; c)</H4>
+You can use this method to set the brush color by passing
+in a <tt>vColor</tt> object.
+
+<p>
+
+<H4>int SetFillMode(int fillMode)</H4>
+This method sets the fill mode of the brush.
+The fillMode parameter specifies one of two alternative filling
+algorithms, <tt>vAlternate</tt> or <tt>vWinding</tt>. These algorithms correspond
+to the equivalent algorithms on the native platforms.
+
+<p>
+
+<H4>void SetStyle(int style)</H4>
+This method is used to set the style of the brush. Brush styles
+include:
+
+<p>
+
+<DL compact>	<dt><b>vSolid</b></dt><dd> The brush fills with a solid color.
+	<dt><b>vTransparent</b></dt><dd> The brush is transparent, which allows
+you to draw unfilled shapes.
+	<dt><b>vHorizontalHatch</b></dt><dd> The brush fills with a horizontal hatch pattern
+in the current color.
+	<dt><b>vVerticleHatch</b></dt><dd> The brush fills with a vertical hatch pattern.
+	<dt><b>vLeftDiagonalHatch</b></dt><dd> The brush fills with a left leaning
+diagonal hatch pattern.
+	<dt><b>vRightDiagonalHatch</b></dt><dd> The brush fills with a right
+leaning diagonal hatch pattern.
+	<dt><b>vCrossHatch</b></dt><dd> The brush fills with a vertical and horizontal cross hatch
+pattern.
+	<dt><b>vDiagonalCrossHatch</b></dt><dd> The brush fills with a diagonal
+cross hatch pattern.
+</DL>
+<p>
+
+
+
+</BODY>
+</HTML>

@@ -1,0 +1,13 @@
+VIDE is a full featured IDE for the GNU compiler collection (gcc)
+and Sun's Java (JDK 1.2). It has the features you'd expect in an
+IDE, including full integrated compiler and debugger support.
+Editor command interfaces supported include a standard Windows-like
+command set, the longtime Unix favorite Vi, and VIDE's own modal
+command set called See. All are real, full-featured programming
+editors suitable for the most experienced programmer. Yet VIDE is
+very easy to learn and use, and is perfect for a student learning
+environment for C++ or Java. VIDE also includes extensive help
+support, including one of the most complete compilations of free help
+information avaialble on the web. Full source code is available under 
+the GPL! A Linux version is available as well.
+

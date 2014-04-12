@@ -1,0 +1,73 @@
+
+              The V Integrated Development Environment
+                       February 25, 2000
+
+This is to announce support for the Borland C++ Compiler 5.5
+by VIDE Version 1.07. VIDE can build Console, GUI, and static
+library project files. It also includes some extra documentation
+about the Borland environment. VIDE does not add a debugger,
+however.
+
+VIDE is the V Integrated Development Environment for the
+Gnu Compiler Collection (gcc), the free Borland C++ Compiler 5.5
+for MS-Windows, and the standard Sun Java Development Kit. VIDE
+is available both as a ready to run package for MS-Windows 9x/NT
+and Linux, and as part of the V C++ GUI Framework. Executables
+are available for download at
+
+
+ ********    http://www.objectcentral.com/vide.htm  **********
+
+
+VIDE has been designed by a programmer for programmers. It makes
+the task of developing software for C/C++, Java, and HTML much
+easier than using command line mode. It is easy to learn, so it
+is a good tool for the beginner. It also has the critical
+features needed to enhance the productivity of the experienced
+programmer.
+
+While VIDE doesn't have every feature found in many commercial
+development systems, it is an ongoing project, with more features
+included in each release. And best of all, VIDE is FREE! And
+since it is GPLed, you can add even more features if you want.
+
+The main features in the current release of VIDE include:
+
+* A great editor - The VIDE editor is a very good editor designed
+    for the programmer. Editor features include:
+* Syntax Highlighting for C/C++, Java, Perl, Fortran, TeX and HTML.
+* Several menu-selectable editor command sets, including:
+   . A generic modeless command set, similar to many Windows editors.
+   . Vi - the standard Unix editor, with extensions.
+   . The See editor command set, an editor designed and used by
+       Bruce Wampler, the author of V and VIDE.
+* Beautifies C/C++ and Java code
+* Powerful command macro capability
+* Complete support for ctags (symbol lookup)
+* Project Files - specify source files, compiler options,
+     and other details required for C/C++ or Java.
+     Project files simplify and hide most of the details of using 
+     the underlying tools.
+* C/C++ Support - Supports C/C++ development on Windows and Linux with
+     the GNU gcc. Supports C/C++ development on Windows with the
+     Borland C++ Compiler 5.5.
+* Java Support - Supports Java development using the Sun JDK.
+* Syntax errors - Point and click to go to errors in source files.
+* Supports gdb and jdb - Integrated support for the GNU gdb debugger 
+     for C/C++ and Sun's jdb debugger for Java. There is NO support
+     for debugging with the Borland BCC32.
+* V GUI - Integrated support for the V GUI Framework for C++.
+* HTML - Extra support for HTML development.
+* Extensive HELP
+* Execellent Documentation - Complete reference and tutorial documentation.
+
+The executable version of VIDE is totally freeware. Use it, share
+it, do whatever you want. The source of VIDE falls under the GNU
+General Public License.
+see broader use than the source version included with V.
+
+This program is provided on an "as is" basis, without warranty of
+any kind. The entire risk as to the quality and performance of
+the program is borne by you.
+
+

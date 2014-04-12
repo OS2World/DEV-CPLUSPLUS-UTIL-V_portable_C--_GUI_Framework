@@ -1,0 +1,432 @@
+<HTML> <HEAD>
+  <TITLE> V Reference Manual - The V View of the World </TITLE>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vApp</title>
+ </HEAD>
+<BODY BGCOLOR="#ffffff">
+<H1>The V View of the World</H1>
+<HR>
+
+<p>
+Before getting into the details of 
+<em><b>V</b></em>, you might find it useful to
+read this overview of how the 
+<em><b>V</b></em>&nbsp;view of the world was developed.
+If you are new at writing GUI applications, you should find this
+page especially useful.
+
+<p>
+
+<H2><A NAME="GUIModel"></A> A Generalized GUI Model</H2>
+
+<p>
+If you examine a large number of applications available on the major
+GUI platforms, you will find the interfaces typically have a
+great deal in common. While the visual details may differ,
+most applications have windows that show views of the data being
+manipulated, and use menus and dialogs for control interaction
+with the user. The user interacts with the program using a
+pointing device, usually a mouse, and the keyboard.
+
+<p>
+
+<H3>Windows</H3>
+
+<p>
+
+<A NAME="fig:protoapp"></A>
+<center><img src="fig/protoapp.jpg"><br></center><BR>
+
+<center>      Figure 1: This top level consists of:
+(1)&nbsp;The title bar. 
+(2)&nbsp;The close button.
+(3)&nbsp;The menu bar.
+(4)&nbsp;A pulldown menu.
+(5)&nbsp;The command bar.
+(6)&nbsp; The drawing canvas.
+(7)&nbsp;The status bar.</center>
+<p>
+The <em>window</em> is usually the main interface object used by an
+application. The data being manipulated by the user (e.g.,
+text, graphics, spreadsheet cells) is displayed in the window. Often,
+several windows may be open at the same time, each giving
+a different view of the data. There is usually a menu associated
+with the window for entering commands to manipulate data or
+to bring up dialogs.
+
+<p>
+The top level interface object
+used by 
+<em><b>V</b></em>&nbsp;is a 
+<em>Command Window</em>. Each command window
+consists of a 
+<em>menu bar</em>, placed at the
+top of the window;  a 
+<em>canvas</em>
+area, used to draw text and graphics to display the data; 
+and optional 
+<em>command bars</em>,
+which include commands buttons and objects; and optional
+
+<em>status bars</em> to display state information.
+
+<p>
+Figure&nbsp;<A href="#fig:protoapp">1</A> represents, more or less, 
+a typical top-level 
+<em><b>V</b></em>&nbsp;window. 
+
+<p>
+
+<H3>Dialog Boxes</H3>
+
+<p>
+
+<A NAME="fig:mydialog"></A>
+<center><img src="fig/mydialog.jpg"><br></center><BR>
+<center> 
+Figure 2: This dialog consists of: 
+(1)&nbsp;Dialog title.
+(2)&nbsp;Four check boxes in a frame. 
+(3)&nbsp;Three radio buttons in a frame.
+(4)&nbsp;Three buttons in a frame.
+(5)&nbsp;Four command buttons.
+</center> 
+<p>
+Much control interaction with 
+<em><b>V</b></em>applications takes place
+through one of two dialog objects: 
+<em>modal</em> and 
+<em>modeless</em> dialogs. In a modal dialog, interaction with
+any other window or dialog is locked out until the user
+interacts with it. In a modeless dialog, the user can continue to
+interact with other parts of the application while the dialog remains
+displayed. Modal dialogs will go away once the user enters a
+command. Modeless dialogs may or may not go away, depending on
+their purpose.
+
+<p>
+
+<em><b>V</b></em>&nbsp;supports a comprehensive set of controls for dialogs. These
+include command buttons, text labels, text input, list selection
+boxes, combo boxes, radio buttons, check boxes, spinners for
+value entry, sliders, and progress bars. These controls may be
+grouped into boxes. Layout of controls in a dialog is defined in
+the dialog definition list in the source code. Controls may be
+used in window command bars as well as dialogs.
+
+<p>
+Figure&nbsp;<A href="#fig:mydialog">2</A> 
+represents, more or less, a typical
+
+<em><b>V</b></em>&nbsp;dialog.
+
+<p>
+
+<H3>Events</H3>
+The structure of the code for user command processing in GUI
+applications is quite different from traditional C programs. The
+user input control model of traditional C programs is rather
+simple, usually using <tt>printf</tt> and <tt>getc</tt> or some
+variant for interaction. Logically, the program reaches a point
+where it needs input, and then waits for that input.
+
+<p>
+GUI applications deal with user input much differently.
+Interaction with an application from the user's viewpoint
+consists of a series of mouse movements and clicks, and text and
+command input through the keyboard. From the programmer's
+viewpoint, each of these is an event. The important thing about
+an event is that it can occur at any time, and the program cannot
+simply stop and wait for the event to happen.
+
+<p>
+Interaction with an application by the user can generate several
+different kinds of events. Consider mouse events.
+If the mouse is in the drawing area, each movement generates a
+
+<em>mouse movement</em> event. If the user clicks a mouse button, a
+
+<em>mouse button</em> event is generated. A keystroke from the
+keyboard will generate a 
+<em>keyboard</em> event.
+
+<p>
+If the mouse pointer is in a dialog, or over a menu or command
+button, then movement events are not generated. Instead, button
+clicks generate 
+<em>command</em> events. 
+
+<p>
+Sometimes an application needs to track the passage of time. The
+application can call a system function that will generate a
+
+<em>timer</em> event at a given interval.
+
+<p>
+In a GUI environment, windows are usually not displayed alone. Often,
+other applications are running, each with its own windows. The
+host windowing system typically displays windows with various decorations
+that let the user manipulate the windows. Sometimes, these
+manipulations will generate events that require a response
+from the application code. For example, the user can use the
+mouse to change the size of a window causing a 
+<em>resize</em>
+event. When multiple windows are displayed, some can be
+completely or partially covered by other windows. If the user
+moves a window so that a different part of the window is
+displayed, then an 
+<em>expose</em> event is generated, which
+requires the program to redraw part of the canvas area.
+
+<p>
+All these events require a response from the application -
+to carry out the command, to draw something in the canvas area,
+or to redraw the canvas after a resize or expose event. Some
+events, however, are handled by the system, and not the
+application. This includes drawing menus and handling dialogs.
+For example, when a dialog is displayed, the system tracks mouse
+movements within the dialog, and handles redrawing the dialog for
+expose events. In general, the application is responsible for
+resize and expose events only for the canvas area.
+
+<p>
+All these events are asynchronous, and the application must be able
+to respond immediately to any of these events. Traditionally, 
+handling events has been rather complicated. For each possible
+event, the program registers an 
+<em>event handler</em> with
+the system. Then, the program runs in an 
+<em>event loop</em>.
+The event loop receives an event, and then calls a
+function to dispatch the event to the proper event handler.
+
+<p>
+C++ makes dealing with events much easier. Each event can be considered
+a message, and the message is central to object-oriented
+programming. In 
+<em><b>V</b></em>, each object, such as a command window, has
+methods<a href="#tthFtNtAAB" name=tthFrefAAB><sup>1</sup></a> that the system sends event messages to. For
+example, there is a <tt>WindowCommand</tt> method that responds to
+command events from the system. The application overrides the
+default 
+<em><b>V</b></em>&nbsp;<tt>WindowCommand</tt> method to handle commands as
+needed by the application. All the details of the event loop and
+event handlers are hidden in the 
+<em><b>V</b></em>&nbsp;implementation. If you have
+ever programmed with event handlers and loops, you will find the
+simplicity of overriding default methods incredibly easy in
+comparison!
+
+<p>
+
+<H2>Easy to program</H2>
+
+<p>
+One of the main goals of the design of 
+<em><b>V</b></em>&nbsp;was to make it easy to
+use to write real programs. Some of the factors that help 
+<em><b>V</b></em>&nbsp;meet
+this goal are described in the following sections.
+
+<p>
+
+<H3>Hide the dirty details</H3>
+
+<p>
+One of the problems with using most native GUI libraries such
+as Xt or Windows is the huge amount of overhead and detail required
+to perform even the simplest tasks. You are typically coding at a
+very low level. While part of this complexity may be necessary to
+allow total flexibility in what you can do, the vast majority of
+applications just do not need total flexibility. 
+<em><b>V</b></em>&nbsp;was designed
+to hide most of the details of the underlying GUI library. Things
+such as library initialization, specific window handles, and
+calls required to build low level controls are all hidden.
+Instead, you work at the much higher level of objects needed to
+build a typical GUI.
+
+<p>
+
+<H3>Easy to define GUI objects</H3>
+
+<p>
+It has always seemed to me that a GUI object such as a menu could
+most simply be thought of as a single object consisting of a list
+of items on that menu with their associated attributes. Rather than
+requiring a set of complicated calls to build that menu list, in
+
+<em><b>V</b></em>&nbsp;you can simply define a menu as a static C++ struct array -
+a list in other words. The same applies to dialogs. A dialog is a
+list of control objects with associated attributes, including
+how the controls are positioned in the dialog. This philosophy leads
+to very easy to maintain code. Menu and dialog lists are well
+defined in a single place in your code, and it is very easy to
+modify and change the list definitions. Actions for each menu or
+dialog command are defined in a single C++ method that responds
+to command events.
+
+<p>
+
+<H3>No resource editors</H3>
+One data object used by most, but not all, native GUI libraries
+is what is usually called a resource file. A resource file is
+most often used to specify layout of dialogs and menus. One
+reason resource files are used is that specifying the layout of
+dialogs and menus directly in the code is often very difficult
+for the native libraries.
+
+<p>
+The combination of the way 
+<em><b>V</b></em>&nbsp;lets you specify menus and dialogs,
+and the way C++ makes responding to event messages so easy has really
+removed the need for resource files. This in turn eliminates one
+of the more complicated aspects of portability across platforms.
+
+<p>
+
+<H3>Look and Feel</H3>
+
+<p>
+One of the limitations of 
+<em><b>V</b></em>&nbsp;is that it has its own look and feel.
+While this may be a limitation, it is not necessarily bad. First,
+the look and feel is constrained so that applications will be portable
+across platforms and look like native applications on each platform.
+This means some things that are possible on one GUI platform, but
+not another, are not included in 
+<em><b>V</b></em>.
+
+<p>
+
+<em><b>V</b></em>&nbsp;also incorporates much of my own experience. I really like
+simplicity, and believe that just because you can do something,
+it is not necessarily a good idea to do so. Thus, for example,
+there are limitations on the number of menu items per menu, and
+how deeply you can nest pull down menus. These limits in fact
+help enforce good interface design.
+
+<p>
+
+<H2>Good Example of OO</H2>
+
+<p>
+While 
+<em><b>V</b></em>&nbsp;has been designed to develop real and useful GUI
+applications, it also has been designed to be useful in a
+learning environment. Thus, 
+<em><b>V</b></em>&nbsp;represents a good example of
+object-oriented design. 
+
+<p>
+GUI systems are a natural for object orientation (OO). It is easy
+to understand the nature of each object - a window, a dialog, a
+command button, a menu bar, a canvas, and so on. Inheritance and
+aggregation of these objects is also very natural. Events are
+messages, and sending messages to methods is pure OO.
+
+<p>
+Since 
+<em><b>V</b></em>&nbsp;is licensed under the terms of the GNU Library General
+Public License, the source code will always be available for
+study. It was written using the guidelines of Appendix B, and is
+very readable and easy to understand. Not only is the 
+<em><b>V</b></em>&nbsp;source
+code a good example of OO programming, you may also find it
+interesting if you want to learn things about how the
+underlying GUI toolkits work. While good examples of freeware X
+source code are readily available, good examples of non-trivial
+Windows source code are nearly impossible to come by. I hope the
+
+<em><b>V</b></em>&nbsp;Windows source code will help fill this void.
+
+<p>
+
+<H2>The V Object Hierarchy</H2>
+This manual contains several object hierarchy diagrams of the
+
+<em><b>V</b></em>&nbsp;framework, and of 
+<em><b>V</b></em>&nbsp;applications. There are many graphical
+notations in varying degrees of widespread use, but I have found
+the Coad-Yourdon<a href="#tthFtNtAAC" name=tthFrefAAC><sup>2</sup></a> notation one of the
+easiest to learn and simplest to use. The basic graphical
+elements of the notation are shown in  Figure&nbsp;<A href="#fig:oonotation"
+>3</A>.
+
+<p>
+
+ <A NAME="fig:oonotation"></A>
+<center><img src="fig/oonotate.gif"><br></center>
+<center>
+Figure 3: Coad-Yourdon OO Notation</center>
+<p>
+An object is shown in a rectangular box. A single border indicates
+a generalized base class that will not have any instances,
+while a double border indicates that the named object can have
+instances. Generalization/specialization (inheritance, or is-a)
+relationships are shown with half circles. Whole/part (aggregation,
+or has-a) relationships are shown with triangles
+<a href="#tthFtNtAAD" name=tthFrefAAD><sup>3</sup></a>.
+
+<p>
+The ``1,N'' notation at the top of the aggregation triangle
+indicates that the object above can contain from 1 to N instances
+of the object below. The lower ``1,N'' indicates the lower object
+can be a part of 1 to N objects. The values can be changed to
+reflect reality. Thus, it is common to have ``1,N'' at the top,
+indicating that an object may contain many instances of the lower
+object, and just a ``1'' for the lower value, indication that an
+object is a part of exactly one of the upper objects.
+
+<p>
+When discussing a design at a high level, the attributes and
+methods boxes are often left blank. This leads to hierarchies
+such as the one for 
+<em><b>V</b></em>&nbsp;in Figure&nbsp;<A href="#fig:vproghier">4</A>
+that shows the programming view of the 
+<em><b>V</b></em>&nbsp;framework. In this case, there
+are no generalized base objects, and most of the relationships
+are whole/part.
+
+<p>
+
+<A NAME="fig:vproghier"></A>
+<center><img src="fig/vprghier.gif"><br></center>
+<center>
+Figure 4: Programming View of V Classes</center> 
+<p>
+Figure&nbsp;<A href="#fig:vproghier">4</A>
+reveals some interesting things about
+<em><b>V</b></em>'s look and feel. Note that a <tt>vApp</tt> class 
+has 1 to N
+<tt>vCmdWindows</tt>, indicating that there will be at least one
+window. Each window, in turn, has exactly one menu and canvas,
+but zero to many command panes, status panes, and dialogs.
+
+<p>
+The version of the 
+<em><b>V</b></em>&nbsp;hierarchy in the Appendix shows an
+implementation view of the hierarchy. Some of the classes that
+are never seen or used by the programmer are shown in that
+hierarchy. 
+
+<p>
+<hr><H3>Footnotes:</H3>
+
+<p><a name=tthFtNtAAB></a><a href="#tthFrefAAB"><sup>1</sup></a> I use the general object-oriented term 
+<em>method</em>
+to refer to what are called 
+<em>member functions</em> in C++
+terminology.
+<p><a name=tthFtNtAAC></a><a href="#tthFrefAAC"><sup>2</sup></a> Peter Coad and Edward Yourdon, 
+
+<em>Object-Oriented Analysis</em>, 2nd ed. (Yourdon
+Press/Prentice Hall, 1990); and Edward Yourdon, 
+<em>Object-Oriented
+System Design, An Integrated Approach</em> (Yourdon Press/Prentice Hall,
+1994, ISBN 0-13-636325-3).
+<p><a name=tthFtNtAAD></a><a href="#tthFrefAAD"><sup>3</sup></a> Hint:
+It is sometimes hard to remember which shape is which. A triangle
+looks like a capital letter A as in Aggregation. The half circle
+shape is then inheritance.
+</BODY></HTML>

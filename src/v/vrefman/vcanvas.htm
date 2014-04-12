@@ -1,0 +1,414 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vCanvasPane</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vCanvasPane</H1>
+<HR>
+<A NAME="vCanvasPane"></A>
+A base class to build graphical and text canvas panes.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vCanvasPane">&lt;v/vcanvas.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vCanvasPane
+ 	<dt><b>Hierarchy:</b></dt><dd> <A HREF="vpane.htm">vPane</A> -&#62;vCanvasPane
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This is the base drawing class. You use it to build more complicated
+drawing canvases, either for graphical drawing or text drawing.
+The <tt>vCanvasPane</tt> class has all the basic methods needed to
+interact with the drawing canvas. It does not, however, know
+how to handle repainting the screen on <tt>Redraw</tt> or <tt>Resize</tt>
+events. It provides utility methods for drawing on the canvas,
+and several other methods that are normally overridden by your
+application.
+
+<p>
+See the section <tt>vPane</tt> for a general description of panes.
+
+<p>
+
+<h2>Utility Methods</h2>
+
+<p>
+The following methods provide useful service without modification. Sometimes
+you will want to override some of these, but you will then usually
+call these methods from your derived class.
+
+<p>
+
+<H4>Drawing</H4>
+The <tt>vCanvasPane</tt> normally creates a <tt>vCanvasPaneDC</tt> to
+use for drawing, and class provides direct support by including
+direct calls for the drawing methods described in the <tt>vDC</tt>
+section. If your drawing will only be to the screen, then you
+can use the methods of the <tt>vCanvasPane</tt> class directly.
+Each of these methods is really an inline function that expands
+to <tt>_cpDC-&#62;DrawWhatever()</tt>.
+
+<p>
+If your drawing code might want to draw to both a screen and
+a printer, you might want to use a parameter to the appropriate
+drawing canvas. You can get the <tt>vDC</tt> used by the <tt>vCanvasPane</tt>
+by calling <tt>GetDC()</tt>.
+
+<p>
+
+<H4>virtual void CreateDC(void)</H4>
+This method is called when the <tt>vCanvasPane</tt> is initialized.
+The default is to create a drawing canvas using <tt>_cpDC = new
+vCanvasPaneDC(this);</tt>. If you want to derive a different canvas
+pane class from <tt>vCanvasPane</tt> perhaps using a more
+sophisticated drawing canvas derived from the <tt>vCanvasPaneDC</tt>
+class, you can override the <tt>CreateDC</tt> method and set the
+protected <tt>vDC* _cpDC</tt> pointer to an instance of your new
+drawing canvas (e.g., <tt>_cpDC = new myCanvasPaneDC(this)</tt>
+instead.
+
+<p>
+
+<H4>vDC* GetDC()</H4>
+Returns a pointer to the <tt>vDC</tt> of the current drawing canvas. The
+<tt>vDC</tt> can be used for most of the drawing methods to achieve
+drawing canvas independence. If your code draws via a <tt>vDC</tt> pointer,
+then the same code can draw to the screen canvas or the printer canvas
+depending on what the <tt>vDC</tt> points to.
+
+<p>
+
+<H4>VCursor GetCursor()</H4>
+Returns the id of the current cursor being used in the canvas.
+See <tt>SetCursor</tt>.
+
+<p>
+
+<H4>virtual int GetHeight()</H4>
+Returns the height of the current drawing canvas in pixels.
+
+<p>
+
+<H4>virtual int GetHScroll(int&amp; Shown, int&amp; Top)</H4>
+Get the status of the Horizontal Scroll bar. Returns 1 if the
+scroll bar is displayed, 0 if not. Returns in <tt>Shown</tt> and
+<tt>Top</tt> the current values of the scroll bar. See <tt>SetVScroll</tt>
+for a description of the meanings of parameters.
+
+<p>
+
+<H4>vWindow* GetPaneParent()</H4>
+Returns a pointer to the parent <tt>vWindow</tt> of the
+canvas pane.
+
+<p>
+
+<H4>virtual int GetVScroll(int&amp; Shown, int&amp; Top)</H4>
+Get the status of the Vertical Scroll bar. See
+<tt>GetHScroll</tt> for details.
+
+<p>
+
+<H4>virtual int GetWidth()</H4>
+Returns the width of the current drawing canvas in pixels.
+This is either the initial size of the window, or the size
+after the user has resized the window.
+
+<p>
+
+<H4>void SetCursor(VCursor id)</H4>
+This method sets the cursor displayed while the mouse in
+in the current canvas area. The default cursor is the
+standard arrow cursor used on most host platforms. You
+can change the cursor displayed within the canvas area
+only by calling this method.
+
+<p>
+The cursors currently supported include:
+
+<p>
+
+<DL compact><dt><b>VC_Arrow</b></dt><dd> The standard arrow cursor.
+<dt><b>VC_CenterArrow</b></dt><dd> An upward point arrow.
+<dt><b>VC_CrossHair</b></dt><dd> A cross hair cursor.
+<dt><b>VC_EWArrows</b></dt><dd> Double ended horizontal arrows (EastWest).
+<dt><b>VC_Hand</b></dt><dd> A hand with a pointing finger (NOT ON WINDOWS).
+<dt><b>VC_IBar</b></dt><dd> An I bar cursor.
+<dt><b>VC_Icon</b></dt><dd> A cursor representing an icon.
+<dt><b>VC_NSArrows</b></dt><dd> Double ended vertical arrows (NorthSouth).
+<dt><b>VC_Pencil</b></dt><dd> A pencil (NOT ON WINDOWS).
+<dt><b>VC_Question</b></dt><dd> A question mark cursor (NOT ON WINDOWS).
+<dt><b>VC_Sizer</b></dt><dd> The cursor used for sizing windows.
+<dt><b>VC_Wait</b></dt><dd> A cursor that symbolizes waiting, usually an hour glass.
+<dt><b>VC_X</b></dt><dd> An X shaped cursor (NOT ON WINDOWS).
+</DL>
+<p>
+
+<H4>void SetWidthHeight(int width, int height)</H4>
+This will set the size of the drawing canvas to <tt>height</tt>
+and <tt>width</tt> in pixels. It will also cause a <tt>Resize</tt>
+event message to be sent to the window.
+
+<p>
+
+<H4>virtual void SetHScroll(int Shown, int Top)</H4>
+Set the horizontal scroll bar. See <tt>SetVScroll</tt> for
+a description of the parameters.
+
+<p>
+
+<H4>virtual void SetVScroll(int Shown, int Top)</H4>
+Set the vertical scroll bar. The <tt>Shown</tt> parameter
+is a value from 0 to 100, and represents the percent
+of the scroll bar shows of the view in the canvas. For
+example, the canvas might be displaying text from a file.
+If the file was 100 lines long, and the window could show
+20 lines, then the value of <tt>Shown</tt> would be 20,
+meaning that the canvas is showing 20 percent of the file.
+As the size of the data viewed in the canvas changes, your
+program should change the scroll bar to corresponding values.
+
+<p>
+The <tt>Top</tt> parameter represents where the top of
+the scroll indicator should be placed.  For example,
+if the first line displayed in the canvas of a 100 line file
+was line 40, then  <tt>Top</tt> should be 40, representing
+40 percent.
+
+<p>
+This model of a scroll bar can be mapped to all the underlying
+windowing systems supported by 
+<em><b>V</b></em>, but the visual appearance
+of the scroll bar will vary.
+
+<p>
+
+<H4>virtual void ShowHScroll(int OnOrOff)</H4>
+
+<H4>virtual void ShowVScroll(int OnOrOff)</H4>
+When a canvas is first displayed, it will begin with both
+horizontal and scroll bars not shown by default. <tt>ShowHScroll</tt>
+and <tt>ShowVScroll</tt> can be used to selectively turn on and off
+the canvas scroll bars. When a scroll bar is turned off or on, the size
+of the canvas may changes, so you should also call <tt>Resize</tt> after
+you have set the scroll bars.
+
+<p>
+You must not call either of these methods until the canvas has
+actually been instantiated on the screen. This means if your
+application needs to start with scroll bars, you should have
+the calls to <tt>ShowVScroll</tt> and <tt>ShowHScroll</tt> in
+the code of your <tt>vCmdWindow</tt> class constructor
+(or other initialization code) 
+<em>after</em> calling
+<tt>vWindow::ShowWindow</tt> in your class constructor.
+
+<p>
+
+<h2>Platform Dependent</h2>
+<p>
+If you simply must access the native window for low level
+drawing, <b>V</b> provides a couple of platform dependent
+functions that can sometimes help. Be warned that your code
+will then be platform dependent.
+<p>
+<h3>Methods for MS-Windows</h3>
+<p>
+<H4>HWND DrawingWindow()</H4>
+This returns the <tt>HWND</tt> of the drawing window of
+the current canvas. This is then used to get a <tt>DC</tt>
+as needed. For example:
+<p>
+<font size=-2>
+<pre>
+....
+
+    // Assume mycanvas is a pointer to your canvas pane.
+    // Call DrawingWindow to get the HWND used by canvas
+    HWND drawingWindow = mycanvas->DrawingWindow();
+
+    // Now use that HWND to call the native Windows GetDC to get a DC
+    HDC myHDC = ::GetDC(drawingWindow);
+
+   // use myHDC to do drawing....
+   // note that you will need to use native Windows drawing calls here,
+   // and not use V drawing functions. You can use V stuff IF you 
+   // first release the DC, call the V code, and then get your
+   // own DC again. But since you are really using the DC in a native 
+   // way, why use V at all for the drawing part at this point? 
+   // The V GUI stuff will still work fine.
+
+   .... // your drawing code here
+
+   // IMPORTANT! When done drawing, you must release the DC
+   ::ReleaseDC(drawingWindow, myHDC);
+
+</pre></font>
+
+<h3>Methods for X</h3>
+<p>
+<H4>Widget DrawingWindow()</H4>
+<p>
+This returns the X <tt>Widget</tt> used by the canvas.
+<p>
+<H4>Drawable GetXDrawable()</H4>
+<p>
+This returns the X <tt>Drawable</tt> used by the canvas.
+<p>
+<h2>Methods to Override</h2> 
+<p>
+
+<H4>virtual void FontChanged(int vf)</H4>
+Called when the font is changed. This usually means your
+application needs to resize the window and recalculate
+the number of rows and columns of text that can be displayed.
+
+<p>
+
+<H4>virtual void HPage(int Shown, int Top)</H4>
+When the user moves the horizontal scroll bar, it generates an
+<tt>HPage</tt> event. It is up to your program to intercept (override)
+this method, and provide proper interpretation. This event usually
+is used for large movements. The meaning of <tt>Shown</tt> and
+<tt>Top</tt> represent the state of the scroll bar as set by
+the user.  It is then up to your program to display the
+correct portion of the data shown in the canvas to correspond
+to these values.  Your program uses <tt>SetHScroll</tt> to
+set appropriate values, and they are explained there.
+The <tt>Shown</tt> value supplied here
+will correspond to the value you program set for the scroll bar.
+The <tt>Top</tt> value should indicate the meaningful change as input
+by the user.
+
+<p>
+
+<H4>virtual void HScroll(int step)</H4>
+This method is called when the user enters a single step command
+to the scroll bar. The value of <tt>step</tt> will be positive for right or
+negative for left scroll.  These scrolls
+are usually interpreted as discreet steps - either a line or
+screenful at a time. It is up to your application to give
+an appropriate interpretation.
+
+<p>
+
+<H4>virtual void MouseDown(int x, int y, int button)</H4>
+This is called when the user clicks a button on the mouse. The
+<tt>x</tt> and <tt>y</tt> indicates the position of the mouse in the
+canvas when the button was clicked. Mouse events in vCanvasPane
+are no-ops, and your subclass of <tt>vCanvasPane</tt> will need to
+handle proper interpretation of mouse clicks.
+
+<p>
+Sorry, but thanks to the Macintosh, handling of buttons is a bit
+nonportable. The <tt>button</tt> parameter will have a value of 1,
+2, or 3. On X based systems, 1 is the left button, 2 is the
+middle button, and 3 is the right button. On Windows, 1 is the
+left button, and 3 is the right button. Thus, applications using
+the left and right buttons are portable from X to Windows. The
+single Macintosh button will return a value of 1. 
+
+<p>
+If you intend your applications to port to all three platforms,
+you will have to account for the single Macintosh button. If you
+ignore X's middle button, then your applications can be directly
+portable from X to Windows.
+
+<p>
+
+<H4>virtual void MouseMotion(int x, int y)</H4>
+This is called when the mouse moves while a button is 
+<em>not</em>
+pressed, and gives the current <tt>x</tt> and <tt>y</tt> of the
+mouse. Most applications will ignore this information.
+
+<p>
+
+<H4>virtual void MouseMove(int x, int y, int button)</H4>
+This is called when the mouse moves while a button is pressed,
+and gives the new <tt>x</tt>, <tt>y</tt>, and <tt>button</tt> of the
+mouse. Mouse events in vCanvasPane are no-ops, and your subclass
+needs to interpret them.
+Note that scaling applies to output only. The mouse
+events will provide unscaled coordinates, and it is up
+to your code to scale mouse coordinates appropriately.
+Mouse coordinate 
+<em>do</em> have the translation added.
+
+<p>
+
+<H4>virtual void MouseUp(int x, int y, int button)</H4>
+This is called when the user releases the mouse button, and
+gives the final location of the mouse.
+Mouse events in vCanvasPane are no-ops, and your subclass
+needs to interpret them.
+
+<p>
+
+<H4>virtual void Redraw(int x, int y, int width, int height)</H4>
+<tt>Redraw</tt> is called when the canvas needs to be redrawn.
+The first redraw is generated when the canvas is first created.
+Other redraws are generated when the canvas is covered or uncovered
+by another window, and means the contents of the canvas must
+be repainted.  The <tt>vCanvasPane</tt> does not know how to repaint
+the contents of the canvas, so you must override this method to
+be able to keep the canvas painted.
+
+<p>
+The parameters of <tt>Redraw</tt> represent the rectangular area
+that needs to be repainted. This areas is not always the whole
+canvas, and it is possible that many <tt>Redraw</tt> events will
+be generated in a row as the user drags a covering window off
+the canvas.
+
+<p>
+The default <tt>Redraw</tt> in <tt>vCanvasPane</tt> is a
+no-op, and your subclass needs to override <tt>Redraw</tt>.
+
+<p>
+
+<H4>virtual void Resize(int newW, int newH)</H4>
+A <tt>Resize</tt> event is generated when the user changes the
+size of the canvas using the resize window command provided
+by the host windowing system.
+
+<p>
+The default <tt>Resize</tt> in <tt>vBaseGLCanvasPane</tt> is a
+no-op, and your subclass needs to override <tt>Redraw</tt>.
+
+<p>
+
+<H4>virtual void VPage(int Shown, int Top)</H4>
+See <tt>HPage</tt>.
+
+<p>
+
+<H4>virtual void VScroll(int step)</H4>
+This method is called when the user enters a single step command
+to the vertical scroll bar. The value of <tt>step</tt> will be
+positive for down or negative for up scroll.  These scrolls are
+usually interpreted as discreet steps - either a line or
+screenful at a time. It is up to your application to give an
+appropriate interpretation.
+
+<p>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="vtextcnv.htm">vTextCanvasPane</A>
+
+
+
+</BODY>
+</HTML>

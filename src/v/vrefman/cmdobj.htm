@@ -1,0 +1,2169 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>CommandObjects</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<h1>Introduction to CommandObjects</h1>
+<p>
+The <b>V</b> <tt>CommandObject</tt> structure is used to
+define the contents of 
+<A HREF="vdialog.htm" TARGET="_self" >vDialogs</A> and
+<A HREF="vcmdpane.htm" TARGET="_self" >vCommandPanes</A>.
+Each element of a <tt>CommandObject</tt> defines a control
+(such as a Button or Scroll Bar) of a particular
+<tt>CmdType</tt> with an associated string and
+attributes, including size and position within the
+dialog.
+<p>
+This section is intended to be a complete reference for
+<tt>CommandObjects</tt>. It is organized into the following
+sections:
+<p>
+<ul>
+<li><a href="#CommandObject">CommandObject</a> - The description
+of the <tt>CommandObject</tt> structure.
+<li><a href="#Commands">Commands</a> - The various commands or
+controls supported by <b>V</b>.
+<li><A href="#CmdAttribute">CmdAttribute</A> - Various attributes
+used to define <tt>CommandObjects</tt>.
+<li><A href="#Predefined ItemVals">Predefined ItemVals </a> -
+Predefined values useful for defining <tt>CommandObjects</tt>.
+</ul>
+<p>
+<HR>
+<A NAME="CommandObject"></A>
+<H1>CommandObject</H1>
+Used to define commands to dialogs and command panes.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/v_defs.h&#62;</tt>
+	<dt><b>Type name:</b></dt><dd> CommandObject
+	<dt><b>Part of:</b></dt><dd> <A HREF="vdialog.htm" TARGET="_self" >vDialog</A>,
+	<A HREF="vcmdpane.htm" TARGET="_self" >vCommandPane</A>
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This structure is used to define command items in dialogs and
+command panes. You will define a static array of <tt>CommandObject</tt>
+items. This array is then passed to the <tt>AddDialogCmds</tt>
+method of a dialog class such as <tt>vDialog</tt> or <tt>vModalDialog</tt>,
+or the constructor of a <tt>vCommandPane</tt> object, or more
+typically, a class derived from one of those.
+
+<p>
+
+<h2>Definition</h2>
+
+<p>
+<font size=-2>
+<pre>
+typedef struct CommandObject
+  {
+    CmdType cmdType;    // what kind of item is this
+    ItemVal cmdId;      // unique id for the item
+    ItemVal retVal;     // initial value of object
+    char* title;        // string
+    void* itemList;     // used when cmd needs a list
+    CmdAttribute attrs; // list of attributes
+    int Sensitive;      // if item is sensitive or not
+    ItemVal cFrame;     // Frame used for an item
+    ItemVal cRightOf;   // Item placed left of this id
+    ItemVal cBelow;     // Item placed below this one
+    int size;           // Used for size information
+    char* tip;          // ToolTip string
+  } CommandObject;
+</pre></FONT>
+
+<h2>Structure Members</h2>
+
+<p>
+ <TT>CmdType cmdType</TT><BR>This value determines what kind of command
+item this is. The types of commands are explained in the
+section <A HREF="#Commands"><em>Commands</em></A>.
+
+<p>
+ <TT>ItemVal cmdId</TT><BR> This unique id for the command defined by
+the programmer. Each command item belonging to a dialog should
+have a unique id, and it is advisable to use some scheme to be
+sure the ids are unique. The 
+<em><b>V</b></em>&nbsp;system does not do anything to
+check for duplicate ids, and the behavior is undefined for
+duplicate ids. The id for a command is passed to the
+<tt>DialogCommand</tt> method of the dialog, as well as being used
+for calls to the various <tt>SetX</tt> and <tt>GetX</tt> methods.
+There are many predefined values that can be used for ids as
+described in the section 
+<A HREF="#stdvals" TARGET="_self" >Standard V Values</A>.
+
+<p>
+The values you use for your id in menus and controls should
+be limited to being less than 30,000. The predefined
+
+<em><b>V</b></em>&nbsp;values are all above 30,000, and are reserved. 
+<em>
+There is no enforcement of this policy.</em> It is up to you
+to pick reasonable values.
+
+<p>
+The type <tt>ItemVal</tt> exists for historical reasons, and
+is equivalent to an int, and will remain so. Thus, the easiest
+way to assign and maintain unique ids for your controls
+is to use a C++ <tt>enum</tt>. As many as possible examples
+in this manual will use <tt>enums</tt>, but examples using the old style
+<tt>const</tt> <tt>ItemVal</tt> declarations may
+continue to exist. There is more discussion of assigning ids
+in the following example.
+
+<p>
+ <TT>int retVal</TT><BR> The use of this value depends on the type
+of command. For buttons, for example, this value will be passed
+(along with the <tt>cmdId</tt>) to the <tt>DialogCommand</tt> method.
+The <tt>retVal</tt> is also used for the initial on/off state of check
+boxes and radio buttons. For some commands, <tt>retVal</tt> is
+unused. Note that the static storage provided in the declaration
+is 
+<em>not</em> used to hold the value internally. You should
+use <tt>GetValue</tt> to retrieve the current value of a
+command object.
+
+<p>
+ <TT>char* title</TT><BR> This is used for the label or text string
+used for command items.
+
+<p>
+ <TT>void* itemList</TT><BR> This is used to pass values to commands
+that need lists or strings. The ListCmd is an example. Note the
+<tt>void *</tt> to allow arbitrary lists.
+
+<p>
+ <TT>CmdAttribute attrs</TT><BR> Some command items use attributes
+to describe their behavior.  These attributes are summarized
+in the <A HREF="#CmdAttribute"><TT>CmdAttribute</TT></A> section.
+
+<p>
+ <TT>int Sensitive</TT><BR> This is used to determine if an item is
+sensitive or not. Note that the static storage provided in the
+declaration is used by the 
+<em><b>V</b></em>&nbsp;system to track the value, and
+should be changed by the <tt>SetValue</tt> method rather than
+directly. Thus dialogs sharing the same static declaration will
+all have the same value. This is usually desired behavior.
+
+<p>
+ <TT>ItemVal cFrame</TT><BR>
+Command items may be placed within a frame.
+If this value is 0 (or better, the symbol <tt>NoFrame</tt>), the
+command will be placed in the main dialog area. If a value is
+supplied, then the command will be placed within the frame with
+the id <tt>cFrame</tt>.
+
+<p>
+ <TT>ItemVal cRightOf, ItemVal cBelow</TT><BR>
+These are used to describe
+the placement of a command within a dialog.  Ids of other commands
+in the same dialog are used to determine placement. The current
+command will be placed to the right of the command <tt>cRightOf</tt>,
+and below the command <tt>cBelow</tt>. The commands left and above
+don't necessarily have to be adjacent. By careful use of these
+values, you can design very attractive dialogs. You can control
+the width of command objects by padding the label with blanks.
+Thus, for example, you can design a dialog with all buttons the
+same size.
+
+<p>
+You can also use the <tt>CA_Hidden</tt> attribute to selectively
+hide command objects that occupy the same location in the
+dialog. Thus, you might have a button labeled <tt>Hide</tt>
+right of and below the same command object as another button
+labeled <tt>UnHide</tt>. By giving one of the two buttons
+the <tt>CA_Hidden</tt> attribute, only one will be displayed.
+Then you can use <tt>SetValue</tt> at runtime to switch which
+button is displayed in the same location. The bigger of the
+two command objects will control the spacing.
+
+<p>
+ <TT>int size</TT><BR>
+The size parameter can be used for some command objects to
+specify size. For example, for labeled Button commands,
+the <tt>size</tt> specifies the minimum width in pixels of the
+button. It is also used in various other command objects as
+needed. A value of zero for <tt>size</tt> always means use the
+default size. Thus, you can take advantage of how C++ handles
+declarations and write <tt>CommandObject</tt> declarations that
+leave off the <tt>size</tt> values, which
+default to zero. Many of the examples in this reference do not
+specify these values.
+
+<p>
+ <TT>char* tip</TT><BR>
+The tip parameter is used to specify an optional ToolTip string
+for use with a command object. If you provide a string here,
+that string will be automatically displayed after the user holds
+the mouse over that control. The exact delay before the tip
+is shown, and the format of the tip box is somewhat platform
+dependent, and all platforms might not support tool tips.
+(Currently, only OS/2 does not support tips.) Note that if you
+use a tip, you must be sure to include a value (usually 0) for
+the size parameter!
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+The following example defines a simple dialog with a message
+label on the top row, a check box on the second row, two buttons
+in a horizontally organized frame on the third row, and an OK
+button on the bottom row. The ids in this example are
+defined using an <tt>enum</tt>. Remember that your ids must be
+less than 30,000, and using 0 is not a good idea.
+Thus, the <tt>enum</tt> in this example gives the ids
+values from 101 to 106.
+An alternative used in 
+<em><b>V</b></em>&nbsp;code prior to release 1.13 was
+to provide <tt>const</tt>
+declarations to define meaningful symbolic values for the ids.
+Many examples of this type of id declaration will likely
+persist.
+
+<p>
+It also helps to use a consistent naming convention for ids.
+The quick reference appendix lists suggested prefixes for
+each control type under the <tt>CmdType</tt> section. For
+example, use an id of the form <tt>btnXXX</tt> for buttons.
+Predefined ids follow the form <tt>M_XXX</tt>.
+
+<p>
+ <font size=-1><img src="fig/dlgcmd.gif"><br></i></b></tt><font size=+0><font size=-2>
+<pre>
+enum {lbl1 = 101, frm1, btn1, btn2}
+static CommandObject Sample[] =
+  {
+    {C_Label, lbl1, 0,"Sample",NoList,CA_MainMsg,isSens,NoFrame,0,0},
+    {C_Frame, frm1, 0, "", NoList,CA_None,isSens,NoFrame,0,lbl1},
+    {C_Button, btn1, 0, "Button 1", NoList, CA_None, isSens,frm1,0,0,0,
+         "Tip for Button 1"},
+    {C_Button, btn2, 0, "Button 2", NoList, CA_None, isSens,frm1,btn1,0,0,
+         "Tip for Button 2"},
+    {C_Button, M_OK, M_OK, " OK ", NoList, CA_DefaultButton, 
+        isSens, NoFrame,0,frm1},
+    {C_EndOfList,0,0,0,0,CA_None,0,0,0}
+  };
+</pre></i></b></tt><font size=+0>
+<p>
+<HR>
+<A NAME="Commands"></a>
+<H1>CommandObject Commands</H1>
+This section describes how each of the command objects available
+in <em><b>V</b></em>&nbsp;is used to build dialogs.
+<p>
+<em><b>V</b></em>&nbsp;provides several different kinds of command items that are used
+in dialogs. The kind of command is specified in the <tt>cmdType</tt>
+field of the <tt>CommandObject</tt> structure when defining a
+dialog. This section describes current dialog commands available
+with 
+<em><b>V</b></em>. They will be constructed by 
+<em><b>V</b></em>&nbsp;to conform to the
+conventions of the host windowing system. Each command is named
+by the value used to define it in the
+<tt><A HREF="#CommandObject" TARGET="_self" >CommandObject</A></tt>
+structure.
+
+<p>
+<H2>List of commands</H2>
+<A HREF="#C_Blank">C_Blank</a>,
+<A HREF="#C_BoxedLabel">C_BoxedLabel</a>,
+<A HREF="#C_Button">C_Button</a>,
+<A HREF="#C_CheckBox">C_CheckBox</a>,
+<A HREF="#C_ColorButton">C_ColorButton</a>,
+<A HREF="#C_ComboBox">C_ComboBox</a>,
+<A HREF="#C_EndOfList">C_EndOfList</a>,
+<A HREF="#C_Frame">C_Frame</a>,
+<A HREF="#C_Icon">C_Icon</a>,
+<A HREF="#C_IconButton">C_IconButton</a>,
+<A HREF="#C_Label">C_Label</a>,
+<A HREF="#C_ColorLabel">C_ColorLabel</a>,
+<A HREF="#C_List">C_List</a>,
+<A HREF="#C_ProgressBar">C_ProgressBar</a>,
+<A HREF="#C_RadioButton">C_RadioButton</a>,
+<A HREF="#C_Slider">C_Slider</a>,
+<A HREF="#C_Spinner">C_Spinner</a>,
+<A HREF="#C_Text">C_Text</a>,
+<A HREF="#C_TextIn">C_TextIn</a>,
+<A HREF="#C_ToggleButton">C_ToggleButton</a>,
+<A HREF="#C_ToggleFrame">C_ToggleFrame</a>,
+<A HREF="#C_ToggleIconButton">C_ToggleIconButton</A>
+
+<h2>Commands</h2>
+
+<p>
+
+<A NAME="C_Blank"></A><H4>C_Blank</H4>
+A Blank can help you control the layout of your dialogs.
+The Blank object will occupy the space it would take
+if it were a <tt>C_Label</tt>, but nothing will be displayed. This
+is especially useful for leaving space between other command
+objects, and getting nice layouts with RightOfs and Belows. You
+control the size of the Blank by providing a string with an
+appropriate number of blanks for the <tt>title</tt> field.
+
+<p>
+<A NAME="C_BoxedLabel"></A>
+<H4>C_BoxedLabel</H4>
+<p>
+<img src="fig/boxlabel.gif"><br></i></b></tt>
+This command object is just like a <tt>C_Label</tt>, but drawn
+with a surrounding box. See <tt>C_Label</tt>.
+
+<p>
+<A NAME="C_Button"></A>
+<H4>C_Button</H4>
+<p>
+<img src="fig/button.gif"><br></i></b></tt>A Button is one of the primary command input items used in dialog
+boxes. When the user clicks on a Button, the values set in the
+<tt>cmdId</tt> and <tt>retVal</tt> fields are passed to the <tt>DialogCommand</tt>
+method. In practice, the <tt>retVal</tt> field is not really used
+for buttons - the <tt>cmdId</tt> field is used in the
+<tt>switch</tt> statement of the <tt>DialogCommand</tt> method.
+
+<p>
+A button is defined in a <tt>CommandObject</tt> array. This is a
+typical definition:
+
+<p>
+<FONT SIZE=-2>
+<pre>
+ {C_Button, btnId, 0,"Save",NoList,CA_None,isSens,NoFrame,0,0}
+</pre></FONT>
+The <tt>retVal</tt> field can be used to hold any value you wish.
+For example, the predefined color button frame (see <tt>vColor</tt>)
+uses the <tt>cmdId</tt> field to identify each color button, and
+uses the <tt>retVal</tt> field to hold the index into the standard
+
+<em><b>V</b></em>&nbsp;color array. If you don't need to use the <tt>retVal</tt>,
+a safe convention is to a 0 for
+the <tt>retVal</tt>. You can put any label you
+wish in the <tt>title</tt> field.
+
+<p>
+If you provide the attribute <tt>CA_DefaultButton</tt> to the
+<tt>CmdAttribute</tt> field, then this button will be considered
+the default button for the dialog. The default button will be
+visually different than other buttons (usually a different
+border), and pressing the Return key is the same as clicking on
+the button.
+
+<p>
+The size of the button in pixels can be controlled by using the
+<tt>CommandObject</tt> element <tt>size</tt>. By specifying the
+attribute <tt>CA_Size</tt> and providing a value for the <tt>size</tt>
+element, you can control the size of the button. Note the that the
+<tt>size</tt> element is the last one of a <tt>CommandObject</tt>, and
+can left out of a declaration, which results in the compiler generating
+a zero value.
+
+<p>
+You can change the label of a button with:
+<tt>SetString(btnId,</tt> <tt>"New Label")</tt>. You can change the
+sensitivity of a button with <tt>SetValue(btnID, OnOrOff,
+Sensitive)</tt>.
+
+<p>
+
+<A NAME="C_CheckBox"></A>
+<H4>C_CheckBox</H4>
+<p>
+<img src="fig/chkbox.gif"><br></i></b></tt> A CheckBox is usually used to set some option on or off. A
+CheckBox command item consists of a check box and an associated
+label. When the user clicks on the check box, the <tt>DialogCommand</tt>
+method is invoked with the <tt>Id</tt> set to the <tt>cmdId</tt> and
+the <tt>Val</tt> set to the current state of the CheckBox. The
+system takes care of checking and unchecking the displayed check
+box - the user code tracks the logical state of the check box.
+
+<p>
+A CheckBox is defined in a <tt>CommandObject</tt> array. This is a
+typical definition:
+
+<p>
+<FONT SIZE=-2>
+<pre>
+ {C_CheckBox, chkId, 1,"Show Details",NoList,CA_None,isSens,NoFrame,0,0}
+</pre></FONT>
+The <tt>retVal</tt> is used to indicate the initial state of the
+check box. You should use the <tt>GetValue</tt> method to get the
+current state of a check box. You can also track the state
+dynamically in the <tt>DialogCommand</tt> method. You can put any
+label you wish in the <tt>title</tt> field.
+
+<p>
+You can change the label of a check box with: <tt>SetString(chkId,</tt>
+<tt>"New Label")</tt>. You can change the sensitivity of a check
+box with <tt>SetValue(chkID, OnOrOff,Sensitive)</tt>. You can
+change the checked state with <tt>SetValue(chkID, OnOrOff,
+Checked)</tt>.
+
+<p>
+If the user clicks the Cancel button and your code calls the
+default <tt>DialogCommand</tt> method, 
+<em><b>V</b></em>&nbsp;will automatically reset
+any check boxes back to their original state, and call the
+<tt>DialogCommand</tt> method an additional time with the original
+value if the state has changed.  Thus, your code can track the
+state of check boxes as the user checks them, yet rely on the
+behavior of the Cancel button to reset changed check boxes to the
+original state.
+
+<p>
+The source code for the 
+<em><b>V</b></em>&nbsp;<tt>vDebugDialog</tt> class provides a
+good example of using check boxes (at least for the X version).
+It is found in <tt>v/src/vdebug.cxx</tt>.
+
+<p>
+
+<A NAME="C_ColorButton"></A>
+<H4>C_ColorButton</H4>
+<p>
+<img src="fig/color.gif"><br></i></b></tt>A color command button. This works exactly the same as a <tt>C_Button</tt>
+except that the button may be colored. You use <tt>C_ColorButton</tt>
+for the <tt>cmdType</tt> field, and provide a pointer to a <tt>vColor</tt>
+structure in the <tt>itemList</tt> field using a <tt>(void*)</tt>
+cast. The label is optional.
+
+<p>
+The <tt>retVal</tt> field of a color button is not used. You can
+generate a square color button of a specified size by specifying
+an empty label (<tt>""</tt>) 
+<em>and</em> a <tt>size</tt> value greater
+than 0. When you specify the <tt>size</tt> field,  the color button
+will be a colored square <tt>size</tt> pixels per side. When used
+within a <tt>CA_NoSpace</tt> frame, this feature would allow you
+to build a palette of small, tightly spaced color buttons. In
+fact, 
+<em><b>V</b></em>&nbsp;provides a couple of such palettes in 
+<tt>v/vcb2x4.h</tt> and <tt>v/vcb2x8.h</tt>. These
+include files, as well as the other details of the <tt>vColor</tt>
+class are described in the section <tt>vColor</tt> in the 
+<em>Drawing</em>
+chapter.
+
+<p>
+There are two ways to change to color of a button. The most direct
+way is to change each of the RGB values in three successive calls
+to <tt>SetValue</tt> using <tt>Red</tt>, <tt>Green</tt>, and finally
+<tt>Blue</tt> as the <tt>ItemSetType</tt> to change the RGB values. 
+The call with <tt>Blue</tt> causes the color to be updated. I know
+this isn't the most elegant way to do this, but it fits with the
+<tt>SetValue</tt> model.
+
+<p>
+An alternate way is to change the value of the original <tt>vColor</tt>
+used to define the initial color of the control, and then call
+<tt>SetValue</tt> with the <tt>ChangeColor</tt> set type.
+
+<p>
+This is a short example of defining a red button, and then changing it.
+
+<p>
+<FONT SIZE=-2>
+<pre>
+    static vColor btncolor(255,0,0};  // define red
+    ...
+
+    // part of a CommandObject definition
+    {C_ColorButton, cbt1, 0, "", (void*)&btncolor,
+        CA_None, isSens, NoFrame, 0, btnXXX},
+
+    ...
+    // Code to change the color by some arbitrary values
+    btncolor.Set(btncolor.r()+127, btncolor.g()+63, btncolor.b()+31);
+#ifdef ByColor    // by vColor after changing btncolor
+    SetValue(cbt1,0,btncolor);
+#else          // by individual colors
+    SetValue(cbt1,(ItemVal)btncolor.r(),Red);
+    SetValue(cbt1,(ItemVal)btncolor.g(),Green);
+    // This final call with Blue causes color to update in dialog
+    SetValue(cbt1,(ItemVal)btncolor.b(),Blue);
+#endif
+    ...
+</pre></FONT>
+
+<A NAME="C_ComboBox"></A>
+<H4>C_ComboBox</H4>
+<p>
+<img src="fig/combobox.gif"><br></i></b></tt> A combo box is a drop-down list. It normally
+appears as box with text accompanied by some kind of down arrow
+button. You pass a list of alternative text values in the <tt>itemList</tt>
+field of the <tt>CommandObject</tt> structure. You also must set
+the <tt>retVal</tt> field to the index (starting at 0) of the item
+in the list that is the default value for the combo box text
+title.
+
+<p>
+If the user clicks the arrow, a list pops up with a set of
+alternative text values for the combo box label. If the user
+picks one of the alternatives, the popup closes and the new value
+fills the text part of the combo box. 
+<em><b>V</b></em>&nbsp;supports up to 32
+items in the combo box list. You need to use a <tt>C_List</tt> if
+you need more than 32 items.
+
+<p>
+With default attributes, a combo box will send a message to
+<tt>DialogCommand</tt> whenever a user picks a selection from the
+combo box dialog. This can be useful for monitoring the item
+selected. If you define the combo box with the attribute
+<tt>CA_NoNotify</tt>, the dialog in not notified on each pick.
+You can use <tt>GetValue</tt> to retrieve the index of the
+item shown in the combo box text field.
+
+<p>
+You can preselect the value by using <tt>SetValue</tt>.
+You can change the contents of the combo list by using 
+<tt>vDialog::SetValue</tt> with either  <tt>ChangeList</tt> or
+<tt>ChangeListPtr</tt>. See <tt>vDialog::SetValue</tt> for more
+details.
+
+<p>
+
+<H3>Example</H3>
+
+<p>
+The following is a simple example of using a combo box in a modal
+dialog.  This example does not process items as they are clicked,
+and does not show code that would likely be in an overridden
+<tt>DialogCommand</tt> method. The code interface to a list and a
+combo box is very similar - the interaction with the user is
+different. This example will initially fill the combo box label
+with the text of  <tt>comboList[2]</tt>.
+
+<p>
+<FONT SIZE=-2>
+<pre>
+enum { cbxId = 300 };
+char* comboList[] =
+  {
+    "First 0",   // The first item in the list
+     ...
+    "Item N",    // The last item in the list
+    0            // 0 terminates the list
+  };
+  ...
+CommandObject ComboList[] =
+  {
+    {C_ComboBox, cbxId, 2, "A Combo Box", (void*)comboList,
+       CA_NoNotify,isSens,NoFrame,0,0},
+    {C_Button, M_OK, M_OK, " OK ", NoList,
+       CA_DefaultButton, isSens, NoFrame, 0, ListId},
+    {C_EndOfList,0,0,0,0,CA_None,0,0,0}
+  };
+    ...
+    vModalDialog cd(this);    // create list dialog
+    int cid, cval;
+    ...
+    cd.AddDialogCmds(comboList);   // Add commands to dialog
+    cid = ld.ShowModalDialog("",cval);  // Wait for OK
+    cval = ld.GetValue(cbxId);  // Retrieve the item selected
+</pre></FONT>
+
+<A NAME="C_EndOfList"></A>
+<H4>C_EndOfList</H4>
+This is not really a command, but is used to denote end of the
+command list when defining a <tt>CommandObject</tt> structure.
+
+<p>
+
+<A NAME="C_Frame"></A>
+<H4>C_Frame</H4> 
+ 
+<p>
+<img src="fig/frame.gif"><br></i></b></tt> The frame is a line around a related group of dialog command
+items. The dialog window itself can be considered to be the
+outermost frame. Just as the placement of commands within the
+dialog can be controlled with the <tt>cRightOf</tt> and <tt>cBelow</tt>
+fields, the placement of controls within the frame use the same
+fields. You then specify the id of the frame with the <tt>cFrame</tt>
+field, and then relative position within that frame.
+
+<p>
+The <tt>title</tt> field of a frame is not used.
+
+<p>
+You may supply the <tt>CA_NoBorder</tt> attribute to any frame,
+which will cause the frame to be drawn without a border. This can
+be used as a layout tool, and is especially useful to force
+buttons to line up in vertical columns.
+
+<p>
+See the section 
+<em>CommandObject</em> for an example of defining a
+frame.
+
+<p>
+
+<A NAME="C_Icon"></A>
+<H4>C_Icon</H4>
+<p>
+<img src="fig/icon.gif"><br></i></b></tt> A display only icon. This works exactly the same as a <tt>C_Label</tt>
+except that an icon is displayed instead of text. You use <tt>C_Icon</tt>
+for the <tt>cmdType</tt> field, and provide a pointer to the
+<tt>vIcon</tt> object in the <tt>itemList</tt> field using a
+<tt>(void*)</tt> cast. You should also provide a meaningful label
+for the <tt>title</tt> field since some versions of 
+<em><b>V</b></em>&nbsp;may not
+support icons.
+
+<p>
+You can't dynamically change the icon. 
+
+<p>
+
+<A NAME="C_IconButton"></A>
+<H4>C_IconButton</H4>
+<p>
+<img src="fig/iconbtn.gif"><br></i></b></tt> A command button Icon. This works exactly the same as a <tt>C_Button</tt>
+except that an icon is displayed for the button instead of text.
+You use <tt>C_IconButton</tt> for the <tt>cmdType</tt> field, and
+provide a pointer to the <tt>vIcon</tt> object in the <tt>itemList</tt>
+field using a <tt>(void*)</tt> cast. You should also provide a
+meaningful label for the <tt>title</tt> field since some versions
+of 
+<em><b>V</b></em>&nbsp;may not support icons.
+
+<p>
+You can't dynamically change the icon. The button will be sized to
+fit the icon. Note that the <tt>v/icons</tt> directory contains
+quite a few icons suitable for using on command bars.
+
+<p>
+
+<A NAME="C_Label"></A>
+<H4>C_Label</H4>
+
+<A NAME="C_ColorLabel"></A>
+<H4>C_ColorLabel</H4>
+ 
+<p>
+This places a label in a dialog. A label is defined in
+a <tt>CommandObject</tt> array. This is a typical definition:
+
+<p>
+<FONT SIZE=-2>
+<pre>
+ {C_Label, lblId,0,"Select Options",NoList,CA_None,isSens,NoFrame,0,0, 0,0}
+</pre></FONT>
+While the value of a label can be changed with 
+<tt>SetString(lblId,</tt> <tt>"New Label")</tt>, they are usually static
+items. If the label is defined with the <tt>CA_MainMsg</tt>
+attribute, then that label position will be used to fill the the
+message provided to the <tt>ShowDialog</tt> method.
+
+<p>
+A <tt>C_ColorLabel</tt> is a label that uses the
+List parameter of the <tt>CommandObject</tt> array to
+specify a <tt>vColor</tt>. You can
+specify the color and change the color in the same fashion as
+described in the <tt>C_ColorButton</tt> command.
+
+<p>
+
+<A NAME="C_List"></A>
+<H4>C_List</H4>
+<p>
+<img src="fig/list.gif"><br></i></b></tt> A list is a scrollable window of text items. The list can be made
+up of any number of items, but only a limited number are
+displayed in the list scroll box.  The default will show
+eight items at a time. The number of rows can be controlled as
+explained later.
+
+<p>
+The user uses the scroll bar to show various parts of the list.
+Normally, when the user clicks on a list item, the <tt>DialogCommand</tt>
+is invoked with the id of the List command in the <tt>Id</tt>
+parameter, and the index into the list of the item selected in
+the <tt>Val</tt> parameter.  This value may be less than zero,
+which means the user has unselected an item, and your code
+should properly handle this situation. This only means the user
+has selected the given item, but not that the selection is final.
+There usually must be a command Button such as OK to indicate
+final selection of the list item.
+
+<p>
+If the List is defined with the attribute <tt>CA_NoNotify</tt>,
+<tt>DialogCommand</tt> is not called with each pick. You must then
+use <tt>GetValue</tt> to get which item in the list was selected.
+
+<p>
+It is possible to preselect a given list item with the
+<tt>SetValue</tt> method. Use the <tt>GetValue</tt> to
+retrieve the selected item's index after the OK button is selected.
+A value less than zero means no item was selected.
+
+<p>
+The number of rows displayed can be controlled by using the
+<tt>CommandObject</tt> element <tt>size</tt>. By specifying the
+attribute <tt>CA_Size</tt> and providing a value for the <tt>size</tt>
+element, you can specify how many rows to show. If you don't
+specify a size, 8 rows will be displayed. 
+<em><b>V</b></em>will support between
+1 and 32 rows. Note the that the <tt>size</tt> element is the last
+one of a <tt>CommandObject</tt>, and can left out of a declaration,
+which results in the compiler generating a zero value, giving the
+default 8 rows.
+
+<p>
+The width in pixels (approximately) of the list can be controlled
+by specifying the <tt>CA_ListWidth</tt> attribute and providing
+a value to the <tt>retVal</tt> parameter, which is otherwise unused
+for a list object. This implementation isn't perfect - you may
+have to play with the interaction between the width you specify,
+and the font used in a list control.
+
+<p>
+Change the contents of the list with
+<tt>vDialog::SetValue</tt> using either <tt>ChangeList</tt> or
+<tt>ChangeListPtr</tt>. See <tt>vDialog::SetValue</tt> for more
+details.
+<P>
+The <A HREF="vslist.htm"><tt>vSList</tt></A> class provides
+a very useful set of utilities for working with <tt>C_List</tt>
+lists.
+<p>
+
+<H3>Example</H3>
+
+<p>
+The following is a simple example of using a list box in a modal
+dialog.  This example does not process items as they are clicked.
+This list will be displayed in 12 rows.
+
+<p>
+<FONT SIZE=-2>
+<pre>
+enum {lstId = 200 };
+char* testList[] =
+  {
+    "First 0",   // The first item in the list
+     ...
+    "Item N",    // The last item in the list
+    0            // 0 terminates the list
+  };
+  ...
+CommandObject ListList[] =
+  {
+    {C_List, lstId, 0, "A List", (void*)testList,
+       CA_NoNotify | CA_Size,isSens,NoFrame,0,0,12},
+    {C_Button, M_OK, M_OK, " OK ", NoList,
+       CA_DefaultButton, isSens, NoFrame, 0, lstId},
+    {C_EndOfList,0,0,0,0,CA_None,0,0,0}
+  };
+    ...
+    vModalDialog ld(this);    // create list dialog
+    int lid, lval;
+    ...
+    ld.AddDialogCmds(ListList);   // Add commands to dialog
+    ld.SetValue(lstId,8,Value);  // pre-select 8th item
+    lid = ld.ShowModalDialog("",lval);  // Wait for OK
+    lval = ld.GetValue(lstId);  // Retrieve the item selected
+</pre></FONT>
+
+<A NAME="C_ProgressBar"></A>
+<H4>C_ProgressBar</H4>
+<p>
+<img src="fig/progress.gif"><br></i></b></tt> Bar to show progress. Used with <tt>CA_Vertical</tt>
+or <tt>CA_Horizontal</tt> attributes to control orientation.
+You change the value of the progress bar with
+<tt>SetValue(ProgID, val, Value)</tt>, where <tt>val</tt> is
+a value between 0 and 100, inclusive. Normally, the
+progress bar will show both a graphical indication of the value,
+and a text indication of the value between 0 and 100.
+
+<p>
+If you don't want the text value (for example, your value
+represents something other than 0 to 100), then define the
+progress bar with the <tt>CA_NoLabel</tt> attribute. Use
+the <tt>CA_Percent</tt> attribute to have a % added to the
+displayed value. You can also use <tt>CA_Small</tt> or <tt>CA_Large</tt>
+to make the progress bar smaller or larger than normal. If you
+need a text value display for ranges other than 0 to 100, you can
+build a <tt>CA_NoSpace</tt> frame with a progress bar and a text
+label that you modify yourself.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+The following shows how to define a progress bar, and how to
+set its value.
+
+<p>
+<FONT SIZE=-2>
+<pre>
+enum{frm1 = 200, lbl1, pbrH, pbrV, ... };
+  static CommandObject Cmds[] =
+  {
+    ...
+    // Progress Bar in a frame
+    {C_Frame, frm1, 0, "",NoList,CA_None,isSens,NoFrame, 0,0},
+    {C_Label, lbl1, 0, "Progress",NoList,CA_None,isSens,frm1,0,0},
+    {C_ProgressBar, pbrH, 50, "", NoList,
+        CA_Horizontal,isSens,frm1, 0, lbl1},  // Horiz, with label
+
+    {C_ProgressBar, pbrV, 50, "", NoList,  // Vertical, no value
+      CA_Vertical | CA_Small, isSens,NoFrame, 0, frm1},
+    ...
+  };
+  ...
+  // Set the values of both bars to same
+  SetValue(pbrH,retval,Value);    // The horizontal bar
+  SetValue(pbrV,retval,Value);    // The vertical bar
+
+</pre></FONT>
+<p>
+<A NAME="C_RadioButton"></A>
+<H4>C_RadioButton</H4> 
+ 
+<p>
+<img src="fig/radiob.gif"><br></i></b></tt> Radio buttons are used to select one and only one item from a
+group. When the user clicks on one button of the group, the
+currently set button is turned off, and the new button is turned
+on. Note that for each radio button press, 
+<em>two</em> events are
+generated. One a call to <tt>DialogCommand</tt> with the
+id of the button being turned off, and the other a call with the
+id of the button being turned on. The order of these two events is
+not guaranteed. The <tt>retVal</tt> field indicates the initial on
+or off state, and only one radio button in a group should be on.
+
+<p>
+Radio buttons are grouped by frame. You will typically put
+a group of radio buttons together in a frame. Any buttons
+not in a frame (in other words, those just in the dialog
+window) are grouped together.
+
+<p>
+Radio buttons are handled very much like check boxes. Your code
+should dynamically monitor the state of each radio button with
+the <tt>DialogCommand</tt> method. Selecting Cancel will
+automatically generate calls to <tt>DialogCommand</tt> to restore
+the each of the buttons to the original state.
+
+<p>
+You can use <tt>SetValue</tt> with a <tt>Value</tt> parameter to
+change the settings of the buttons at runtime. <tt>SetValue</tt>
+will enforce a single button on at a time.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+The following example of defining and using radio buttons was
+extracted from the sample file <tt>v/examp/mydialog.cpp</tt>. It
+starts with the button <tt>RB1</tt> pushed.
+
+<p>
+<FONT SIZE=-2>
+<pre>
+enum {
+    frmV1 = 200, rdb1, rdb2, rdb3, ...
+...
+  };
+...
+static CommandObject DefaultCmds[] =
+  {
+    {C_Frame, frmV1, 0,"Radios",NoList,CA_Vertical,isSens,NoFrame,0,0},
+    {C_RadioButton, rdb1, 1, "KOB",  NoList,CA_None,isSens, fmV1,0,0},
+    {C_RadioButton, rdb2, 0, "KOAT", NoList,CA_None, isSens,frmV1,0,0},
+    {C_RadioButton, rdb3, 0, "KRQE", NoList,CA_None, isSens,frmV1,0,0},
+    {C_Button, M_Cancel,M_Cancel,"Cancel",NoList,CA_None,
+        isSens, NoFrame, 0, frmV1},
+    {C_Button, M_OK, M_OK, " OK ", NoList, CA_DefaultButton, 
+        isSens, NoFrame, M_Cancel, frmV1},
+    {C_EndOfList,0,0,0,0,CA_None,0,0,0}
+  };
+...
+void myDialog::DialogCommand(ItemVal Id, ItemVal Val, CmdType Ctype)
+  {
+    switch (Id)              // switch on command id
+      {
+        case rdb1:            // Radio Button KOB
+            // do something useful - current state is in retval
+            break;
+        ...
+        // cases for other radio buttons
+
+      }
+    // let the super class handle M_Cancel and M_OK
+    vDialog::DialogCommand(id,retval,ctype);
+  }
+</pre></FONT>
+<p>
+<A NAME="C_Slider"></A>
+<H4>C_Slider</H4>
+<p>
+<img src="fig/slider.gif"><br></i></b></tt> Used to enter a value with a slider handle. The slider will provide
+your program with a value between 0 and 100, inclusive. Your program
+can then scale that value to whatever it needs.
+
+<p>
+
+<em><b>V</b></em>&nbsp;will draw sliders in one of three sizes. Use <tt>CA_Small</tt>
+for a small slider (which may not be big enough to return all
+values between 0 and 100 on all platforms), <tt>CA_Large</tt> to
+get a larger than normal slider, and no attribute to get a standard
+size slider that will return all values between 0 and 100. Use
+the <tt>CA_Vertical</tt> and <tt>CA_Horizontal</tt> attributes to
+specify orientation of the slider.
+
+<p>
+When the user changes the value of the slider, the <tt>DialogCommand</tt>
+method is called with the id of the slider for the <tt>Id</tt> value,
+and the current value of the slider for the <tt>Retval</tt> value.
+You can use <tt>SetVal</tt> to set a value for the slider.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+The following example shows the definition line of a slider, and
+a code fragment from an overridden <tt>DialogCommand</tt> method
+to get the value of the dialog and update a <tt>C_Text</tt> item
+with the current value of the slider. The slider starts with a
+value of 50.
+
+<p>
+<FONT SIZE=-2>
+<pre>
+enum { frm1 = 80, sld1, txt1 };
+CommandObject Commands[] =
+  {
+    ...
+    {C_Frame, frm1, 0, "",NoList,CA_None,isSens,NoFrame,0,0},
+    {C_Slider, sld1, 50, "",NoList,CA_Horizontal,isSens,frm1,0,0},
+    {C_Text, txt1, 0, "", "50",CA_None,isSens, frm1, sld1, 0},
+    ...
+  };
+  ...
+void testDialog::DialogCommand(ItemVal id,
+  ItemVal retval, CmdType ctype)
+  { 
+    ...
+    switch (id)     // Which dialog command item?
+      {
+        ...
+        case sld1:    // The slider
+          {
+            char buff[20];
+            sprintf(buff,"%d",retval);  // To string
+            SetString(txt1,buff);      // Show value
+          }
+        ...
+      }
+    ...
+  }
+
+</pre></FONT>
+<p>
+<A NAME="C_Spinner"></A>
+<H4>C_Spinner</H4>
+<p>
+<img src="fig/spinner.gif"><br></i></b></tt> This command item is used to provide an easy way for the user to
+enter a value from a list of possible values, or in a range of values.
+Depending on the attributes supplied to the <tt>CommandObject</tt>
+definition, the user will be able to select from a short list of
+text values, from a range of integers, or starting with some
+initial integer value. As the user presses either the up or down
+arrow, the value changes to the next permissible value. The
+<tt>retVal</tt> field specifies the initial value of the integer,
+or the index of the initial item of the text list. You use the
+<tt>GetValue</tt> method to retrieve the final value from the
+<tt>C_Spinner</tt>.
+
+<p>
+You can change the contents of the spinner list by using 
+<tt>vDialog::SetValue</tt> with either  <tt>ChangeList</tt> or
+<tt>ChangeListPtr</tt>. See <tt>vDialog::SetValue</tt> for more
+details.
+
+<p>
+The size of the spin value field in pixels can be controlled by using the
+<tt>CommandObject</tt> element <tt>size</tt>. By specifying the
+attribute <tt>CA_Size</tt> and providing a value for the <tt>size</tt>
+element, you can control the size of the value field . Note the that the
+<tt>size</tt> element is the last one of a <tt>CommandObject</tt>, and
+can left out of a declaration, which results in the compiler generating
+a zero value.
+
+<p>
+
+<H3>Example</H3>
+
+<p>
+This example shows how to setup the <tt>C_Spinner</tt> to select
+a value from a text list (when supplied with a list and the
+<tt>CA_Text</tt> attribute), from a range of integers (when
+supplied a range list), or from a starting value (when no list is
+provided). The definitions of the rest of the dialog are not
+included. 
+
+<p>
+<FONT SIZE=-2>
+<pre>
+  static char* spinList[] =    // a list of colors
+    {
+      "Red","Green","Blue", 0
+    };
+  static int minMaxStep[3] =  // specify range of
+    {                         // -10 to 10
+      -10, 10, 2              // in steps of 2
+    };
+  enum { spnColor = 300, spnMinMax, spnInt, ... };
+  CommandObject SpinDialog[] =
+    {
+      ...
+      {C_Spinner,spnColor,0,"Vbox", // A text list.
+        (void*)spinList,CA_Text,     // the list is CA_Text
+        isSens,NoFrame, 0,0},
+      {C_Spinner,spnMinMax,0,"Vbox", // a range -10 to 10
+        (void*)minMaxStep,CA_None,  // by 2's starting at 0
+        isSens,NoFrame, 0,0},
+      {C_Spinner,spnInt,32,"Vbox",  // int values step by 1
+        NoList,CA_None,             // starting at 32
+        isSens,NoFrame, 0,0},
+      ...
+    };
+
+</pre></FONT>
+<p>
+
+<A NAME="C_Text"></A>
+<H4>C_Text</H4>
+<p>
+<img src="fig/textbox.gif"><br></i></b></tt> This draws boxed text. It is intended for displaying information
+that might be changed, unlike a label, which is usually constant.
+The text may be multi-line by using a <tt>'\n`</tt>. The
+<tt>retVal</tt> and <tt>title</tt> fields are not used. The text to
+display is passed in the <tt>itemList</tt> field.
+
+<p>
+You can use the <tt>CA_NoBorder</tt> attribute to suppress the border.
+
+<p>
+A definition of a <tt>C_Text</tt> item in a <tt>CommandObject</tt>
+definition would look like:
+
+<p>
+<FONT SIZE=-2>
+<pre>
+ {C_Text, txtId, 0, "", "This is an example\nof a two line text.",
+          CA_None,isSens,NoFrame, 0, 0, 0,0}, 
+</pre></FONT>
+You can change the label of text box with:
+<tt>SetString(txtId,</tt> <tt>"New text</tt> <tt>to show.")</tt>.
+
+<p>
+
+<A NAME="C_TextIn"></A>
+<H4>C_TextIn</H4>
+<p>
+<img src="fig/textin.gif"><br></i></b></tt> This command is used for text entry from the
+user. The text input command item will typically be boxed
+field that the user can use to enter text.
+
+<p>
+The strategy for using a TextIn command item is similar to
+the List command item. You need an OK button, and then
+retrieve the text after the dialog has been closed.
+
+<p>
+You can provide a default string in the <tt>title</tt> field
+which will be displayed in the TextIn field.  The user will
+be able to edit the default string. Use an empty string
+to get a blank text entry field. The <tt>retVal</tt> field is
+not used.
+
+<p>
+There are two ways to control the size of the TextIn control.
+If you specify <tt>CA_None</tt>, you will get a TextIn
+useful form most simple input commands. Using <tt>CA_Large</tt>
+gets a wider TextIn, while <tt>CA_Small</tt> gets a smaller
+TextIn. You can also use the <tt>size</tt> field of the
+<tt>CommandObject</tt> to explicitly specify a width in
+characters. When you specify a size, that number of
+characters will fit in the TextIn, but the control
+does 
+<em>not</em> enforce that size as a limit.
+
+<p>
+If you specify the attribute <tt>CA_Password</tt>, then the
+user's input will either be echoed as asterisks (MS-Windows),
+or not echoed (X).
+
+<p>
+If you specify the attribute <tt>CA_TextInNotify</tt>, then
+the <tt>DialogCommand</tt> method for the dialog or tool bar
+will be called with the ID of the TextIn, and a
+value of either <tt>M_TextInChange</tt> or <tt>M_TextInLeaveFocus</tt>
+whenever the contents of the TextIn changes, or
+when the TextIn control loses focus. This capability is useful
+for validating the value in a TextIn. 
+<p>
+
+<H3>Example</H3>
+
+<p>
+The following example demonstrates how to use a TextIn.
+
+<p>
+<FONT SIZE=-2>
+<pre>
+CommandObject textInList[] =
+  {
+    ...
+    {C_TextIn, txiId,0,"",NoList,CA_None,isSens,NoFrame,0,0},
+    ...
+    {C_EndOfList,0,0,0,0,CA_None,0,0,0}
+  };
+ ...
+    vModalDialog md(this);      /// make a dialog
+    int ans, val;
+    char text_buff[255];        // get text back to this buffer
+ ...
+    md.AddDialogCmds(textInList);  // add commands
+    ans = md.ShowModalDialog("Enter text.", val);  // Show it
+    text_buff[0] = 0;          // make an empty string
+    (void) md.GetTextIn(txiId, text_buff, 254); // get the string
+ ...
+</pre></i></b></tt>
+<p>
+
+<A NAME="C_ToggleButton"></A>
+<H4>C_ToggleButton</H4>
+<p>
+<img src="fig/button.gif"><br></i></b></tt> A <tt>C_ToggleButton</tt> is a combination of a
+button and a checkbox. When the toggle button is pressed,
+the <tt>vCmdWindow::WindowCommand</tt> method is called, just
+as with a regular command button. However, the system will change
+the look of the toggle button to indicate it has been
+pressed. Each click on a <tt>C_ToggleButton</tt> will cause
+the button to appear pressed in or pressed out.
+
+<p>
+The <tt>retVal</tt> field of the <tt>CommandObject</tt>
+definition is used to indicate the initial state of the
+toggle.
+
+<p>
+The behavior of a toggle button is like a check box, and
+not a radio button. This is more flexible, but if you need
+exclusive radio button like selection, you will have to
+enforce it yourself using <tt>SetValue(toggleId,val,Value)</tt>. 
+
+<p>
+
+<pre>
+ // Define a toggle button with id tbtToggle and
+ // an initial state of 1, which means pressed in
+ {C_ToggleButton,tbtToggle, 1,"", NoList,CA_None,
+     isSens, NoFrame, 0, 0},
+ ...
+
+ // The case in WindowCommand should be like this:
+
+    case tbtToggle:
+      {
+	// Always safest to retrieve current value
+        ItemVal curval = GetValue(tbtToggle);
+        // Now, do whatever you need to
+        if (curval)
+           ... it is pressed
+        else
+           ... it is not pressed
+        break;
+      }
+
+</pre></FONT>
+<p>
+
+<A NAME="C_ToggleFrame"></A>
+<H4>C_ToggleFrame</H4>
+<p>
+<img src="fig/frame.gif"><br></i></b></tt> A <tt>C_ToggleFrame</tt> is 
+<em><b>V</b></em>'s answer to the Windows Tab
+control. While 
+<em><b>V</b></em>doesn't have real Tab controls, using
+a combination of <tt>C_ToggleFrames</tt> and either
+radio buttons or toggle buttons, you can design very nice
+multi-frame dialogs.
+
+<p>
+A Toggle Frame works just like a regular <tt>C_Frame</tt> except
+that you can use <tt>SetValue</tt> with a type <tt>Value</tt> to
+hide or make visible all controls contained or nested in the
+toggle frame. (Note: setting the <tt>Value</tt> of a toggle
+frame is 
+<em>not</em> the same as setting its <tt>Hidden</tt>
+attribute.)
+
+<p>
+The strategy for using toggle frames follows. First, you
+will usually use two or more toggle frames together.
+In the dialog <tt>CommandObject</tt> definition, you first
+define one radio button or one toggle button for each
+toggle frame used in the dialog. You then define a
+regular bordered <tt>C_Frame</tt> positioned below the radio/toggle
+buttons. Then place <tt>CA_NoBorder</tt> toggle frames
+inside that outer frame. The outer frame will be the
+border for all the toggle frames. Inside each toggle frame,
+you define controls in the normal way.
+
+<p>
+You must select just 
+<em>one</em> of the toggle frames to
+be initially visible. This will correspond to the checked
+radio button or pressed toggle button. The remaining
+toggle frames 
+<em>and</em> their controls should all be
+defined using the <tt>CA_Hidden</tt> attribute.
+
+<p>
+You then hide and unhide toggle frames by responding
+to the <tt>vDialog::DialogCommand</tt> messages generated
+when a radio button or toggle button is pressed. You
+<tt>SetValue(togID, 1, Value)</tt> to show a toggle pane
+and all its controls, and <tt>SetValue(togID, 0, Value)</tt>
+to hide all its controls.
+
+<p>
+The following example shows how to define and control
+toggle frames:
+
+<p>
+
+<FONT SIZE=-2>
+<pre>
+    enum {lbl1 = 400, tbt1, tbt2, tbt3, frm1, tfr1, tfr2,
+          btnA1, btnB1, btnA2, btnB2 };
+    static CommandObject DefaultCmds[] =
+      {
+        // A label, then 2 toggle buttons to select toggle frames
+        {C_Label,lbl1,0,"Tab Frame Demo",NoList,CA_None,isSens,
+                 NoFrame,0,0},
+        {C_ToggleButton,tbt1,1,"Tab 1",NoList, CA_None, isSens, 
+                 lbl1, 0, 0},
+        {C_ToggleButton,tbt2,0,"Tab 2",NoList, CA_None, isSens, 
+                 lbl1, tbt, 0},
+        {C_ToggleButton,tbt3,0,"Tab 3",NoList, CA_None, isSens,
+                 lbl1, tbt2 0},
+
+        // A Master frame to give uniform border to toggle frames
+        {C_Frame,frm1,0, "", NoList,CA_None,isSens,lbl1,0,tbt1},
+
+        // Toggle Frame 1 - default frame on
+        {C_ToggleFrame, tfr1,1,"",NoList, CA_NoBorder,isSens,frm1,0,0},
+        {C_Button,btnA1,0,"Button A(1)",NoList,CA_None,isSens,tfr1,0,0},
+        {C_Button,btnB1,0,"Button B(1)",NoList,CA_None,isSens,tfr1,
+                  0,btnA1},
+
+        // Toggle Frame 2 - default off (CA_Hidden!)
+        {C_ToggleFrame,tfr2,0,"",NoList,CA_NoBorder | CA_Hidden,
+                isSens,frm1,0,0},
+        {C_Button,btnA2,0,"Button A(2)",NoList,CA_Hidden,isSens,tfr2,0,0},
+        {C_Button,btnB2,0,"Button B(2)",NoList,CA_Hidden,isSens,tfr2,
+                  btnA2,0},
+
+        {C_EndOfList,0,0,0,0,CA_None,0,0,0}
+      };
+
+
+    ...
+
+    // In the DialogCommand method:
+
+    switch (id)         // We will do some things depending on value
+      {
+        case tbt1:       // For toggle buttons, assume toggle to ON
+          {
+            SetValue(id,1,Value);     // turn on toggle button
+            SetValue(tbt2,0,Value);    // other one off
+            SetValue(tfr2,0,Value);    // Toggle other frame off
+            SetValue(tfr1,1,Value);    // and ours on
+            break;
+          }
+
+        case tbt2:       // Toggle 2
+          {
+            SetValue(id,1,Value);     // turn on toggle button
+            SetValue(tbt1,0,Value);    // other off
+            SetValue(tfr1,0,Value);    // Toggle other off
+	    SetValue(tfr2,1,Value);    // and ours on
+            break;
+          }
+
+      }
+    // All commands should also route through the parent handler
+    vDialog::DialogCommand(id,retval,ctype);
+  }
+</pre></FONT>
+<p>
+<A NAME="C_ToggleIconButton"></A>
+<H4>C_ToggleIconButton</H4>
+<p>
+<img src="fig/iconbtn.gif"><br></i></b></tt> A <tt>C_ToggleIconButton</tt> is a combination of an icon
+button and a checkbox. When the toggle icon button is pressed,
+the <tt>vCmdWindow::WindowCommand</tt> method is called, just
+as with a regular icon button. However, the system will change
+the look of the toggle icon button to indicate it has been
+pressed. This is useful for good looking icon based interfaces
+to indicate to a user that some option has been selected.
+An additional press will change the appearance back to a
+normal icon button. The <tt>retVal</tt> field of the <tt>CommandObject</tt>
+definition is used to indicate the initial state of the
+toggle.
+
+<p>
+The behavior of a toggle icon button is like a check box, and
+not a radio button. This is more flexible, but if you need
+exclusive radio button like selection, you will have to
+enforce it yourself using <tt>SetValue(toggleId,val,Value)</tt>. 
+
+<p>
+
+<FONT SIZE=-2>
+<pre>
+ // Define a toggle icon button with id tibToggle and
+ // an initial state of 1, which means pressed
+ {C_ToggleIconButton,tibToggle, 1,"", &anIcon,CA_None,
+     isSens, NoFrame, 0, 0},
+ ...
+
+ // The case in WindowCommand should be like this:
+
+    case tibToggle:
+      {
+        // Always safest to retrieve current value
+        ItemVal curval = GetValue(tibToggle);
+        // Now, do whatever you need to
+        if (curval)
+           ... it is pressed
+        else
+           ... it is not pressed
+        break;
+      }
+
+</pre></FONT>
+
+<HR>
+
+<A NAME="CmdAttribute"></A>
+<H1>CmdAttribute</H1>
+<p>
+These attributes are used when defining command items.
+They are used to modify default behavior. These attributes are
+bit values, and some can be combined with an 
+<em>OR</em> operation.
+Note that not all attributes can be used with all commands.
+
+<p>
+
+<h2>Attributes</h2>
+
+<TABLE CELLSPACING="0" CELLPADDING="5" WIDTH="100%">
+<TR>
+<TD WIDTH="20%" ALIGN="LEFT" VALIGN="TOP">
+	<tt>CA_DefaultButton</tt>
+	</TD>
+	<TD WIDTH="80%" ALIGN="LEFT" VALIGN="TOP">
+		Used with a <tt>C_Button</tt>
+		to indicate that this button will be the default button. The user can activate
+		the default button by pressing the Enter key as well as using the mouse. It
+		will most often be associated with the OK button.
+	</TD>
+</TR>
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_Hidden
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Sometimes you may find it useful to have a command object that is not displayed
+		at first. By using the
+		<tt>CA_Hidden</tt>
+		attribute, the command object will not be displayed. The space it will require
+		in the dialog or dialog pane will still be allocated, but the command will not
+		be displayed. You can then unhide (or hide) the command using the
+		<tt>SetValue</tt>
+		method:
+		<tt>
+			SetValue(CmdID, TrueOrFalse, Hidden)
+		</tt>
+		.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_Horizontal
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Command will have horizontal orientation. This attribute is used with Sliders
+		and Progress Bars.
+	</TD>
+</TR>
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_Large
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		The object should be larger than usual. It can be used with Lists, Progress
+		Bars, Sliders, Text Ins, and Value Boxes.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_MainMsg
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Used with a
+		<tt>C_Label</tt>
+		to indicate that its string will be replaced with the message supplied to the
+		<tt>
+			ShowDialog
+		</tt>
+		method.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_NoBorder
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_NoBorder
+		</tt>
+		specifies that the object is to be displayed with no border.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_NoLabel
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<FONT SIZE="3">
+			Used for progress bars to suppress display of the value label.
+		</FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_NoNotify
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Used for combo boxes and lists. When specified, the program will not be
+		notified for each selection of a combo box item or a list item. When specified,
+		the program is notified only when the combo box button is pressed, and must
+		then use
+		<tt>
+			GetValue
+		</tt>
+		to retrieve the item selected in the combo box list. For lists, you will need
+		another command button in the dialog to indicate list selection is done.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_NoSpace
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<FONT SIZE="3">
+			Used for frames, this attribute causes the command objects within the frame to
+			be spaced together as tightly as possible. Normally, command objects have a
+			space of several pixels between them when laid out in a dialog. The
+		</FONT>
+		<FONT SIZE="3" FACE="Courier New">
+			CA_NoSpace
+		</FONT>
+		<FONT SIZE="3">
+			attribute is especially useful for producing a tightly spaced set of command
+			buttons.
+		</FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_None
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		No special attributes. Used as a symbolic filler when defining items, and is
+		really zero.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_Percent
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<FONT SIZE="3">
+			Used with progress bars to add a % to the value label.
+		</FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_Size
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		The
+		<tt>
+			size
+		</tt>
+		element of the
+		<tt>
+			CommandObject
+		</tt>
+		is being used to specify a size for the control. This is used with buttons,
+		spin controls, and lists.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_Small
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		The object should be smaller than usual. It can be used with Progress Bars and
+		Text Ins. On Progress Bars,
+		<tt>
+			CA_Small
+		</tt>
+		means that the text value box will not be shown.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_Text
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Used for Spinners to specify that a text list of possible values has been
+		supplied.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_TextInNotify
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<FONT SIZE="3">
+			Used for Text Ins. When used, the
+		</FONT>
+		<FONT SIZE="3" FACE="Courier New">
+			DialogCommand
+		</FONT>
+		<FONT SIZE="3">
+			method will be called with the id of the TextIn, and an attribute of either
+		</FONT>
+		<FONT SIZE="3" FACE="Courier New">
+			M_TextInChange
+		</FONT>
+		<FONT SIZE="3">
+			or
+		</FONT>
+		<FONT SIZE="3" FACE="Courier New">
+			M_TextInLeaveFocus
+		</FONT>
+		<FONT SIZE="3">
+			. This allows your program to validate TextIn input values.
+		</FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<tt>
+			CA_Vertical
+		</tt>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Command will have vertical orientation. This attribute is used with Sliders and
+		Progress Bars.
+	</TD>
+</TR>
+
+</TABLE>
+
+<HR>
+
+<H1><A NAME="Predefined ItemVals"></A> Predefined ItemVals</H1>
+A useful collection of predefined values. Most are useful for defining
+dialogs, buttons, and menus.
+<p>
+When defining dialogs, menus, and command bars, you are required
+to provide an id for each item.  There are many common operations
+used in GUI designs, and 
+<em><b>V</b></em>&nbsp;provides various predefined values
+for building your programs. The natural interpretation of most
+of these values should be obvious, and the descriptions are kept
+to a minimum. Most of the definitions describe the accepted practice
+for menu or button items with the given title. While these <tt>ItemVal</tt>s
+can be used anywhere, some have ``standard'' usage.
+
+<p>
+
+<h2>Control Values</h2>
+
+<p>
+<TABLE CELLSPACING="0" CELLPADDING="5" WIDTH="100%">
+<TR>
+	<TD WIDTH="20%" ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_About
+		</B>
+	</TD>
+	<TD WIDTH="80%" ALIGN="LEFT" VALIGN="TOP">
+		Shows an informative message about current application.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_All
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Select all.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Cancel
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Cancel. Usually used with a dialog.
+		<B>
+			<EM>
+				V
+			</EM>
+		</B>
+		&nbsp;will automatically reset dialog commands to their original state when a
+		<tt>
+			M_Cancel
+		</tt>
+		is selected from a
+		<tt>
+			vDialog
+		</tt>
+		descended object.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Clear
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Used to clear a screen.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Close
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Used to close a file. The user is usually prompted to save or ignore changes if
+		any were made to the file. This is usually not used to close a menu.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Copy
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Copy the highlighted text or item, and save into the clipboard.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Cut
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Cut the highlighted text or item from the file, and usually save into the
+		clipboard.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Delete
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Delete the selected item or text - usually does not copy into the clipboard.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Done
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Done with operation.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Edit
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown an edit menu.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Exit
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Exit from the program - checking to see if files need to be saved, of course.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_File
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown a file menu.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Find
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Find a pattern.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_FindAgain
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Find pattern again.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Font
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown a font menu.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_FontSelect
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<FONT SIZE="3">
+			Select a font. (This is different from the
+		</FONT>
+		<FONT SIZE="3" FACE="Courier New">
+			M_Font
+		</FONT>
+		<FONT SIZE="3">
+			value in that
+		</FONT>
+		<FONT SIZE="3" FACE="Courier New">
+			M_Font
+		</FONT>
+		<FONT SIZE="3">
+			is intended as a main menu bar item, while this one is for a pulldown menu.
+		</FONT>
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Format
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown a format menu, which allows the user to
+		select formatting options.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Help
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Show help.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Insert
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown an insert menu.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Line
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		M_Line is one of a few of these values that gets special treatment by the
+		system. It is required for defining line separators in menus.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_New
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Used to create a new file.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_No
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Answer No.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_None
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Select none.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_OK
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		OK, accept operation or information. Causes return from dialog.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Open
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Used to open an existing file.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Options
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown an options menu.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Paste
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Paste the contents of the clipboard into the insertion point of the current
+		file or item.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Preferences
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Set preferences.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Print
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Print current file.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_PrintPreview
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		On screen preview how the current file would look if printed.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Replace
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Replace pattern.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Save
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Used to save current file in its current name.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_SaveAs
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Save current file under new name.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Search
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown a search menu.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_SetDebug
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Set debug stuff.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Test
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown a test menu.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Tools
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown a tools menu.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_UnDo
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Undo the last action.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_View
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown a view menu, which allows the user to
+		select different views of the document.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Window
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Typically a menu bar button to pulldown a window menu, which lets the user
+		select different windows.
+	</TD>
+</TR>
+
+<TR>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		<B>
+			M_Yes
+		</B>
+	</TD>
+	<TD ALIGN="LEFT" VALIGN="TOP">
+		Answer Yes.
+	</TD>
+</TR>
+</TABLE>
+<hr>
+<h2>See Also</h2>
+
+<p>
+<A HREF="vcmdwin.htm">vCmdWindow</A>, 
+<A HREF="vdialog.htm" TARGET="_self" >vDialog</A>,
+<A HREF="vcmdpane.htm" TARGET="_self" >vCommandPanes</A>
+<p>
+<hr><h2>Footnotes:</h2>
+
+<p><a name=FootNote1></a><a href="#FootNote1Ref"><sup>1</sup></a> This is
+necessary keep things as <tt>chars</tt> and still allow a possible
+256 entries, since 256 is 2<sup>8</sup>+1, and a color map with 0
+entries doesn't make sense.
+</BODY>
+</HTML>

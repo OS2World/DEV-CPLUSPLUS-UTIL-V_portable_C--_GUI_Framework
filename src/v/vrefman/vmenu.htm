@@ -1,0 +1,258 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vMenu</title>
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vMenu</H1>
+<HR>
+
+<A NAME="vMenu"></A>
+Used to define pull down menus.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vMenu">&lt;v/vmenu.h&#62;</A></tt>
+	<dt><b>Type name:</b></dt><dd> vMenu
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+The <tt>vMenu</tt> structure is used to define pulldown menus,
+which includes the top level items on the menu bar, as well as the
+items contained in the pulldown menus off the menu bar.
+The <tt>vMenu</tt>
+structure is also used to define menus
+for <a href="vpopmenu.htm"><tt>vPopupMenu</tt></a> menus.
+<tt>vMenu</tt> structs are passed to the
+constructor of <tt>vMenuPane</tt> or <tt>vPopupMenu</tt> objects.
+
+<p>
+See the section <tt>vPane</tt> for a general description of panes.
+
+<p>
+
+<h2>Definition</h2>
+
+<p>
+<font size=-2>
+<pre>
+typedef struct vMenu
+  {
+    char* label;       // The label on the menu
+    ItemVal menuId;    // A User assigned unique id
+    unsigned
+     sensitive : 1,    // If item is sensitive or not
+     checked : 1;      // If item is checked or not (*)
+    char* keyLabel;    // Label for an accelerator key (*)
+    vKey accel;        // Value of accelerator key
+    vMenu* SubMenu;    // Ptr to a submenu 
+    unsigned int kShift; // Shift state of accelerator
+  } MenuItem;
+</pre></FONT>
+Note that the items marked with an asterisk (<tt>checked</tt> 
+and <tt>keyLabel</tt>) are not used when defining the top 
+level menu bar items.
+
+<p>
+
+<h2>Structure Members</h2>
+
+<p>
+ <TT>char* label</TT><P>
+The label on the menu.
+See the description of the <A HREF="vcmdwin.htm"><tt>vCmdWindow</tt></A>
+class for
+information on setting the label of menu bar items.
+
+<p>
+For some platforms (Windows, but not Athena X),
+you can add a &amp; to indicate a shortcut for the command.
+For example, specifying a label <tt>&amp;File</tt> allows
+Windows users to pull down the <tt>File</tt> menu
+by pressing <tt>Alt-F</tt>, and specifying a submenu label as
+<tt>&amp;New</tt> allows the user to use <tt>Alt-N</tt> to select
+the <tt>New</tt> command. The Athena version of 
+<em><b>V</b></em>&nbsp;strips
+the &amp;, so you can (and probably should) denote shortcuts
+for menu items even in Athena versions.
+
+<p>
+<TT>ItemVal MenuId</TT><P>
+A user assigned unique id. This id is
+passed to the <tt>MenuCommand</tt> (or <tt>WindowCommand</tt>) method
+when a menu item is selected.  If a menu item with a submenu is
+selected, 
+<em><b>V</b></em>&nbsp;will not return the id, but will cause the submenu
+to be displayed.
+
+<p>
+It will be common practice to use the same id for menu items and
+command objects defined on a command bar, and the same id value would then
+be passed to <tt>WindowCommand</tt> for either the menu selection
+or the equivalent button selection. Similarly, using the id to
+set the item's sensitivity will change both the menu and the
+button.
+
+<p>
+The values you use for your id in menus and controls should
+be limited to being less than 30,000. The predefined
+
+<em><b>V</b></em>&nbsp;values are all above 30,000, and are reserved. 
+<em>
+There is no enforcement of this policy.</em> It is up to you
+to pick reasonable values.
+
+<p>
+If you want a separator line on a pulldown menu, you must use
+the predefined value <tt>M_Line</tt> for the <tt>MenuId</tt>.
+
+<p>
+<TT>int sensitive</TT><P>
+Controls if item is initially sensitive or
+not. Insensitive items are displayed grayed out. The predefined
+symbols <tt>notSens</tt> and <tt>isSens</tt> can be used to define
+the <tt>MenuItem</tt>. Note that 
+<em><b>V</b></em>&nbsp;uses the static definition of
+the <tt>MenuItem</tt> to store the current sensitive state, and all
+menus (or windows) sharing the same static definition will have
+the same sensitive state. See the description of the 
+<A HREF="vcmdwin.htm"><tt>vCmdWindow</tt></A>
+class for information on setting the sensitivity of menu bar
+items.
+
+<p>
+<TT>int checked</TT><P>
+The user can put a check mark in front of the
+label of a menu item. This convention is often used to show a
+given setting is in effect. Like the sensitive member, this
+statically tracks the checked state. The predefined values
+<tt>isChk</tt> and <tt>notChk</tt> can be used to specify this value.
+This value is not used when defining the top level menu bar, and
+you can use the predefined value <tt>notUsed</tt> for that case.
+See the description of the <tt>vCmdWindow</tt> class for information
+on setting checked state of menu items.
+
+<p>
+<TT>char* keyLabel</TT><P>
+Label for an accelerator key. The
+predefined symbol <tt>noKeyLbl</tt> can be used to indicate there
+is no <tt>keyLabel</tt>. This value is not used when defining the
+top level menu bar, and you can use the predefined value <tt>notUsed</tt>
+accelerator key.
+
+<p>
+<TT>vKey accel</TT><P>
+This is the value of the keystroke that
+is the accelerator for this menu item. When the user presses
+this key, the <tt>vWindow::MenuCommand</tt> method will be
+called just as though the user had used the mouse to select
+the menu item. This value may be used in combination with the
+<tt>kShift</tt> and <tt>keyLabel</tt> parameters. See the
+explanation of <tt>vWindow::KeyIn</tt> for a complete
+explanation of key codes.
+
+<p>
+Note that the Windows version really doesn't support
+<tt>Alt</tt> key codes. The Windows system intercepts
+Alt keys and tries to interpret them as menu accelerators.
+Unfortunately, there is no simple way to override this
+behavior, so Alt keys are essentially unsupported on Windows.
+Using functions keys with combinations of Shift and Control
+is supported, as are regular control keys.
+
+<p>
+<TT>MenuItem* SubMenu</TT><P>
+Pointer to another <tt>MenuItem</tt>
+definition of a submenu. 
+<em><b>V</b></em>&nbsp;will cause submenus to be shown
+automatically when selected. The predefined symbol <tt>noSub</tt>
+can be used to indicate there is no submenu.
+
+<p>
+<TT>unsigned int kShift</TT><P>
+This is the shift value to
+be used with the <tt>accel</tt> key definition. To use
+<tt>Ctrl-D</tt> as the accelerator key, you would specify the
+value for Control-D (easily specified as <tt>'D'-'@'</tt>) for
+<tt>accel</tt>, and leave <tt>kShift</tt> set to zero. If you use a
+Ctrl code, you must specify both the control code, and the
+<tt>VKM_Ctrl</tt> shift code. Note that this value is at the end
+of the <tt>vMenu</tt> structure because of it was forgotten in
+early implementations of 
+<em><b>V</b></em>. By placing it at the end, earlier
+versions of 
+<em><b>V</b></em>code are compatible with no changes to the source.
+Sigh, I didn't get this one right.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+This example defines a menu bar with the items 
+<em>File</em> and
+
+<em>Edit</em>. The <tt>MenuBar</tt> definition would be passed to the
+constructor of the appropriate <tt>vCmdWindow</tt> derived object.
+
+<p>
+<img src="fig/menubar.gif"><BR>
+Only the File submenu is shown here, and is an example of the
+menu as it might be included in a standard File menu. Note that this
+example menu includes items that can all be specified by using
+standard predefined values (see <A HREF="stdvals.htm">
+<em>Predefined ItemVals</em></A>). It
+also includes an optionally defined <tt>Debug</tt> item. A
+definition like this might be used for the <tt>FileMenu</tt> in
+the <tt>Menu</tt> example. Note that &amp; is used to denote shortcuts
+for menu items.
+
+<p>
+<font size=-2>
+<pre>
+static vMenu FileMenu[] =
+  {
+    {"&New", M_New, isSens,notChk,noKeyLbl,noKey,noSub},
+    {"&Open", M_Open, isSens,notChk,noKeyLbl, noKey, noSub},
+    {"&Save", M_Save, isSens,notChk,noKeyLbl,noKey,noSub},
+    {"Save &As", M_SaveAs, isSens,notChk,noKeyLbl,noKey,noSub},
+#ifdef vDEBUG
+    {"-", M_Line, notSens,notChk,noKeyLbl,noKey,noSub},
+    {"&Debug", M_SetDebug,isSens,notChk,noKeyLbl,noKey,noSub},
+#endif
+    {"-", M_Line, notSens,notChk,noKeyLbl,noKey,noSub},
+    {"E&xit", M_Exit, isSens,notChk,noKeyLbl,noKey,noSub},
+    {0}
+  };
+
+static vMenu EditMenu[] = {...};  // Define Edit pulldown
+
+// Define menu bar, which includes the File and Edit pulldown
+static vMenu MenuBar[] =
+  {
+    {"&File",M_File,isSens,notUsed,notUsed,noKey,&FileMenu[0]},
+    {"&Edit",M_Edit,isSens,notUsed,notUsed,noKey,&EditMenu[0]},
+    {0,0}                         // end of menubar
+  };
+
+  ...
+
+  vMenuPane myMenuPane = new vMenuPane(MenuBar);  // construct pane
+  AddPane(myMenuPane);
+</pre></font>
+<h2>See Also</h2>
+
+<p>
+<A HREF="vcmdwin.htm">vCmdWindow</A>, <A HREF="vpane.htm">vPane</A>,
+<a href="vpopmenu.htm">vPopupMenu</a>
+
+</BODY>
+</HTML>

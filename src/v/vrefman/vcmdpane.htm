@@ -1,0 +1,77 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vCommandPane</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vCommandPane</H1>
+<HR>
+
+<A NAME="vCommandPane"></A>
+Used to define commands on a command bar.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/vcmdpane.h&#62;</tt>
+	<dt><b>Class name:</b></dt><dd> vCommandPane
+	<dt><b>Used by:</b></dt><dd> vCmdWindow
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+A command pane is a horizontal bar in a command window that
+holds <tt>CommandObjects</tt>.  You can use any of the
+<tt>CommandObjects</tt>, although they all might not make sense
+to use on a command bar (a List, for example, is a bit large for
+the visual paradigm, but it would work). The layout
+is left to right, so you don't need to fill in the RightOf
+and Below fields. You can include Frames in a command bar,
+and commands contained in that frame do use the RightOf
+and Below attributes. 
+
+<p>
+You define the commands on a command bar using a
+<tt>CommandObject</tt> array. You first create the command pane
+with <tt>myCmdPane = new vCommandPane(CommandBar)</tt>, and
+then add it to the window with <tt>AddPane(myCmdPane)</tt>.
+
+<p>
+You then handle the command objects in a command bar pretty much
+like the same way as in a dialog. The main difference is that you
+use the <tt>vWindow</tt> versions of <tt>SetValue</tt> and <tt>WindowCommand</tt>
+instead of the corresponding methods of the <tt>vDialog</tt> class.
+Other than the left to right ordering, things are pretty much the
+same.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+The discussion of <tt>CommandObject</tt> and <tt>vDialog</tt> contains
+several examples of defining command objects.
+
+<p>
+See the section <tt><A HREF="vpane.htm">vPane</A></tt> for a general description of panes.
+
+<p>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="vcmdwin.htm">vCmdWindow</A>, <A HREF="vstatus.htm">vStatus</A>, <A HREF="cmdobj.htm">CommandObject</A>,
+<A HREF="vdialog.htm">vDialog</A>, <A HREF="vpane.htm">vPane</A>
+
+<p>
+
+
+</BODY>
+</HTML>

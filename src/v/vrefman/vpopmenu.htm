@@ -1,0 +1,159 @@
+<HTML>
+<HEAD>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vPopupMenu</title>
+<h1>vPopupMenu</h1>
+<HR>
+<A NAME="vPopupMenu"></A>
+A class to show a popup menu in a canvas.
+
+<p>
+
+<H3>Synopsis</H3>
+
+<p>
+
+<DL compact> <dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vPopupMenu">&lt;v/vpopmenu.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vPopupMenu
+ 	<dt><b>Hierarchy:</b></dt><dd> vPopupMenu
+</DL>
+<p>
+
+<H3>Description</H3>
+
+<p>
+A <tt>vPopupMenu</tt> is used to show a floating popup menu,
+usually as the result of right clicking the mouse. They
+use the <a href="vmenu.htm"><tt>vMenu</tt></a> structure to define
+the items of the menu. Submenus are supported, but hot keys
+are not. Just leave the hot key field blank.
+<p>
+Please note that <tt>vPopupMenu</tt>s are not implemented on
+all systems (as of V 1.22, they were only available on MS-Windows).
+Use the <tt>vPopupMenu::isImplemented</tt> method for
+platform independent implementations. 
+<p>
+To use a popup menu, you usually track mousedown events in
+your canvas pane and watch for right clicks. You then can
+create a <tt>vPopupMenu</tt> object, and call the <tt>ShowMenu</tt>
+method to display the popup menu. When the user picks an item
+on the popup menu, a message is sent to the
+<tt>WindowCommand</tt> method of the parent window of the canvas.
+The application program can
+also change attributes of the various menu items of the popup menu
+using methods provided by <tt>vPopupMenu</tt>.
+
+<p>
+
+<H3>Constructor</H3> 
+<p>
+
+<H4>vPopupMenu(const vMenu* menu, const vWindow* parent)</H4>
+
+<p>
+When the <tt>vPopupMenu</tt> object is defined, you provide the
+<tt>vMenu</tt> definition, and the parent <tt>vWindow</tt> of the
+canvas. You can use <tt>vCanvasPane::GetPaneParent()</tt> to
+easily get this value.
+<p>
+
+<H3>Utility Methods</H3> 
+<p>
+<H4>int isImplemented()</H4>
+This method will return true if <tt>vPopupMenu</tt>s are
+implemented on the current platform.
+<p>
+
+<H4>int GetValue(ItemVal itemId)</H4>
+This method is used to retrieve the value of a menu
+item in a menu.  The <tt>itemId</tt> is the id of
+the item as defined in the menu definition.
+This will return the menu checked state.
+
+<p>
+
+<H4>void SetValue(ItemVal itemId, int Val,
+ItemSetType what)</H4>
+This method is used to change the state of menu items.
+The item with <tt>itemId</tt> is set to <tt>Val</tt> using the
+<tt>ItemSetType</tt> parameter to control what is set. Possible
+values of <tt>ItemSetType</tt> include <tt>Checked</tt> and
+<tt>Sensitive</tt>.
+
+<p>
+
+<H4>void SetString(ItemVal itemId, char* title)</H4>
+This can be used to change the label on a 
+menu item. The item identified by <tt>itemId</tt>
+will have its label changed to <tt>title</tt>.
+
+<p>
+
+<H4>void ShowMenu(int x, int y)</H4>
+
+<p>
+Call this method to display the popup menu. This method will
+usually be called from the overridden <tt>MouseDown</tt>
+method of your canvas. This will popup
+the menu at canvas coordinates x,y. (Note: for vTextCanvasPanes,
+you should override <tt>MouseDown</tt>, not <tt>TextMouseDown</tt>)
+This method does not return until the user has either picked
+a menu item, or dismissed the popup menu. If the user picks
+a menu item, then a message will be sent to the <tt>WindowCommand</tt>
+method of the parent window to the canvas pane. This is generally what
+you want to do, and it keeps all the command actions localized
+to that method.
+
+<p>
+<H3>Example</H3>
+<p>
+The following example is very simple, and shows
+how to override the <tt>MouseDown</tt> method to
+detect a right click, and then how to display the
+popup menu. Remember that the parent window of the canvas
+will use its <tt>WindowCommand</tt> method to receive
+the messages when the user picks an item.
+<p>
+<font size=-2>
+<pre>
+//===================>>> popTextCanvasPane::TextMouseDown <<<==================
+  void popTextCanvasPane::MouseDown(int x, int y, int button)
+  {
+    // Note - override MouseDown for all canvas types
+    // Meaningless menu examples
+    static vMenu SubMenu[] =
+      {
+        {"&Close...", M_CloseFile, isSens, notChk, noKeyLbl, noKey, noSub},
+        {"Exit", M_Exit, isSens, notChk, noKeyLbl, noKey, noSub},
+        {NULL}
+      };
+    static vMenu FileMenu[] =
+      {
+        {"&New", M_New, isSens, notChk, noKeyLbl, noKey, noSub},
+	{"&Open...", M_Open, isSens, notChk, noKeyLbl, noKey, noSub},
+        {"Other", 0, isSens, notChk, noKeyLbl, noKey, &SubMenu[0]},
+        {NULL}
+      };
+
+    vPopupMenu pm(FileMenu,GetPaneParent());  // define the popup
+
+    if (button == 3)               // check for right button
+        (void) pm.ShowMenu(x, y);
+    else                           // default action otherwise
+        vTextCanvasPane::MouseDown(x,y,button);
+  }
+</pre></FONT>
+<p>
+
+<H3>See Also</H3>
+
+<p>
+<A HREF="vmenu.htm">vMenu</A>
+
+
+</BODY>
+</HTML>
+

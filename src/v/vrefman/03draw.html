@@ -1,0 +1,321 @@
+<html>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<title>
+V FAQ (DRAWING STUFF)
+</title>
+</HEAD>
+<body bgcolor="#ffffff">
+
+<a name="00top">
+<h1>
+V FAQ (DRAWING STUFF)
+</h1>
+
+<menu>
+<li><a href="03draw.html#01">Fast way to display bitmaps?</a>
+<li><a href="03draw.html#02">More on displaying images fast</a>
+<li><a href="03draw.html#03">Coordinate Translation and Scaling</a>
+<li><a href="03draw.html#04">About colors and color maps</a>
+<li><a href="03draw.html#05">When to set attributes for a vCanvasPane</a>
+<li><a href="03draw.html#06">Too many Redraw messages to keep up with</a>
+</menu>
+
+<hr>
+
+<a href="#00top" name="01">
+<h2>Fast way to display bitmaps?</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+I'm using V to display bitmaps. My app is rendering a complex
+image so I would like to display the result every few seconds. I
+tried drawing my bitmap with DrawIcon, but it takes too long and
+the second call to the function displays the same bitmap even if
+the data of the vIcon changed. I tried using a pen and drawing
+points one by one but that is way too slow.
+<p>
+
+<dd>
+So, is there any easy and fast way to display 24-bit bitmaps
+using V?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+This may be one of the weaker parts of V. I've spent a good deal
+of time with this issue, and can't get stuff real fast. In
+theory, writing to a vMemDC should be the fastest way to write
+pixels, which you can do a row at a time with DrawColorPoints,
+then transferring to the screen with CopyFromMemDC.
+This technique get you about as close to the native drawing stuff
+as can be done portably, but it is still faster to draw
+directly to the screen using DrawColorPoints. It isn't
+real fast.
+<p>
+
+<dd>
+The native tool kits let you work directly with the bitmap/pixmap
+in memory, but do it quite differently on Windows and X. Perhaps
+someday I'll figure out a way to give portable access to the
+underlying model.
+<p>
+
+<dd>
+An alternative, and not a terrible one, is to get the handle
+to the actual X or Windows window used for the canvas.
+This is HWND vCanvas::DrawingWindow() for Windows, and
+Widget vCanvas::DrawingWindow() -OR- 
+Drawable vCanvas::GetXDrawable() for X. You can then use
+the HWND or Widget/Drawable as to draw to directly using
+the native drawing toolkits. These are usually much easier
+to use and figure out than all the control stuff for dialogs
+and menus.
+<p>
+<hr>
+
+<a href="#00top" name="02">
+<h2>More on displaying images fast</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+I'm thinking of using V for a project I'm about to start.  I need to 
+be able to display images (8, 16, 24, and maybe 32 bit) to a window 
+and I need to do it very fast.
+<p>
+<font size=+2>A:</font>
+
+<dd>
+Actually, in its current state, V can't really do what you need.
+The vMemoryDC already uses BitBlt to in the CopyFromMemoryDC
+method, but it is still too slow - it takes too long to fill
+the image, no matter what mode you use.
+<p>
+
+<dd>
+The ultimate solution is to provide access directly to the
+screen memory via a pointer. This is something like Microsoft's
+game API. However, I haven't had the time to do it portably,
+although I think it can be done.
+<p>
+
+<dd>
+The alternative is to drop down to real Windows or X code.
+The vCanvas provides the necessary hooks to get the Window,
+Drawable, or Widget as needed. This solution is not portable.
+<p>
+<hr>
+
+<a href="#00top" name="03">
+<h2>Coordinate Translation and Scaling</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+When using a canvas with scaling and translation, it's not clear
+whether coordinates are first translated and then scaled, or vice
+versa.
+<p>
+<font size=+2>A:</font>
+
+<pre>
+  ScreenX = (((PassedInX + XTranslate) * ScaleMult) / ScaleDiv);
+</pre>
+<hr>
+
+<a href="#00top" name="04">
+<h2>About colors and color maps</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+I assume that V tries to allocate read/write color cells when under X,
+so that it can (possibly) change colors.  If the color map is full,
+does it just take what it can get?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+Presently, V tries to hide what is going on with the color map.
+This led to some problems on the X version in earlier releases.
+With V Version 1.07 and later, V tries to allow efficient
+use of the colormap while still hiding most of the details.
+<p>
+
+<dd>
+The main way to use and generate colors is with vColor objects.
+There are 16 predefined vColors, and you can declare other
+vColors, either with no color specified (which defaults to black),
+or your own colors. Ideally, it wouldn't matter how many colors
+you used, or how many vColors you declared, or how many times
+you changed the color value of vColor objects.
+<p>
+
+<dd>
+In  reality, some color systems do allow unlimited colors, but
+most existing systems run with a palette or color map of 256
+colors. So mostly, at any given time, a program can have only
+256 active colors. As better color hardware gets more widely
+used, this situation will change, but count on only 256 for now.
+<p>
+
+<dd>
+The question then becomes which 256 colors are available to
+the program. Both X and Windows provide default system
+color maps that provide the current 256 colors, and V uses
+the default system color maps. The way the system color maps
+work are somewhat different for X and Windows, however.
+<p>
+
+<dd>
+The situation for X is currently somewhat better than Windows.
+The default system color map is allocated partly ReadOnly, and
+partly ReadWrite. Usually, four to eight colors are allocated
+ReadOnly, and correspond to black, white, and the basic colors
+used by the screen manager. The rest of the entries are available
+for program use. When you create a new color, either by declaring
+a vColor object with a new color, or you use vColor::Set to set
+an existing object to a new color, a new cell of the system
+color map is allocated and used. If you continue to generate
+more new colors, the map eventually fills up, and you don't
+get what you had hoped for.
+<p>
+
+<dd>
+With V Version 1.07 and later, a new method called 
+vColor::ResetColor was added to help solve this problem.
+If you will be generating lots of new colors, you can
+only use about 245 or so of them at a time. If you
+use vColor::Set to change the colors, the color map
+fills up. If, on the other hand, you reuse and existing
+vColor object by calling vColor::ResetColor, then the
+original entry in the X system color map is reused.
+Thus, as long as you don't use more than the number of
+available entries in the color map, you won't have
+problems displaying just what you want at any given time.
+You can use vColor::BitsOfColor to determine the color
+resolution of the system you are running on.
+<p>
+
+<dd>
+The situation on Windows is different. There, you still
+usually have 256 colors, but the default system color
+map (called a palette in Windows jargon) is fixed.
+Each time you use a color, Windows uses the closest
+match, and this is sometimes a dithered color. Thus,
+while you will never run out of palette entries, you
+also don't always get the color you wanted. 
+<p>
+
+<dd>
+Since Windows systems more commonly have more colors, and
+since you don't run out of color map entries, I don't
+plan to change this soon. Changing would mean adding
+a color map or pallete V object, with all the portability
+problems that introduces. For now, vColor::Set and
+vColor::Reset have identical behavior on Windows, but
+quite different behavior on X.
+<p>
+<hr>
+
+<a href="#00top" name="05">
+<h2>When to set attributes for a vCanvasPane</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+When *exactly* is the right time to set such attributes as
+Background color etc. to a vCanvasPane? The attached DC is not
+available at constructor call, so I tricked around using static
+variables and Redraw(), but there has to be a cleaner way, no?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+Actually, you got it. Redraw is called when the window
+is first displayed, before you have any chance to call
+any of your code. So, you really do need something like:
+<p>
+
+<pre>
+  void myCanvas::Redraw(int x, int y, int h, int w)
+  {
+    static int first = 1;
+
+    // Redraw is called when the canvas is first displayed,
+    // before your code can do any real work. The vDC is
+    // available at this point. Any special initialization
+    // needs to be done here because the vDC is not
+    // available at constructor time.
+    if (first)
+      {
+        first = 0;
+
+        // Set colors, whatever now...
+
+        // And call your parent class's Redraw
+        vParentPane::Redraw(x,y,h,w);
+        return;
+      }
+    // Normal Redraw code goes here
+    ....
+  }
+</pre>
+<hr>
+
+<a href="#00top" name="06">
+<h2>Too many Redraw messages to keep up with</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+My V application takes quite a bit of time to redraw its
+image. When I drag another window across the V app's window,
+the app gets behind trying to keep up with all the Redraw
+messages sent by this action. Is there a way around this
+problem?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+This problem doesn't occur on all platforms. (e.g., Windows
+draws an outline of the top window, avoiding these multiple
+calls to Redraw. X and NT do generate multiple calls.)
+No matter how fast V drawing ever gets, this situation will
+no doubt continue to exist. There is a rather simple solution
+that works for the V Icon editor that limits the total number
+of redraws to 2.  Consider the following code fragment adapted
+from the V Icon Editor code:
+<p>
+
+<pre>
+//===================>>> myCanvasPane::Redraw <<<=================
+  void myCanvasPane::Redraw(int x, int y, int w, int h)
+  {
+    // Cheap way to handle multiple calls to Redraw that
+    // doesn't use the passed coordinates.
+
+    static int nest = 0;  // Track multiple calls to Redraw
+
+    if (++nest > 1)   // ignore multiple calls
+        return;
+
+    DrawImage();      // draw image - may take a while
+
+    if (nest > 1)     // had nested calls, so need to redraw again
+      {
+        DrawImage();  // draw image
+      }
+   nest = 0;          // Really done
+  }
+</pre>
+</body>
+</html>

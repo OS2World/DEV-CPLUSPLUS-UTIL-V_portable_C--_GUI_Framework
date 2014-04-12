@@ -1,0 +1,361 @@
+<HTML>
+<HEAD>
+  <TITLE> VFAQ (V COMMAND CONTROLS) </TITLE>
+  <LINK REL=StyleSheet HREF="./vstyle.css">
+</HEAD>
+<BODY bgcolor="#ffffff">
+<P>
+<A name="00top"></A>
+<H1>
+  <A name="00top">VFAQ (V COMMAND CONTROLS) </A>
+</H1>
+<UL>
+  <LI>
+    <A name="00top"><A href="04cmd.html#01">How to dynamically modify list
+    controls</A> </A>
+  <LI>
+    <A href="04cmd.html#02">Does V have Text Edit controls?</A>
+  <LI>
+    <A href="04cmd.html#03">Changing size of dialogs</A>
+  <LI>
+    <A href="04cmd.html#11">Starting with Application Maximized</A>
+  <LI>
+    <A href="04cmd.html#04">History of values on menus</A>
+  <LI>
+    <A href="04cmd.html#05">Getting dynamic changes from TextIn Controls</A>
+  <LI>
+    <A href="04cmd.html#06">Grouping controls in a dialog</A>
+  <LI>
+    <A href="04cmd.html#07">Layout of Controls different in X and Windows</A>
+  <LI>
+    <A href="04cmd.html#08">vIcons as controls in a vCanvasPane</A>
+  <LI>
+    <A href="04cmd.html#09">Controlling width of Lists</A>
+  <LI>
+    <A href="04cmd.html#10">Waiting for computations</A>
+</UL>
+<P>
+  <HR>
+<A href="#00top" name="01"></A>
+<H2>
+  <A href="#00top" name="01">How to dynamically modify list controls</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+I need the ability to dynamically add/delete/modify items in a list box control.
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+There are two ways to do this. You can modify the contents of the ORIGINAL
+list, and then call the SetValue function with the 'ChangeList' value. You
+can also create a new list, and call SetValue with the 'ChangeListPtr' value.
+These are explained in the reference manual in more detail.
+<P>
+  <HR>
+<A href="#00top" name="02"></A>
+<H2>
+  <A href="#00top" name="02">Does V have Text Edit controls?</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+Are there any text editors (or a text widget) out there written using V?
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+V currently has a relatively complete text editor class. It will support
+standard keypad commands for standard line-oriented text. You can extend
+the command set of the editor, and it handles buffering for reasonably sized
+files. It can be extended to handle unlimited file sizes.
+<P>
+  <HR>
+<A href="#00top" name="03"></A>
+<H2>
+  <A href="#00top" name="03">Changing size of dialogs</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+With dialogs, and even command windows is there a way to set the minimum
+and/or maximum size allowed for the user to resize? Some dialogs just don't
+make any sense to allow the user to resize, while others would be really
+nice to allow the user to change the size on.
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+Dialogs are whatever size they are. The X window manager does whatever it
+does to dialogs if you fiddle them, and I don't think I can fix V to freeze
+the sizes.
+<P>
+<A href="#00top" name="11"></A>
+<H2>
+  <A href="#00top" name="11">Starting with Application Maximized</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+How can I start an application with the window maximized?
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+For Windows only, you can use the native <TT>::ShowWindow</TT> to maximize
+the application window in your <TT>AppMain</TT> function: <BR>
+<PRE>
+//============================&gt;&gt;&gt; AppMain ==============================
+ int AppMain(int argc, char** argv) 
+ { // Use AppMain to create the main window
+
+    (void) theApp-&gt;NewAppWin(0, "My V App", 450, 250);
+    ::ShowWindow(theApp-&gt;winHwnd(),SW_MAXIMIZE);  // Windows only!
+    return 0;
+ }
+
+</PRE>
+<P>
+  <HR>
+<H2>
+  <A href="#00top" name="04">History of values on menus</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+I have a field that I would like to maintain a ``history'' of, such that
+if the user enters a new value it will be added the the history. Something
+of a combination C_ComboBox and a C_TextIn. I'm certain you've seen this
+sort of thing under Windoze.
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+Hmm... V does not allow you to dynamically add items to a menu. It does let
+you change the contents of a menu item. A good compromise might be to keep
+a history of the last 4 things in a menu (using blanks or &lt;none&gt; until
+you fill in the field), and the full history in a dialog using a list or
+a combo box (which can now be totally dynamic in V 1.10).
+<P>
+  <HR>
+<A href="#00top" name="05"></A>
+<H2>
+  <A href="#00top" name="05">Getting dynamic changes from TextIn Controls</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+Upon completion of data entry into a single line text field, is there a way
+to retrieve the data from that field upon completion of text entry(signaled
+either by a carriage return or a tab key) rather than pressing a button to
+invoke the GetTextIn function?
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+V can't do this. You could do this directly on X or on Windows, but the mechanism
+is completely different on each platform, so V has to hide it. On windows,
+pressing Return will terminate the dialog if there is a default button defined,
+but that helps only for one text in field, and it doesn't work on the X version.
+The next best alternative might be to put a "submit" button to the right
+of each field you want to work this way. A pain, but...
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+Is there a way to traverse a set of single line text fields per keystroke,
+as opposed to moving the mouse from one text field to another?
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+This works on the Windows version right now, but doesn't work on the X Athena
+version. It might work for the Motif version when it is done.
+<P>
+  <HR>
+<A href="#00top" name="06"></A>
+<H2>
+  <A href="#00top" name="06">Grouping controls in a dialog</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+When designing a dialog window, I sometimes want to place a control to the
+right of several other controls. This can be done by giving cRightOf and
+cBelow (members of CommandObject) the right values. By this I can place a
+control to the right of another. I would like to place the control to the
+right of three other controls but as the size becomes dynamic, I don't know
+which one will be the largest. Is there a way to express this in the
+CommandObject structure? Or are there other ways to achieve this goal?
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+The best way I know to get a control to the right of (or below or whatever)
+a group of other controls is to place the other controls in a frame. Since
+you can make the frame have no border, you can make it so it won't show on
+the displayed dialog. You can also use blank objects as space fillers to
+help control positions. Another thing that helps is padding the messages
+with blanks to get alignment right.
+<P>
+<P>
+Another trick is to make a control that will be as large as the largest control
+that gets generated, and then make it hidden. It will count in the size
+calculations, but not be displayed in the dialog. Hidden controls can occupy
+the same location on the dialog as the controls you want to see.
+<P>
+<P>
+Using borderless frames is the best tool that V has for controlling tricky
+layout, but even so, sometimes you still can't get everything placed exactly
+as you want. This is one of the compromises of the V design. Most of the
+time, you can design pretty good looking dialogs. Sometimes, you have to
+compromise, and get OK instead of perfect. All things considered, I hope
+most V users will find this a reasonable compromise.
+<P>
+  <HR>
+<A href="#00top" name="07"></A>
+<H2>
+  <A href="#00top" name="07">Layout of Controls different in X and Windows</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+I've got a problem with positioning the controls in a dialog box. The linux
+version is working correct, but the same source, compiled with Borland, results
+in a dialog box with overlapping controls. Do you have a clue?
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+The documentation needs to be more explicit about this. It turns out that
+this is actually an inherent problem with V. If you had started out with
+Windows, you'd probably find the X version was OK. The problem is that not
+all controls are the same relative size on X and Windows. While dialogs with
+just buttons and label fields will generally work on both platforms, using
+lists, spinners, or progress bars will often give a good looking result on
+one platform, but not another.
+<P>
+<P>
+Fortunately, there are a couple of solutions for this problem. Both, however,
+involve being able to compile for both platforms. Of course, you wouldn't
+be seeing the problem at all if you weren't compiling on both platforms.
+<P>
+<P>
+Sometimes using a different control as the reference control works. For example,
+if you had a label and a spinner on one line, and want to put another label
+and spinner below, the natural tendency is to use the label since it is first.
+However, the spinner is taller on Windows, so will generate an overlap on
+the Windows version. Using the spinner as the reference rather than the label
+solves the problem.
+<P>
+<P>
+The other thing is to use borderless frames, and position controls relative
+to the frame rather than controls in the frame. By combining this and the
+above technique, you can usually design an attractive dialog that works on
+both platforms. The vDraw example program quick pick dialog uses these tricks
+to get a layout suitable for both platforms.
+<P>
+<P>
+I wish it were easier, but it is just not possible to get all controls the
+same relative size on all platforms. At least there is a way around the problem,
+even if it takes a bit more care. Usually, though, it just takes 20 or 30
+minutes to clean up a dialog.
+<P>
+  <HR>
+<A href="#00top" name="08"></A>
+<H2>
+  <A href="#00top" name="08">vIcons as controls in a vCanvasPane</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+I'm working on a simple application for FreeBSD, and would like to use the
+V GUI toolkit. I have the following need for this application:
+<P>
+<P>
+The main window of the application will represent a group of objects as icons.
+Each icon will have an image and a name. When the user double-clicks on an
+icon, a dialog allowing the user to customize that object will be created/shown.
+<P>
+<P>
+Is there a straight forward method in V to represent a scrolling "icon arena",
+where each icon represents an object? I've thought about making each object
+and icon button and just adding all of them to a command window, but I don't
+quite see how to make the window scrollable.
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+You will have to do some work, but this would be true for most any GUI toolkit.
+<P>
+<P>
+You can draw a V icon anywhere in the canvas of a command window. For each
+icon, you would have to track its X,Y position, and associated label. (A
+simple list would do.) You then map mouse clicks to the icon you've placed
+at the mouse location by searching your list. Use scroll bars in the canvas
+as needed, and adjust mouse coordinates to account for scrolling.
+<P>
+<P>
+A little work, but not that hard. The double click is harder. V does not
+support a separate message for double clicks. You can fake it by counting
+two clicks, or get close to real by using a timer. This limitation is mostly
+due to the Athena widget set on X.
+<P>
+  <HR>
+<A href="#00top" name="09"></A>
+<H2>
+  <A href="#00top" name="09">Controlling width of Lists</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+One more question, have you thought about my suggestion to let the user control
+the width of a C_List ?
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+The way lists are supposed to work now is that V will use the width of the
+widest item in the list when first instantiated. So one possibility is to
+first create the list with a fake item that is as wide as the widest list
+item you expect, and then use ChangeList or ChangeListPtr to change to the
+actual list. The problem on Windows is that it is hard to dynamically resize
+the whole dialog, so I do the best I can by sizing the list to the widest
+item. This then determines the size and positions of all the other controls
+in a dialog with a list. In fact, I don't know how non-V Windows programs
+handle list size, if they really do. Windows dialogs are normally fixed size.
+<P>
+  <HR>
+<A href="#00top" name="10"></A>
+<H2>
+  <A href="#00top" name="10">Waiting for computations</A>
+</H2>
+<P>
+<FONT size=+2>Q:</FONT>
+<P>
+Could you please tell me what's the best way to tackle the following problem?
+I would like to have a modal dialog that shows the user some useful information
+about a time-consuming operation. Basically, I want to open a modal dialog,
+start the computation and let the computation update the dialog's command
+objects. How can this be done? If the dialog is not modal it would be no
+problem, but I definitely want to block all input to the application. What
+I need is some routine to Show a modal dialog but returning immediately so
+that the program can proceed.
+<P>
+<FONT size=+2>A:</FONT>
+<P>
+This is a hard problem for V, unfortunately. X and Windows handle modal dialogs
+somewhat differently, so there is not a portable solution that V could support.
+<P>
+<P>
+But one suggestion is to add a "Begin Computation" button to the modal dialog.
+Then in the dialog's DialogCommand method, call the code to do the computation.
+That code should call vApp::CheckEvents periodically to keep the system working,
+but I think this will give you the effect you want, more or less. While the
+call to the computation would not return until it was done, the calls to
+vApp::CheckEvents would allow a Cancel button to work within the modal dialog,
+which would then need to call a routine in your code to set a cancel flag,
+or something like that. You could also set flags within the modal dialog
+that it is in the middle of a computation and behave accordingly.
+<P>
+<P>
+I haven't tried this, but I'm pretty sure this technique can work. It does
+require a "Begin" button, however, which might not work the way you want.
+<P>
+<P>
+I also think that you could keep a state flag of your own, and override all
+DialogCommand and WindowCommand methods to ignore any messages while in compute
+mode. I think the message from the V close box on X, or the system close
+box on Windows might go around these, but then that might still be how you
+want it to work - exit if the user says so.
+<P>
+</BODY></HTML>

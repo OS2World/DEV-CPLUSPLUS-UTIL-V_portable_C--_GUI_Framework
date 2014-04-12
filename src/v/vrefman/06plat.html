@@ -1,0 +1,137 @@
+<html>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<title>
+V FAQ (PLATFORMS)
+</title>
+</HEAD>
+<body bgcolor="#ffffff">
+
+<a name="00top">
+<h1>
+V FAQ (PLATFORMS)
+</h1>
+
+<menu>
+<li><a href="06plat.html#01">WINDOWS.H and WINDOWSX.H files for Windows version</a>
+<li><a href="06plat.html#02">Cygnus gcc-win32</a>
+<li><a href="06plat.html#03">Missing files/libraries in X</a>
+<li><a href="06plat.html#04">OS/2 Version</a>
+<li><a href="06plat.html#05">Mac Version</a>
+</menu>
+
+<hr>
+
+<a href="#00top" name="01">
+<h2>WINDOWS.H and WINDOWSX.H files for Windows version</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+I downloaded the V C++ GUI package for Microsoft Windows from
+your website and attempted  to compile and run the tutorial
+(TUTAPP.CPP), only to discover that it indirectly  required two
+files named "WINDOWS.H" and "WINDOWSX.H". I don't have either
+of these  files. Where can I get them?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+WINDOWS.H and WINDOWSX.H are the files that define the interface
+to the Windows API toolkit. All Windows apps require these files.
+They are usually provided with your compiler.
+<p>
+<hr>
+
+<a href="#00top" name="02">
+<h2>Cygnus gcc-win32</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+Does V work with the Cygwin environment?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+The standard V distribution includes support for the latest
+Cygwin compiler (B20 at this writing). There is also occasional
+discussions of V on the Cygwin mail group.
+<p>
+<hr>
+
+<a href="#00top" name="03">
+<h2>Missing files/libraries in X</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+I'm trying to compile your V libraries on Linux and seem to be missing 
+some of the include files for X.  The only subdirectories I have beyond 
+include/X11 are Bitmaps and Pixmaps which aren't really include 
+directories.  For example, I'm missing the "Xaw" and "Xmu" directories 
+to name a few.  Could you direct me to where I could get the extra 
+include files that I require to build the libraries?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+V assumes that X has been installed on your system in some place,
+usually something like /usr/X11 or /usr/X11R6 and other related
+spots. The standard X installation contains the X include files,
+X libraries, and others. V also needs the Athena widget set, Xaw,
+and other files. Some systems don't install these (especially
+Motif only systems), although most do. Almost always, if your
+system is running X, then the required files are probably there.
+<p>
+
+<dd>
+Other that this general information, it is beyond my capability
+to provide more help about proper installation of X on your
+system. Check with your system administrator for help on that.
+<p>
+<hr>
+
+<a href="#00top" name="04">
+<h2>OS/2 Version</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+Why is the OS/2 Version different or out of sync with the
+other V versions?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+The OS/2 version was written and is maintained by Jon Hacker.
+We do our best to keep versions in sync, but it is not always
+possible.
+<p>
+<hr>
+
+<a href="#00top" name="05">
+<h2>Mac Version</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+When will a Mac version be available?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+I don't know. Probably never, unless someone volunteers
+to do the port. For some time, the Mac looked pretty dead,
+but perhaps the new iMac will be Apple's salvation. But
+to date, there has not been enough interest expressed for
+a Mac port. Volunteers?
+<p>
+
+</body>
+</html>

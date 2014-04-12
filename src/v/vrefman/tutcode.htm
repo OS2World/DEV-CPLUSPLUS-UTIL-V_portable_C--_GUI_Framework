@@ -1,0 +1,1232 @@
+<HTML> <HEAD>
+  <TITLE> V Reference Manual - Tutorial C++ Source </TITLE>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+ </HEAD>
+<BODY bgcolor="#ffffff">
+
+<H1>Tutorial C++ Source</H1>
+The following is a complete tutorial 
+<em><b>V</b></em>&nbsp;application. The source for
+this tutorial is available int the directory &#126;/v/tutor.
+
+<p>
+
+<H2>The Application</H2>
+
+<H3>tutapp.cpp</H3>
+
+<p>
+<font size=-2>
+<pre>
+//========================================================================
+//  tutapp.cpp:     Source file for tutorial V application
+//
+//      Copyright 1995, Bruce E. Wampler. All rights reserved.
+//========================================================================
+//
+// This file is used to define the main application object. There
+// will be exactly one instance of the application object. You will
+// usually derive you own app class from the vApp class. This file
+// defines a sample tutApp class. The usual purpose of tutApp is to
+// start the initial window, and act as a central controller for
+// your application. Rather than reading this file sequentially,
+// you should skip to the end and read the comments surrounding the
+// AppMain function.
+
+
+//  Files required for tutorial minimal application:
+//      tutapp.h:       Header for the min app
+//      tutapp.cpp:     Source code for min app
+//      tcmdwin.h:      Header code for sample command window
+//      tcmdwin.cpp:    Source code for sample command window
+//      tdialog.h:      Header for sample modeless dialog
+//      tdialog.cpp:    Source for sample modeless dialog
+//      tmodal.h:       Header for sample modal dialog
+//      tmodal.cpp:     Source for sample modal dialog
+//
+
+// First #include header files we need to use.
+
+#include "tutapp.h"     // our header file
+
+//=========================&#62;&#62;&#62; tutApp::NewAppWin &lt;&lt;&lt;======================
+  vWindow* tutApp::NewAppWin(vWindow* win, char* name, int w, int h,
+    vAppWinInfo* winInfo)
+  {
+    // This version of NewAppWin is provided with the information
+    // required to name and size a window.
+    // 
+    // Typically, this method would get a file name or other information
+    // needed to setup the AppWinInfo class  specifically for the
+    // application. Thus, each open window usually represents a view of
+    // a file or data object.
+
+    vWindow* thisWin = win;             // local copy to use
+    vAppWinInfo* awinfo = winInfo;
+    char *myname = name;                // local copy
+
+    if (!*name)
+        myname = "Example";            // make up a name
+        
+    // The UserDebug macros are useful for tracking what is going on.
+    // This shows we're building a window.
+
+    UserDebug1(Build,"tutApp::NewAppWin(%s)\n",myname);
+
+    // You may instantiate an instance of the window outside of
+    // NewAppWin, or allow NewAppWin to create the instance.
+
+    if (!thisWin)       // Didn't provide a window, so create one.
+        thisWin = new tCmdWindow(myname, w, h);
+
+    // The vAppWinInfo class is meant to serve as a database used by the
+    // tutApp controller. If you use this feature, you will probably
+    // derive your own myAppWinInfo class from vAppWinInfo. The instance
+    // of vAppWinInfo created here will be automatically deleted when
+    // this window instance is closed through CloseAppWin.
+
+    if (!awinfo)        // Did caller provide an appinfo?
+        awinfo = new vAppWinInfo(myname);
+
+    // After you have created an instance of the window and an instance
+    // of the AppWinInfo, you MUST call the base vApp::NewAppWin method.
+    // You won't need to explicitly keep track of the pointer to
+    // each new window -- unless it has to interact with other windows.
+    // If that is the case, then you can use your derived vAppWinInfo
+    // to coordinate the interaction.
+
+    return vApp::NewAppWin(thisWin,name,w,h,awinfo);
+  }
+
+//===========================&#62;&#62;&#62; tutApp::Exit &lt;&lt;&lt;=========================
+  void tutApp::Exit(void)
+  {
+    // This can be called to close all windows. If the app needs to do
+    // something special, it can. Otherwise, it can call the general
+    // vApp::Exit method, which will perform appropriate calls the the
+    // specialized tutApp::CloseAppWin.
+
+    UserDebug(Build,"tutApp::Exit()\n");
+
+    vApp::Exit();       // easy default behavior
+  }
+
+//======================&#62;&#62;&#62; tutApp::CloseAppWin &lt;&lt;&lt;=======================
+  void tutApp::CloseAppWin(vWindow* win)
+  {
+    // This will be called BEFORE a window has been unregistered or
+    // closed. The app can do whatever it needs to to close down the
+    // data associated with this window. (It is invoked explicitly by
+    // you in response to a Close menu pick, for example, or when the
+    // user clicks the close button. It can also be called by vApp::Exit().
+    // After this method cleans up, it can then call the superclass
+    // vApp::CloseAppWin to unregister and close this window. Note that
+    // the win gives a handle that can be used with vApp::getAppWinInfo
+    // to retrieve the AppWinInfo class.
+
+    UserDebug(Build,"tutApp::CloseAppWin()\n");
+
+    // Code to handle close of window (such as saving/closing
+    // a file) would go here...
+
+    vApp::CloseAppWin(win);   // Unregister and close the window.
+  }
+
+//=====================&#62;&#62;&#62; tutApp::AppCommand &lt;&lt;&lt;=========================
+  void tutApp::AppCommand(vWindow* win, ItemVal id, ItemVal val,
+    CmdType cType)
+  {
+    // Any commands not processed by the window WindowCommand
+    // method will be passed to here for default treatment.
+
+    UserDebug1(Build,"tutApp::AppCmd(ID: %d)\n",id);
+    vApp::AppCommand(win, id, val, cType);
+  }
+
+//=======================&#62;&#62;&#62; tutApp::KeyIn &lt;&lt;&lt;============================
+  void tutApp::KeyIn(vWindow* win, vKey key, unsigned int shift)
+  {
+    // Any key strokes not processed by the window will be passed
+    // along to here for default treatment.
+
+    vApp::KeyIn(win, key, shift);
+  }
+
+//========================================================================
+// Remember that any static references to an object are constructed by
+// the C++ startup code before main or any other functions are called.
+// Thus, the constructor for tutApp (and thus vApp) is invoked before
+// anything else happens. This enables V to perform whatever
+// initializations are required by the host GUI system - and frees you
+// from having to worry about the typical gory details. All this means
+// that EVERY V application needs a static instance of the tutApp to
+// get things rolling. Note that the global variable theApp is set to
+// point to this instance, and is the easiest way to access the vApp
+// and tutApp methods (e.g., theApp-&#62;Exit()).
+//========================================================================
+
+  static tutApp tut_App("TutorApp");  // The single instance of the app
+
+//===========================&#62;&#62;&#62; AppMain &lt;&lt;&lt;==============================
+  int AppMain(int argc, char** argv)
+  {
+    // The V framework defines the instance of main. After some
+    // processing of command line arguments, AppMain is called with
+    // cleaned up command line arguments. Note that at this time, no
+    // windows have been defined. Normally, AppMain is the place to
+    // start up the first window. You can perform any initialization you
+    // need to do here.
+
+    (void) theApp-&#62;NewAppWin(0, "Tutorial V Example", 350, 100, 0);
+
+    // At this point, the window is up, and all events are being
+    // routed through its methods.
+
+    // We MUST return 0 if the status is OK at this point.
+    return 0;
+  }
+</pre></font>
+<p>
+<H3>tutapp.h</H3>
+
+<p>
+<font size=-2>
+<pre>
+//========================================================================
+//      tutapp.h:  Header file for tutorial V application
+//
+//      Copyright 1995, Bruce E. Wampler. All rights reserved.
+//========================================================================
+
+#ifndef TUTAPP_H                // Standard technique for avoiding
+#define TUTAPP_H                // problems with multiple #includes
+
+#ifdef vDEBUG
+#include &lt;v/vdebug.h&#62;
+#endif
+
+#include &lt;v/vapp.h&#62;     // We are derived from vApp
+#include &lt;v/vawinfo.h&#62;  // Need for app info
+
+#include "tcmdwin.h"            // we use our tCmdWindow class
+
+    class tutApp : public vApp
+      {
+        friend int AppMain(int, char**); // allow AppMain access
+
+      public:           //---------------------------------------- public
+
+        tutApp(char* name) : vApp(name) {}      // just call vApp
+        virtual ~tutApp() {}
+
+        // Routines from vApp that are normally overridden
+
+        virtual vWindow* NewAppWin(vWindow* win, char* name, int w, int h,
+           vAppWinInfo* winInfo);
+        virtual void Exit(void);
+        virtual void CloseAppWin(vWindow* win);
+        virtual void AppCommand(vWindow* win, ItemVal id,
+                ItemVal val, CmdType cType);
+        virtual void KeyIn(vWindow* win, vKey key,
+            unsigned int shift);
+
+        // New routines for this particular app go here
+
+      protected:        //------------------------------------- protected
+
+      private:          //--------------------------------------- private
+
+      };
+#endif
+
+</pre></font>
+
+<H2>The Command Window</H2>
+
+<p>
+
+<H3>tcmdwin.cpp</H3>
+
+<p>
+<font size=-2>
+<pre>
+//========================================================================
+//  tcmdwin.cpp:     Source file for tutorial cmdwin class
+//
+//      Copyright 1995, Bruce E. Wampler. All rights reserved.
+//========================================================================
+
+// This file contains the source code for a typical command window
+// derived from the vCmdWindow class. It will contain the definitions
+// of the menu bar and command and status bars. It represents the main
+// interaction point with the user.
+// 
+// We start out with the #includes needed to define this class plus
+// any V utility dialogs such as vNotice we use.
+
+#include &lt;v/vnotice.h&#62;  // so we can use notice
+#include &lt;v/vkeys.h&#62;    // to map keys
+#include &lt;v/vutil.h&#62;    // for utilities
+#include &lt;v/vfilesel.h&#62; // for file select
+
+#include "tcmdwin.h"            // our header file
+
+// Now, we define static arrays for the menus, command bars, and
+// status bars used by this window. This consists of defining the
+// constants needed for IDs, followed by the static declarations of
+// the menu and command arrays. Note that V predefines quite a few
+// standard IDs which you can use instead of defining your own.
+
+  // Start ID defines for the main window at 100
+
+  const ItemVal m_CheckMe = 100;  // for CheckMe command
+  const ItemVal m_CopySens = 101; // for Set Copy Sensitive
+  const ItemVal m_Dialog = 102;   // to pop up the dialog
+  const ItemVal m_ModalDialog = 103; // for modal dialog
+  const ItemVal m_Clear = 104;    // Clear screen
+
+// Now, the static declarations of the menu arrays. You first define
+// the pulldown menus, one for each main menu bar label.
+
+    static vMenu FileMenu[] =    // Items for File menu
+      {
+        {"New",M_New,isSens,notChk,noKeyLbl,noKey,noSub},
+        {"Open",M_Open,isSens,notChk,noKeyLbl,noKey,noSub},
+        {"Save",M_Save,notSens,notChk,noKeyLbl,noKey,noSub},
+        {"Save As",M_SaveAs,notSens,notChk,noKeyLbl,noKey,noSub},
+#ifdef vDEBUG                   // Defines V debug code
+        {"-",M_Line,notSens,notChk,noKeyLbl,noKey,noSub},
+        {"Debug",M_SetDebug,isSens,notChk,noKeyLbl,noKey,noSub},
+#endif
+        {"-",M_Line,notSens,notChk,noKeyLbl,noKey,noSub},
+        {"Exit",M_Exit,isSens,notChk,noKeyLbl,noKey,noSub},
+        {NULL}
+      };
+
+    static vMenu EditMenu[] =    // Items for Edit menu
+      {
+        {"Cut",M_Cut,notSens,notChk,noKeyLbl,noKey,noSub},
+        {"Copy",M_Copy,notSens,notChk,noKeyLbl,noKey,noSub},
+        {"Paste",M_Paste,notSens,notChk,noKeyLbl,noKey,noSub},
+        {NULL}
+      };
+
+    static vMenu TestMenu[] =   // Items for Test menu
+      {
+        {"CheckMe",m_CheckMe,isSens,notChk,noKeyLbl,
+            noKey,noSub},
+        {"Copy Sensitive",m_CopySens,isSens,notChk,noKeyLbl,
+            noKey,noSub},
+        {"Dialog",m_Dialog,isSens,notChk,noKeyLbl,
+            noKey,noSub},
+        {"Modal Dialog",m_ModalDialog,isSens,notChk,noKeyLbl,
+            noKey,noSub},
+        {NULL}
+      };
+
+    // Now, define the items on the menu bar
+
+    vMenu StandardMenu[] =     // The menu bar with three items
+      {
+        {"File",M_File,isSens,notUsed,notUsed,noKey,&FileMenu[0]},
+        {"Edit",M_Edit,isSens,notUsed,notUsed,noKey,&EditMenu[0]},
+        {"Test",M_Test,isSens,notUsed,notUsed,noKey,&TestMenu[0]},
+        {NULL}
+      };
+
+// We now define a command bar. Command bars are optional, and there
+// may be more than one. You can place any CommandObject you want on a
+// command bar.
+
+    static CommandObject CommandBar[] =  // A simple command bar
+      {
+        {C_Label,999,0 ,"Command Bar",NoList,CA_None,
+            isSens,NoFrame,0,0},
+        {C_Button,M_Copy,M_Copy,"Copy",NoList,CA_None,
+            notSens,NoFrame,0,0},
+        {C_Button,m_Dialog,m_Dialog,"Dialog",NoList,CA_None,
+            isSens,NoFrame,0,0},
+        {C_Button,m_Clear,m_Clear,"Clear",NoList,CA_None,
+            isSens,NoFrame,0,0},
+        {C_Button,M_Exit,M_Exit,"Exit",NoList,CA_None,
+            isSens,NoFrame,0,0},
+        {C_EndOfList,0,0,0,0,CA_None,0,0,0}  // This ends list
+      };
+
+// Sometimes it is easier to define IDs near the definition of
+// the dialog or status bar using them.
+
+  const ItemVal m_cmdMsg = 110;
+  const ItemVal m_cmdCount = 111;
+  const ItemVal m_keyMsg = 112;
+  const ItemVal m_keyVal = 113;
+
+    static vStatus StatBar[] =    // Define a simple status bar
+      {
+        {"Commands issued: ",m_cmdMsg,CA_NoBorder,isSens,0},
+        {" ",m_cmdCount,CA_None,isSens,0},
+        {"Last keypress: ",m_keyMsg,CA_NoBorder,isSens,0},
+        {"   ",m_keyVal,CA_None,isSens,0},
+        {0,0,0,0,0}           // This ends list
+      };
+
+    static int copy_sens = 0;   // local for tracking sensitive
+
+//======================&#62;&#62;&#62; tCmdWindow::tCmdWindow &lt;&lt;&lt;====================
+  tCmdWindow::tCmdWindow(char* name, int width, int height) :
+    vCmdWindow(name, width)
+  {
+    // This is the constructor for tCmdWindow. 
+    
+    UserDebug1(Constructor,"tCmdWindow::tCmdWindow(%s) Constructor\n",name)
+
+    // The "Standard" window will consist of a menubar, a canvas, an
+    // optional button bar, and an optional status bar.
+    // 
+    // First, create and add the proper panes to the CmdWindow
+    // Note: there must be a corresponding delete in the destructor
+
+    // Create and add the standard Menu Bar to this window
+    myMenu = new vMenuPane(StandardMenu);
+    AddPane(myMenu);
+
+    // Create and add our Canvas pane to this window
+    myCanvas = new tCanvasPane;
+    AddPane(myCanvas);
+
+    // Create and add the command pane to this window
+    myCmdPane = new vCommandPane(CommandBar);
+    AddPane(myCmdPane);
+
+    // Create and add the Status Bar to this window
+    myStatus = new vStatusPane(StatBar);
+    AddPane(myStatus);
+
+    // In the V model, a window may have dialogs. Each dialog used
+    // by a window must have an instance pointer. The easiest way
+    // to create dialogs is to construct each one using a new here
+    // which only defines the dialog - you need to use its
+    // ShowDialog method at the appropriate time to display it).
+    // You delete dialogs in the destructor for this window.
+    // 
+    // Now, create whatever dialogs this app defines:
+    // instances of tDialog and tModalDialog
+
+    sampleDialog = new tDialog(this);
+    sampleModalDialog = new tModalDialog(this);
+
+    // FINALLY, after all the panes have been constructed and
+    // added, we must show the window!
+
+    ShowWindow();
+  }
+
+//=====================&#62;&#62;&#62; tCmdWindow::~tCmdWindow &lt;&lt;&lt;====================
+  tCmdWindow::~tCmdWindow()
+  {
+    UserDebug(Destructor,"tCmdWindow::~tCmdWindow() destructor\n")
+
+    // Now put a delete for each new in the constructor.
+
+    delete myMenu;
+    delete myCanvas;
+    delete myStatus;
+    delete myCmdPane;
+    delete sampleDialog;
+    delete sampleModalDialog;
+  }
+
+//========================&#62;&#62;&#62; tCmdWindow::KeyIn &lt;&lt;&lt;=======================
+  void tCmdWindow::KeyIn(vKey keysym, unsigned int shift)
+  {
+    // Keystrokes are routed to this window. This example code shows very
+    // simple processing of keystrokes, and how to update the m_keyVal
+    // field of the status bar.
+
+    static char ctrl[] = "^X ";
+    static char chr[] = " X ";
+
+    if (VK_IsModifier(keysym))
+        SetString(m_keyVal, "mod");     // change status bar
+    else if (keysym &lt; ' ')              // ctrl char
+      {
+        ctrl[1] = keysym + '@';
+        SetString(m_keyVal, ctrl);      // change status bar
+      }
+    else if (keysym &lt; 128)              // normal printable char
+      {
+        chr[1] = keysym;
+        SetString(m_keyVal, chr);       // change status bar
+      }
+    else 
+        SetString(m_keyVal, "+++");     // change status bar
+  }
+
+//====================&#62;&#62;&#62; tCmdWindow::WindowCommand &lt;&lt;&lt;===================
+  void tCmdWindow::WindowCommand(ItemVal id, ItemVal val, CmdType cType)
+  {
+    // All commands generated from this window's menus and dialog bars
+    // are routed through here.  The easiest way to handle commands is to
+    // use a single, sometimes large switch. Each time you add a command
+    // to a menu or command bar, add a case to the switch here. In this
+    // example, we use the V Notice dialog to display entered commands.
+
+    static int cmdCount = 0;    // Used for sample status update
+    vNoticeDialog note(this);   // Used for default actions
+    char buff[20];              // buffer for status bar
+
+    ++cmdCount;                 // count commands that have been issued
+    IntToStr(cmdCount,buff);    // Use V utility routine to get string
+    SetString(m_cmdCount, buff);        // change status bar
+
+    UserDebug1(CmdEvents,"tCmdWindow:WindowCommand(%d)\n",id)
+
+    switch (id)                 // The main switch to handle commands
+      {
+        // File Menu commands ------------------------------------
+
+        case M_New:             // For this example, we will open a
+          {                     // new window using our NewAppWin.
+            (void) theApp-&#62;NewAppWin(0,"",250,100);
+            break;
+          }
+
+        case M_Open:            // This demos vFileSelect dialog
+          {
+            char name[100] = "";        // start out with null name
+            vFileSelect fsel(this);     // an instance of vFileSelect
+            int fI;                     // Filter index
+            static char* filter[] = {   // Filter for file select
+                "*", "*.txt", "*.c *.cpp *.h", 0 };
+
+            // Show the file select dialog
+            int ans = fsel.FileSelect("Open file",name,99,filter,fI);
+
+            if (ans && *name)   // User picked a file name
+              {
+                SetTitle(name); // Set title of window to name
+                note.Notice(name);  // Show the name
+              }
+            else                // Notify no name selected
+                note.Notice("No file name selected.");
+          }
+
+        case M_Save:            // This would usually save a file
+          {
+            note.Notice("Save");
+            break;
+          }
+
+        case M_SaveAs:          // Save to a specified name
+          {
+            note.Notice("Save As");
+            break;
+          }
+
+#ifdef vDEBUG                   // Include debugging like this
+        case M_SetDebug:
+          {
+            vDebugDialog debug(this);   // an instance of debug 
+            debug.SetDebug();           // dialog - let user set
+            break;
+          }
+#endif
+
+        case M_Exit:            // Standard exit command
+          {                     // Invoke the standard app Exit
+            theApp-&#62;Exit();     // to close all windows
+            break;              // will never get here
+          }
+
+        // Edit Menu commands ------------------------------------
+        case M_Cut:             // Standard items for Edit menu
+          {
+            note.Notice("Cut");
+            break;
+          }
+
+        case M_Copy:
+          {
+            note.Notice("Copy");
+            break;
+          }
+
+        case M_Paste:
+          {
+            note.Notice("Paste");
+            break;
+          }
+
+        // Test Menu commands ------------------------------------
+        case m_CheckMe:         // Demonstrate using a checked menu
+          {
+            ItemVal curval = GetValue(id); // Get current status
+            SetValue(m_CheckMe,!curval,Checked); // Toggle check
+
+            if (curval)                 // Change menu label
+                SetString(m_CheckMe,"Check Me");
+            else
+                SetString(m_CheckMe,"UnChk Me");
+            break;
+          }
+
+        case m_CopySens:        // Demo changing sensitivity
+          {
+            copy_sens = !copy_sens;     // toggle
+            // This will change both menu and command button
+            SetValue(M_Copy,copy_sens,Sensitive);
+            break;
+          }
+
+        case m_Dialog:          // Invoke our dialog
+          {
+            if (!sampleDialog-&#62;IsDisplayed())   // not twice!
+                sampleDialog-&#62;ShowDialog("Sample Modeless Dialog");
+            break;
+          }
+
+        case m_ModalDialog:     // Invoke our modal dialog
+          {
+            ItemVal val, id;
+            id = sampleModalDialog-&#62;ShowModalDialog("Sample Modal",val);
+            // Now do something useful with id and val ...
+            break;
+          }
+
+        case m_Clear:           // Clear the canvas
+          {
+            myCanvas-&#62;Clear();  // Invoke the canvas Clear
+            break;
+          }
+
+        default:                // route unhandled commands up
+          {                     // to superclass
+            vCmdWindow::WindowCommand(id, val, cType);
+            break;
+          }
+      }
+  }
+</pre></font>
+<H3>tcmdwin.h</H3>
+<font size=-2>
+
+<pre>
+//========================================================================
+//      tcmdwin.h:  Header file for tutorial V command window
+//
+//      Copyright 1995, Bruce E. Wampler. All rights reserved.
+//========================================================================
+//
+// Derive a window from the vCmdWindow class
+
+#ifndef TCMDWIN_H
+#define TCMDWIN_H
+
+#include &lt;v/vcmdwin.h&#62;  // So we can use vCmdWindow
+#include &lt;v/vmenu.h&#62;    // For the menu pane
+#include &lt;v/vstatusp.h&#62; // For the status pane
+#include &lt;v/vcmdpane.h&#62; // command pane
+
+#ifdef vDEBUG
+#include &lt;v/vdebug.h&#62;
+#endif
+
+#include "tdialog.h"    // user defined: tDialog
+#include "tmodal.h"     // user defined: tModalDialog
+#include "tcanvas.h"    // user defined: tCanvasPane
+
+    class tCmdWindow : public vCmdWindow
+      {
+        friend int AppMain(int, char**);        // allow AppMain access
+
+      public:           //---------------------------------------- public
+        tCmdWindow(char*, int, int);    // Constructor with size
+        virtual ~tCmdWindow();          // Destructor
+        virtual void WindowCommand(ItemVal id,ItemVal val,CmdType cType);
+        virtual void KeyIn(vKey keysym, unsigned int shift);
+
+      protected:        //------------------------------------- protected
+
+      private:          //--------------------------------------- private
+
+        // Each user CmdWindow should conform to a "Standard" window,
+        // which includes a menu bar, a canvas, an optional command bar,
+        // and an optional status bar.
+
+        vMenuPane* myMenu;              // For the menu bar
+        tCanvasPane* myCanvas;          // For the canvas
+        vStatusPane* myStatus;          // For the status bar
+        vCommandPane* myCmdPane;        // for the command pane
+
+        // Each user CmdWindow will probably have some dialogs and
+        // subwindows. Declare pointers to each instance here.
+
+        tDialog* sampleDialog;
+        tModalDialog* sampleModalDialog;
+      };
+#endif
+</pre></font>
+<H2>The Canvas</H2>
+
+<p>
+
+<H3>tcanvas.cpp</H3>
+
+<p>
+<font size=-2>
+<pre>
+//========================================================================
+//      tcanvas.cpp - source for tutorial canvas
+//
+//      Copyright 1995, Bruce E. Wampler, All Rights Reserved.
+//========================================================================
+//
+// Each V application usually needs a canvas. In order to handle
+// various events: mouse, redraw, resize, and scroll, you will need to
+// derive your own canvas class. The base V vCanvasPane class can only
+// draw -- it does not have any memory of what has been drawn on the
+// screen (the vTextCanvasPane does handle redrawing, but is still
+// limited). Thus, your class will usually be responsible for handling
+// redrawing. This example is very simple. It lets the user draw
+// lines - up to 200 - and will redraw the screen when it has been
+// exposed.
+
+// The example does not handle scrolling.
+
+#include "tcanvas.h"            // include our header file
+
+//====================&#62;&#62;&#62; tCanvasPane::tCanvasPane &lt;&lt;&lt;====================
+  tCanvasPane::tCanvasPane()
+  {
+    // The constructor initializes our simple data structure.
+
+    _mouseDown = 0; _nextpt = 0;
+    _begx = -1; _begy = -1; _curx = -1; _cury = -1;
+    _pt = new point[200];       // allocate only 200 lines
+  }
+
+//-===================&#62;&#62;&#62; tCanvasPane::tCanvasPane &lt;&lt;&lt;====================
+  tCanvasPane::~tCanvasPane()
+  {
+    delete [] _pt;              // free the point array
+  }
+
+//======================&#62;&#62;&#62; tCanvasPane::Clear &lt;&lt;&lt;========================
+  void tCanvasPane::Clear()
+  {
+    vCanvasPane::Clear();       // clear the canvas
+    _nextpt = 0;                // start over at 0
+  }
+
+// This example does not handle scrolling, but a derived canvas would
+// be likely to. Thus, we've included the derived scrolling methods,
+// but simply call the superclass method for default handling, which
+// is essentially a no op.
+
+//======================&#62;&#62;&#62; tCanvasPane::HPage &lt;&lt;&lt;========================
+  void tCanvasPane::HPage(int shown, int top)
+  {
+    vCanvasPane::HPage(shown, top);
+  }
+
+//======================&#62;&#62;&#62; tCanvasPane::VPage &lt;&lt;&lt;========================
+  void tCanvasPane::VPage(int shown, int top)
+  {
+    vCanvasPane::VPage(shown, top);
+  }
+
+//======================&#62;&#62;&#62; tCanvasPane::HScroll &lt;&lt;&lt;======================
+  void tCanvasPane::HScroll(int step)
+  {
+    vCanvasPane::HScroll(step);
+  }
+
+//======================&#62;&#62;&#62; tCanvasPane::VScroll &lt;&lt;&lt;======================
+  void tCanvasPane::VScroll(int step)
+  {
+    vCanvasPane::VScroll(step);
+  }
+
+//=====================&#62;&#62;&#62; tCanvasPane::MouseDown &lt;&lt;&lt;=====================
+  void tCanvasPane::MouseDown(int X, int Y, int button)
+  {
+   // Mouse down means the user is starting a line. We don't care which
+   // button was pressed. There is nothing to draw until the mouse moves.
+
+    _mouseDown = 1;                     // track mouse button
+    _pt[_nextpt].x = _begx = _curx = X; // starting point
+    _pt[_nextpt].y = _begy = _cury = Y;
+    if (++_nextpt &#62;= 200)               // set next point and do a simple
+        _nextpt = 0;                    // minded storage allocation
+  }
+
+//======================&#62;&#62;&#62; tCanvasPane::MouseMove &lt;&lt;&lt;====================
+  void tCanvasPane::MouseMove(int x, int y, int button)
+  {
+    // Mouse move means the user is drawing a line, so we have to draw
+    // it on the screen. By drawing a Rubber Line, we can easily track
+    // the user motions, and undraw the previous line.
+
+    if (_begx != _curx || _begy != _cury) // Was there a previous line?
+        DrawRubberLine(_begx, _begy, _curx, _cury);  // Undraw old line
+
+    if (_begx != x || _begy != y)       // If we moved, draw new line
+        DrawRubberLine(_begx, _begy, x, y);
+    
+    _curx = x; _cury = y;               // update positions
+  }
+
+//========================&#62;&#62;&#62; tCanvasPane::MouseUp &lt;&lt;&lt;====================
+  void tCanvasPane::MouseUp(int X, int Y, int button)
+  {
+    // Mouse up means the user has ended a line, so we need to draw
+    // a permanent line and update the data base.
+
+    _mouseDown = 0;                     // Mouse down now
+    if (_begx != X || _begy != Y)       // We drew a line
+        DrawLine(_begx, _begy, X, Y);   // So draw permanent version
+
+    _pt[_nextpt].x = X; _pt[_nextpt].y = Y;  // End point
+
+    if (++_nextpt &#62;= 200)               // set next point and do a simple
+        _nextpt = 0;                    // minded storage allocation
+
+    _begx = -1; _begy = -1; _curx = -1; _cury = -1;  // for next line
+  }
+
+//========================&#62;&#62;&#62; tCanvasPane::Redraw &lt;&lt;&lt;=====================
+  void tCanvasPane::Redraw(int x, int y, int w, int h)
+  {
+    // This is a simple Redraw that just redraws everything.
+    // Often, that will be more than fast enough, but the input
+    // parameters can be used to make a more intelligent redraw.
+
+    for (int i = 0 ; i &lt; _nextpt ; i += 2)
+        DrawLine(_pt[i].x, _pt[i].y, _pt[i+1].x, _pt[i+1].y);
+  }
+
+//======================&#62;&#62;&#62; tCanvasPane::Resize &lt;&lt;&lt;=======================
+  void tCanvasPane::Resize(int w, int h)
+  {
+    // We also don't handle resizing in this example.
+    vCanvasPane::Resize(w,h);
+  }
+</pre></font>
+<H3>tcanvas.h</H3>
+<font size=-2>
+<p>
+
+<pre>
+//========================================================================
+//  tcanvas.h -- header file for tutorial canvas class
+//
+//      Copyright 1995, Bruce E. Wampler, All Rights Reserved.
+//========================================================================
+
+#ifndef TCANVAS_H
+#define TCANVAS_H
+
+#include &lt;v/vcanvas.h&#62;  // derive from vCanvasPane
+
+    typedef struct point        // simple structure for points
+      {
+        int x; int y;
+      } point;
+
+    class tCanvasPane : public vCanvasPane
+      {
+      public:           //---------------------------------------- public
+        tCanvasPane();
+        virtual ~tCanvasPane();
+
+        // Windows
+        virtual void Clear();
+
+        // Scrolling
+        virtual void HPage(int, int);
+        virtual void VPage(int, int);
+        virtual void HScroll(int);
+        virtual void VScroll(int);
+
+        // Events
+        virtual void MouseDown(int, int, int);
+        virtual void MouseUp(int, int, int);
+        virtual void MouseMove(int, int, int);
+        virtual void Redraw(int, int, int, int); // Expose/redraw event
+        virtual void Resize(int, int);          // Resize event
+
+      protected:        //------------------------------------- protected
+
+      private:          //--------------------------------------- private
+        // Note that we try to use a leading underscore to indicate
+        // private members. We aren't always consistent!
+        int _mouseDown;         // track if mouse down
+        int _begx; int _begy;   // starting point
+        int _curx; int _cury;   // current point
+        point *_pt;             // the array of points
+        int _nextpt;            // where next point goes
+      };
+#endif
+</pre></font>
+<H2><A NAME="tth_sEcA.4">A.4&nbsp;</A> A Modeless Dialog</H2>
+
+<p>
+
+<H3>tdialog.cpp</H3>
+
+<p>
+<font size=-2>
+<pre>
+//========================================================================
+//  tdialog.cpp - Source file for tutorial tDialog class
+//
+//  Copyright 1995, Bruce E. Wampler, All Rights Reserved
+//========================================================================
+
+// #include the headers we need
+#include &lt;v/vnotice.h&#62;
+#include "tdialog.h"
+
+// The structure of a derived dialog class is very similar to the
+// structure of a command window class. First we define IDs for the
+// various command objects used in the dialog. Then we declare the
+// static array that defines the dialog.
+
+const ItemVal mdLbl1 = 200;
+
+const ItemVal mdFrm1 = 201;  const ItemVal mdLbl2 = 202;
+const ItemVal mdCB1 = 203;   const ItemVal mdCB2 = 204;
+const ItemVal mdCB3 = 205;
+
+const ItemVal mdFrmV1 = 206; const ItemVal mdLbl3 = 207;
+const ItemVal mdRB1 = 208;   const ItemVal mdRB2 = 209;
+
+const ItemVal mdFrmV2 = 210; const ItemVal mdLbl4 = 211;
+const ItemVal mdBtn1 = 212;  const ItemVal mdBtn2 = 213;
+
+const ItemVal mdBtnChange = 214;
+
+    static char change_me[] = "Change Me A";    // a label to change
+
+// This defines the dialog
+
+    static CommandObject DefaultCmds[] =
+      {
+        {C_Label, mdLbl1, 0,"X",NoList,CA_MainMsg,isSens,NoFrame, 0, 0},
+
+        {C_Frame,mdFrmV2,0,"",NoList,CA_None,isSens,NoFrame,0,mdLbl1},
+        {C_Label,mdLbl4,0,"Buttons",NoList,CA_None,isSens,mdFrmV2,0,0},
+        {C_Button,mdBtn1,mdBtn1,"Button 1",NoList,CA_None,
+                isSens,mdFrmV2,0,mdLbl4},
+        {C_Button,mdBtn2,mdBtn2,"Button 2",NoList,CA_None,
+                isSens,mdFrmV2,0,mdBtn1},
+
+        {C_Frame,mdFrm1,0,"",NoList,CA_None,isSens,NoFrame,mdFrmV2,mdLbl1},
+        {C_Label,mdLbl2,0,"CheckBox",NoList,CA_None,isSens,mdFrm1,0,0},
+        {C_CheckBox,mdCB1,0,"Test A",NoList,CA_None,
+                isSens,mdFrm1,0,mdLbl2},
+        {C_CheckBox,mdCB2,0,"Test B",NoList,CA_None,
+                isSens,mdFrm1,mdCB1,mdLbl2},
+        {C_CheckBox,mdCB3,1,"Test C",NoList,CA_None,isSens,mdFrm1,0,mdCB1},
+
+        {C_Frame,mdFrmV1,0,"",NoList,CA_None,isSens,NoFrame,mdFrm1,mdLbl1},
+        {C_Label,mdLbl3,0,"Radios",NoList,CA_None,isSens,mdFrmV1,0,0},
+        {C_RadioButton,mdRB1,1,"KOB",NoList,CA_None,
+                isSens,mdFrmV1,0,mdLbl3},
+        {C_RadioButton,mdRB2,0,"KOAT",NoList,CA_None,
+                isSens,mdFrmV1,0,mdRB1},
+
+        {C_Button,mdBtnChange,0,change_me,NoList,CA_None,
+                isSens,NoFrame,0,mdFrmV1},
+        {C_Button,M_Cancel,M_Cancel," Cancel ",NoList,CA_None,
+            isSens,NoFrame,mdBtnChange,mdFrmV1},
+        {C_Button,M_OK,M_OK," OK ",NoList,CA_DefaultButton,
+            isSens,NoFrame,M_Cancel,mdFrmV1},
+
+        {C_EndOfList,0,0,0,0,CA_None,0,0,0}
+      };
+
+
+//==========================&#62;&#62;&#62; tDialog::tDialog &lt;&lt;&lt;======================
+  tDialog::tDialog(vBaseWindow* bw) :
+    vDialog(bw)
+  {
+    // The constructor for a derived dialog calls the superclass
+    // constructor, and then adds the command objects to the dialog
+    // by calling AddDialogCmds.
+
+    UserDebug(Constructor,"tDialog::tDialog()\n")
+    AddDialogCmds(DefaultCmds);         // add the command objects
+  }
+
+//=========================&#62;&#62;&#62; tDialog::~tDialog &lt;&lt;&lt;======================
+  tDialog::~tDialog()
+  {
+    // Destructor often doesn't need to do anything
+
+    UserDebug(Destructor,"tDialog::~tDialog() destructor\n")
+  }
+
+//====================&#62;&#62;&#62; tDialog::DialogCommand &lt;&lt;&lt;======================
+  void tDialog::DialogCommand(ItemVal id, ItemVal retval, CmdType ctype)
+  {
+    // After the user has selected a command from the dialog,
+    // this routine is called with the value.
+
+    vNoticeDialog note(this);   // an instance we can use
+
+    UserDebug1(CmdEvents,"tDialog::DialogCommand(id:%d)\n",id)
+
+    switch (id)         // We will do some things depending on value
+      {
+        case mdCB1:             // CheckBox
+            note.Notice("Test A");
+            break;
+
+        case mdCB2:             // CheckBox
+            note.Notice("Test B");
+            break;
+
+        case mdCB3:             // CheckBox
+            note.Notice("Test C");
+            break;
+
+        case mdRB1:             // Radio Button
+            note.Notice("KOB");
+            break;
+
+        case mdRB2:             // Radio Button
+            note.Notice("KOAT");
+            break;
+
+        case mdBtn1:            // Button
+            note.Notice("Button 1");
+            break;
+
+        case mdBtn2:            // Button
+            note.Notice("Button 2");
+            break;
+
+        case mdBtnChange:       // Example: change my own label
+            // We will change the label on this button
+            change_me[10]++;            // change the "A"
+            SetString(mdBtnChange, change_me);
+            break;
+      }
+    // All commands should also route through the parent handler
+    // which has useful default behaviors for Cancel and OK
+    vDialog::DialogCommand(id,retval,ctype);
+  }
+</pre></font>
+<H3>tdialog.h</H3>
+<font size=-2>
+<p>
+
+<pre>
+//========================================================================
+//
+//  tdialog.h - Header file for tutorial tDialog class
+//
+//  Copyright 1995, Bruce E. Wampler, All Rights Reserved
+//========================================================================
+
+#ifndef TDIALOG_H
+#define TDIALOG_H
+
+#include &lt;v/vdialog.h&#62;  // we derive from vDialog
+
+    class tDialog : public vDialog
+      {
+      public:           //---------------------------------------- public
+        tDialog(vBaseWindow*);
+        virtual ~tDialog();             // Destructor
+        virtual void DialogCommand(ItemVal id, ItemVal retval,
+                CmdType ctype);
+
+      protected:        //------------------------------------- protected
+
+      private:          //--------------------------------------- private
+        int _toggleId;
+      };
+#endif
+</pre></font>
+<H2><A NAME="tth_sEcA.5">A.5&nbsp;</A> A Modal Dialog</H2>
+
+<p>
+
+<H3>tmodal.cpp</H3>
+
+<p>
+<font size=-2>
+<pre>
+//========================================================================
+//  tmodal.cpp - Source file for tutorial tModalDialog class
+//
+//  Copyright 1995, Bruce E. Wampler, All Rights Reserved
+//========================================================================
+//
+
+#include "tmodal.h"             // our header file
+#include &lt;v/vnotice.h&#62;
+
+const ItemVal mmLbl1 = 300;
+const ItemVal mmBtn1 = 301;
+const ItemVal mmBtn2 = 302;
+
+    static  DefaultCmds[] =
+      {
+        {C_Label, mmLbl1, 0,"X",NoList,CA_MainMsg,isSens,NoFrame, 0, 0},
+        
+        {C_Button,mmBtn1,mmBtn1," Test 1 ",NoList,CA_None,
+                isSens,NoFrame,0,mmLbl1},
+        {C_Button,mmBtn2,mmBtn2," Test 2 ",NoList,CA_None,
+                isSens,NoFrame, mmBtn1,mmLbl1},
+
+        {C_Button,M_Cancel,M_Cancel," Cancel ",NoList,CA_None,
+                isSens,NoFrame, 0,mmBtn1},
+        {C_Button,M_OK,M_OK,"   OK   ",NoList,CA_DefaultButton,
+                isSens,NoFrame,M_Cancel,mmBtn1},
+
+        {C_EndOfList,0,0,0,0,CA_None,0,0,0}
+      };
+
+
+//======================&#62;&#62;&#62; tModalDialog::tModalDialog &lt;&lt;&lt;================
+  tModalDialog::tModalDialog(vBaseWindow* bw) :
+    vModalDialog(bw)
+  {
+    UserDebug(Constructor,"tModalDialog::tModalDialog()\n")
+    AddDialogCmds(DefaultCmds);         // add the predefined commands
+  }
+
+//=================&#62;&#62;&#62; tModalDialog::~tModalDialog &lt;&lt;&lt;====================
+  tModalDialog::~tModalDialog()
+  {
+    UserDebug(Destructor,"tModalDialog::~tModalDialog() destructor\n")
+  }
+
+//===================&#62;&#62;&#62; tModalDialog::DialogCommand &lt;&lt;&lt;==================
+  void tModalDialog::DialogCommand(ItemVal id,ItemVal retval,CmdType ctype)
+  {
+    // After the user has selected a command from the dialog,
+    // this routine is called with the id and retval.
+
+    vNoticeDialog note(this);
+
+    UserDebug1(CmdEvents,"tModalDialog::DialogCommand(id:%d)\n",id)
+
+    switch (id)         // We will do some things depending on value
+      {
+        case mmBtn1:            // Button 1
+            note.Notice(" Test 1 ");
+            break;
+
+        case mmBtn2:            // Button 2
+            note.Notice(" Test 2 ");
+            break;
+      }
+
+    // let default behavior handle Cancel and OK
+    vModalDialog::DialogCommand(id,retval,ctype);
+  }
+</pre></font>
+<H3>tmodal.h</H3>
+<font size=-2>
+<p>
+
+<pre>
+//========================================================
+//  tmodal.h - Header file for tModalDialog class
+//
+//  Copyright 1995, Bruce E. Wampler, All Rights Reserved
+//========================================================
+
+#ifndef TMODAL_H
+#define TMODAL_H
+
+#include &lt;v/vmodald.h&#62;  // derived from vModalDialog
+
+    class tModalDialog : public vModalDialog
+      {
+      public:           //---------------------------------------- public
+        tModalDialog(vBaseWindow*);
+        virtual ~tModalDialog();                // Destructor
+        virtual void DialogCommand(ItemVal id, ItemVal retval,
+                CmdType ctype);
+
+      protected:        //--------------------------------------- protected
+
+      private:          //--------------------------------------- private
+
+      };
+#endif
+</pre></font>
+<H2><A NAME="tth_sEcA.6">A.6&nbsp;</A> The Makefile</H2>
+
+<p>
+
+<H3>makefile</H3>
+
+<p>
+<font size=-2>
+<pre>
+# Sample GNU make makefile for V tutorial application
+CC      =       g++
+
+# Note: Platform dependent for a Linux system
+
+HOME    =       /home/bruce
+X11INC  =       /usr/X11/include
+X11LIB  =       /usr/X11R6/lib
+Arch    =       intel
+LIBS    =       -lV -lXaw -lXmu -lXt -lXext -lX11
+
+VPATH   =       ../include
+
+# Architecture dependent
+
+VLibDir =       $(HOME)/v/lib/$(Arch)
+
+oDir    =       ../obj/$(Arch)
+
+LibDir  =       ../lib/$(Arch)
+
+Bin     =       ../bin/$(Arch)
+
+#--------------------------------------------------------------
+
+# Typical flags for includes and libraries
+
+CFLAGS  =       -O -I$(X11INC) -I$(HOME)
+
+LFLAGS  =       -O -L$(X11LIB) -L$(VLibDir)
+
+EXOBJS  =       $(oDir)/tutapp.o \
+                $(oDir)/tdialog.o \
+                $(oDir)/tmodal.o \
+                $(oDir)/tcanvas.o \
+                $(oDir)/tcmdwin.o
+
+all:    $(Bin)/tutapp
+
+$(Bin)/tutapp:  $(EXOBJS) $(VLibDir)/libV.a
+        $(CC) -o $@ $(LFLAGS) $(EXOBJS) $(LIBS)
+
+$(oDir)/tcanvas.o:      tcanvas.cpp v_defs.h tcanvas.h
+        $(CC) -c $(CFLAGS) -o $@ $&lt;                     
+
+$(oDir)/tdialog.o:      tdialog.cpp v_defs.h tdialog.h
+        $(CC) -c $(CFLAGS) -o $@ $&lt;                     
+
+$(oDir)/tmodal.o:       tmodal.cpp v_defs.h tmodal.h
+        $(CC) -c $(CFLAGS) -o $@ $&lt;                     
+
+$(oDir)/tcmdwin.o:      tcmdwin.cpp v_defs.h tcmdwin.h
+        $(CC) -c $(CFLAGS) -o $@ $&lt;                     
+
+$(oDir)/tutapp.o:       tutapp.cpp v_defs.h tdialog.h tmodal.h \
+        tutapp.h tcmdwin.h
+        $(CC) -c $(CFLAGS) -o $@ $&lt;
+</pre></font>
+<HR>
+</BODY></HTML>

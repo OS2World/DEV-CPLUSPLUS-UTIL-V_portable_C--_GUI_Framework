@@ -1,0 +1,61 @@
+WCDIR = c:\wc105
+VDRIVE = e:
+VDIR  = \v
+
+BASEOBJ = $(VDRIVE)$(VDIR)\watcom\win32\MYCANVAS.OBJ &
+$(VDRIVE)$(VDIR)\watcom\win32\MYCMDWIN.OBJ   &
+$(VDRIVE)$(VDIR)\watcom\win32\MYDIALOG.OBJ  &
+$(VDRIVE)$(VDIR)\watcom\win32\MYMODAL.OBJ     &
+$(VDRIVE)$(VDIR)\watcom\win32\PROTOAPP.OBJ
+
+BLANK = ""
+
+$(VDRIVE)$(VDIR)\watcom\win32\examp.exe : $(BASEOBJ)  #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ @%write examp.lk1 NAME examp
+ @%append examp.lk1 FIL MYCANVAS.obj,MYCMDWIN.obj,MYDIALOG.obj,MYMODAL.obj,PROTOAPP.obj
+ @%append examp.lk1
+
+#!ifneq BLANK ""
+# *wlib -q -n -b examp.imp
+# @%append examp.lk1 LIBR examp.imp
+#!endif
+
+ *wlink d all SYS nt_win op m libp win32 libr vlib32 op maxe=25 op q op symf @examp.lk1
+!ifneq BLANK ""
+ wrc -q -ad  examp.exe
+!endif
+
+
+$(VDRIVE)$(VDIR)\watcom\win32\MYCANVAS.obj : $(VDRIVE)$(VDIR)\examp\MYCANVAS.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\examp\MYCANVAS.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\examp -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\MYCMDWIN.obj : $(VDRIVE)$(VDIR)\examp\MYCMDWIN.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\examp\MYCMDWIN.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\includew&
+;$(VDRIVE)$(VDIR)\examp -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\MYDIALOG.obj : $(VDRIVE)$(VDIR)\examp\MYDIALOG.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\examp\MYDIALOG.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\examp -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\MYMODAL.obj : $(VDRIVE)$(VDIR)\examp\MYMODAL.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\examp\MYMODAL.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\include&
+w;$(VDRIVE)$(VDIR)\examp -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+$(VDRIVE)$(VDIR)\watcom\win32\PROTOAPP.obj : $(VDRIVE)$(VDIR)\examp\PROTOAPP.cpp #.AUTODEPEND
+ @$(VDRIVE)
+ cd $(VDRIVE)$(VDIR)\watcom\win32
+ *wpp386 ..\..\examp\PROTOAPP.cpp -i=$(WCDIR)\h;$(WCDIR)\h\nt;$(VDRIVE)$(VDIR)\includ&
+ew;$(VDRIVE)$(VDIR)\examp -w0 -e25 -zp2 -zq -otexan -d2 -3r -bt=nt -mf
+
+

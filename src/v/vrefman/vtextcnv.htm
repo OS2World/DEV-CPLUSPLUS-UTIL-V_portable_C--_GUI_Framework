@@ -1,0 +1,210 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vTextCanvasPane</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vTextCanvasPane</H1>
+<HR>
+<A NAME="vTextCanvasPane"></A>
+A class for drawing text on a canvas. 
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vTextCanvasPane">&lt;v/vtextcnv.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vTextCanvasPane
+ 	<dt><b>Hierarchy:</b></dt><dd> <A HREF="vpane.htm">vPane</A> -&#62;<A HREF="vcanvas.htm">vCanvasPane</A> -&#62;vTextCanvasPane
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This class provides a complete scrolling text window. You
+can send text line by line to the window, and it will scroll the
+text up the screen in response to linefeed characters. You can
+also position the cursor, and selectively clear areas of the text
+screen or display text at specific locations. This class handles
+repainting the screen on <tt>Redraw</tt> events. In essence, the
+<tt>vTextCanvasPane</tt> class provides the functionality of a
+typical simple-minded text terminal.
+
+<p>
+
+<h2>New Methods</h2>
+
+<p>
+
+<H4>void ClearRow(const int row, const int col)</H4>
+This clears to blanks row <tt>row</tt> of the screen from
+column <tt>col</tt> to the end of the line.
+
+<p>
+
+<H4>void ClearToEnd(const int row, const int col)</H4>
+This clears to blanks from row <tt>row</tt> and column <tt>col</tt>
+to the end of the screen.
+
+<p>
+
+<H4>int GetCols()</H4>
+Returns number of columns in current text canvas.
+
+<p>
+
+<H4>int GetRows()</H4>
+Returns number of rows in current text canvas.
+
+<p>
+
+<H4>void GetRC(int&amp; row, int&amp; col)</H4>
+Returns in <tt>row</tt> and <tt>col</tt> the current row and
+column of the text cursor.
+
+<p>
+
+<H4>void GotoRC(const int row ,const int row)</H4>
+Moves the text cursor to <tt>row,col</tt>.
+
+<p>
+
+<H4>void DrawAttrText(const char* text, const ChrAttr attr)</H4>
+Draws <tt>text</tt> starting at the current cursor location using
+text attribute <tt>attr</tt>. For more details, see <tt>vDC::DrawAttrText</tt>.
+
+<p>
+
+<H4>void DrawChar(const char chr, const ChrAttr attr)</H4>
+Draws a single character <tt>chr</tt> at the current
+cursor location using text attribute <tt>attr</tt>. See
+<tt>DrawAttrText</tt> for more details.
+
+<p>
+
+<H4>void DrawText(const char* text)</H4>
+Draws <tt>text</tt> starting at the current cursor location.
+The newline character <tt>'\n'</tt> will
+cause the cursor to move to the beginning of the next line,
+and the text to scroll if the cursor was on the last line.
+
+<p>
+
+<H4>void HideTextCursor(void)</H4>
+This method will hide the text cursor.
+
+<p>
+
+
+<H4>void SetTextRowsCols(int rows, int cols)</H4>
+<p>
+This will set the size of the text canvas to <tt>rows</tt>
+and <tt>cols</tt> in characters (cols is for either mono-spaced
+fonts, or the average character width). It will also cause a <tt>ResizeText</tt>
+event message to be sent to the window.
+<p>
+<H4>void ShowTextCursor(void)</H4>
+This method will redisplay the text cursor at the current
+row and column.
+
+<p>
+
+<H4>void ScrollText(const int count)</H4>
+This will scroll the text in the text canvas up or down by
+<tt>count</tt> lines.  There will be <tt>count</tt> blank lines
+created at the bottom or top of the screen.
+
+<p>
+
+<H4>void ResizeText(const int rows, const int cols)</H4>
+This method handles resize events. You will want to override
+this to track the new number of rows and columns.
+
+<p>
+
+<H4>void TextMouseDown(int row, int col, int button)</H4>
+This is called when the user clicks the mouse button down.
+It is called with the text row and column, and the button number.
+
+<p>
+
+<H4>void TextMouseUp(int row, int col, int button)</H4>
+This is called when the user releases the mouse button.
+It is called with the text row and column, and the button number.
+
+<p>
+
+<H4>void TextMouseMove(int row, int col, int button)</H4>
+This is called when the mouse moves.
+It is called with the text row and column, and the button number.
+
+<p>
+
+<H4>int ColToX(int col)</H4>
+Returns the pixel value of the given column. Most useful
+to place vPopupMenus in proper position from text canvas.
+
+<p>
+<H4>int RowToY(int row)</H4>
+Returns the pixel value of the given row. Most useful
+to place vPopupMenus in proper position from text canvas.
+
+<p>
+
+<h2>Derived Methods</h2>	
+
+<p>
+
+<H4>virtual void Clear()</H4>
+This clears the text canvas and resets the row and column
+to 0,0.
+
+<p>
+
+<H4>void FontChanged(int)</H4>
+This is called when the font of the canvas changes.
+<tt>FontChanged</tt> calls <tt>ResizeText</tt>, so you probably
+won't have to deal with this event.
+
+<p>
+
+<H4>void Redraw(int x, int y, int width, int height)</H4>
+Called when the screen needs to be redrawn. Normally, you won't
+have to override this class since the <tt>vTextCanvasPane</tt>
+superclass will handle redrawing what is in the window. Instead,
+you will usually just have to respond to the <tt>FontChanged</tt>
+and <tt>ResizeText</tt> events when the contents of the canvas will
+actually change.
+
+<p>
+
+<h2>Inherited Methods</h2>	
+<p>
+
+<H4>virtual void HPage(int Shown, int Top)</H4>
+
+<H4>virtual void HScroll(int step)</H4>
+
+<H4>virtual void SetFont(int vf)</H4>
+
+<H4>virtual void SetHScroll(int Shown, int Top)</H4>
+
+<H4>virtual void SetVScroll(int Shown, int Top)</H4>
+
+<H4>virtual void VPage(int Shown, int Top)</H4>
+
+<H4>virtual void VScroll(int step)</H4>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="vcanvas.htm" TARGET="info">vCanvasPane</A>, 
+<A HREF="vcmdpane.htm" TARGET="info">vCmdWindow</A>
+
+</BODY>
+</HTML>

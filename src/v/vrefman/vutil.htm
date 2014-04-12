@@ -1,0 +1,94 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>V Utility Methods</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>V Utility Methods</H1>
+<HR>
+
+<A NAME="Utility Functions"></A>
+Several useful utility functions.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#VUTIL">&lt;v/vutil.h&#62;</A></tt>
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+
+<em><b>V</b></em>&nbsp;provides several utility functions that can often help with
+software portability (and can just be useful). These are free
+subprograms - not a member of any specific class.
+
+<p>
+
+<H4>void ByteToStr(unsigned char b, char* str)</H4>
+This will convert the unsigned char in <tt>b</tt> to a 
+<em>Hex</em> character
+string in <tt>str</tt>. You need to make <tt>str</tt> big enough to
+hold the string.
+
+<p>
+
+<H4>void IntToStr(int intg, char* str)</H4>
+This will convert the integer in <tt>intg</tt> to a character
+string in <tt>str</tt>. You need to make <tt>str</tt> big enough
+to hold the string.
+
+<p>
+
+<H4>void LongToStr(long intg, char* str)</H4>
+This will convert the long integer in <tt>intg</tt> to a character
+string in <tt>str</tt>. You need to make <tt>str</tt> big enough
+to hold the string.
+
+<p>
+
+<H4>long StrToLong(char* str)</H4>
+This will convert the character string in <tt>str</tt> into a long
+integer. You can cast to get ints.
+
+<p>
+
+<H4>void vBeep()</H4>
+This utility routine will sound an audible beep.
+
+<p>
+
+<H4>void vGetcmdIdIndex(ItemVal cmdId, CommandObject *cmdObj)</H4>
+Sometimes when you work with a CommandObject array to define a
+dialog, you need to access the elements of a particular item in
+the array. This is especially true for manipulating lists.
+This routine will return the index into a CommandObject array
+of an entry with the supplied <tt>ItemVal cmdId</tt>.
+
+<p>
+
+<H4>void vGetLocalTime(char* tm)</H4>
+This will return a string representation of the current local time
+to the string <tt>tm</tt>. The format will be ``HH:MM:SS AM''. If you
+need a different format, you will need to use the C functions
+<tt>time</tt>, <tt>localtime</tt>, and <tt>strftime</tt> directly.
+
+<p>
+
+<H4>void vGetLocalDate(char* dt)</H4>
+This will return a string representation of the current local
+date to the string <tt>dt</tt>. The format will be ``MM/DD/YY''.
+If you need a different format, you will need to use the C
+functions <tt>time</tt>, <tt>localtime</tt>, and <tt>strftime</tt>
+directly.
+
+
+</BODY>
+</HTML>

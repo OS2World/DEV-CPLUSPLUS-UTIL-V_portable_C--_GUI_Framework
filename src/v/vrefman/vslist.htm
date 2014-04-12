@@ -1,0 +1,112 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vSList</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vSList</H1>
+<HR>
+<A NAME="vSList"></A>
+A class to manipulate lists for 
+<A HREF="commands.htm#C_List"><tt>C_List</TT></A> controls.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>
+	<dt><b>Header:</b></dt><dd> <tt>&lt;v/vslist.h&#62;</tt>
+	<dt><b>Class name:</b></dt><dd> vSList
+</DL>
+<p>
+
+<h2>Definition</h2>
+<FONT SIZE=-2>
+<pre>
+ class vSList
+      {
+
+      public:		//---------------------------------------- public
+	vSList(int maxsize = 128);
+	~vSList();
+
+	void erase();
+	int size();
+	int insert(int insAt, char* strn);
+	int replace(int repAt, char* strn);
+	int deleteItem(int delAt);
+
+	int max;
+	char** list;
+      };
+</pre></FONT>
+<P>
+<h2>Description</h2>
+<p>
+
+This class is provided to make manipulation of lists used
+in <tt>C_List</tt> controls easier. You can find some good
+example code in the VIDE.
+
+<p>
+
+<h2>Methods</h2>
+
+<p>
+
+<H4>vSList(int maxsize=128)</H4>
+You can specify in the constructor the maximum size of the
+list you will be working with. Someday I hope to fix this
+class so that it will grow the list as needed.
+
+<p>
+<h4>void erase()</h4>
+<p>
+Erases the entire list. Deletes each item on the list, but
+leaves the space for <tt>list</tt> intact.
+<p>
+<h4>int size()</h4>
+<p>
+Returns the number of items on the list.
+<p>
+<h4>int insert(int insAt, char* strn)</h4>
+<p>
+Inserts the string <tt>strn</tt> into the list at
+the point <tt>insAt</tt>. If <tt>insAt</tt> is less than
+zero, the item is appended to the end of the list.
+<p>
+<h4>int replace(int repAt, char* strn)</h4>
+<p>
+Replaces the item at <tt>repAt</tt> with the new <tt>strn</tt>.
+<p>
+<h4>int deleteItem(int delAt)</h4>
+<p>
+Deletes the item at <tt>delAt</tt>.
+<p>
+<h4>int max</h4>
+<p>
+This is the maximum size of the list.
+<p>
+<h4>char** list</h4>
+<p>
+This is the actual list of pointers to the list strings.
+I suppose it really shouldn't be directly accessible, but
+it is.
+
+<H2>Comments</H2>
+
+<P>
+
+<H2>See Also</H2>
+
+<a href="vdialog.htm#SetValue">vDialog::SetValue</a>, 
+<a href="commands.htm#C_List">C_List</a>
+<P>
+
+
+</BODY>
+</HTML>

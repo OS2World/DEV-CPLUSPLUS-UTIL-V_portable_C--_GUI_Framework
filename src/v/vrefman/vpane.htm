@@ -1,0 +1,91 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vPane</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vPane</H1>
+<HR>
+
+<A NAME="vPane"></A>
+
+The <tt>vPane</tt> class serves as a base class for various pane
+objects contained by the <tt><A HREF="vcmdwin.htm">vCmdWindow</A></tt> class. There are no
+methods or services provided by the <tt>vPane</tt> class that
+you need to use directly, but the class is used extensively by
+<em><b>V</b></em>&nbsp;internally, and understanding its 
+concepts are important to using <em><B>V</B></EM>.
+
+<p>
+There are four types of panes used by 
+<em><b>V</b></em>&nbsp;in a <tt>vCmdWindow</tt>,
+including menu panes, canvas panes, command panes and status
+panes. To add a pane to a window, you will first define the
+contents of the pane (menu, commands, status info) using static
+arrays, then construct an instance of the pane with <tt>new
+vWhateverPane</tt>. Then you add the instance to the window using
+<tt>AddPane</tt>.
+
+<p>
+Note that using the canvas panes is described in the 
+<A HREF="drawing.htm">Drawing</A>
+page of the tutorial. The commands used with a command pane are described
+in the 
+<A HREF="commands.htm">commands</A> page, while menus and status bars
+are covered in <tt><A HREF="vmenu.htm">vMenu</A></tt> and <tt><A HREF="vstatus.htm">vStatus</A></tt>.
+
+<p>
+
+<h2>Canvas Pane</h2>
+
+<DL compact>
+<p>
+        <dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vCanvasPane">&lt;v/vcanvas.h&#62;</A></tt>
+        <dt><b>Class name:</b></dt><dd> vCanvasPane
+	<dt><b>Constructor:</b></dt><dd> <tt>userCanvasPane()</tt>
+</DL>
+<p>
+
+<h2>Command Pane</h2>
+
+<DL compact>
+<p>
+        <dt><b>Header:</b></dt><dd> <tt>&lt;v/vcmdpane.h&#62;</tt>
+        <dt><b>Class name:</b></dt><dd> vCommandPane
+	<dt><b>Constructor:</b></dt><dd> <tt>vCommandPane(CommandObject* cmdbar)</tt>
+</DL>
+<p>
+
+<h2>Menu Pane</h2>
+
+<DL compact>
+<p>
+        <dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vMenu">&lt;v/vmenu.h&#62;</A></tt>
+        <dt><b>Class name:</b></dt><dd> vMenuPane
+	<dt><b>Constructor:</b></dt><dd> <tt>vMenuPane(vMenu* menubar)</tt>
+</DL>
+<p>
+
+<h2>Status Pane</h2>
+
+<DL compact>
+<p>
+        <dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vStatus">&lt;v/vstatusp.h&#62;</A></tt>
+        <dt><b>Class name:</b></dt><dd> vStatusPane
+	<dt><b>Constructor:</b></dt><dd> <tt>vStatusPane(vStatus* sbar)</tt>
+</DL>
+<p>
+
+<h2>See Also</h2>
+
+<p>
+<A HREF="cmdobj.htm">CommandObject</A>, <A HREF="vcanvas.htm">vCanvasPane</A>, <A HREF="vcmdwin.htm">vCmdWindow</A>,
+<A HREF="vcmdpane.htm">vCommandPane</A>, <A HREF="vmenu.htm">vMenu</A>,
+<A HREF="vstatus.htm">vStatus</A>
+
+
+
+</BODY>
+</HTML>

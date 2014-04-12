@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vTimer</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vTimer</H1>
+<HR>
+<A NAME="vTimer"></A>
+A class for getting timer events.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vTimer">&lt;v/vtimer.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vTimer
+ 	<dt><b>Hierarchy:</b></dt><dd> vTimer
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This is a utility class that allows you to get events driven
+by the system timer. The accuracy and resolution of timers on
+various systems varies, so this should be used only to get
+events on a more or less regular basis. Use the C library <tt>time</tt>
+routines to get real clock time.
+<p>
+The V Appgen utility offers an option for adding a timer to the status bar. Looking
+at that generated code is a good way to understand <tt>vTimer</tt> objects.
+
+<p>
+
+<h2>New Methods</h2>
+
+<p>
+
+<H4>vTimer</H4>
+This constructs a timer object. The timer doesn't run until
+you start it with <tt>TimerSet</tt>. To make a timer useful, you
+can override the constructor to add a pointer to a window, and
+then use that pointer from within your <tt>TimerTick</tt> method
+to do something in that window: <tt>myTimer(vWindow* useWindow)</tt>.
+
+<p>
+
+<H4>int TimerSet(long interval)</H4>
+This starts the timer going. The timer will call your overridden
+<tt>TimerTick</tt> method approximately every <tt>interval</tt>
+milliseconds until you stop the timer. Most systems don't support
+an unlimited number of timers, and <tt>TimerSet</tt> will return 0
+if it couldn't get a system timer.
+
+<p>
+
+<H4>void TimerStop()</H4>
+Calling this stops the timer, but does not destruct it.
+
+<p>
+
+<H4>void TimerTick()</H4>
+This method is called by the system every interval milliseconds
+(more or less). The way to use the timer is to derive your own
+class, and override the <tt>TimerTick</tt> method.  Your method
+will be called according to the interval set for the timer. Note
+that you can't count on the accuracy of the timer interval.
+
+<p>
+
+
+
+</BODY>
+</HTML>

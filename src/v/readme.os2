@@ -1,0 +1,15 @@
+This is the XFREE86/OS2-Version of V1.24.
+
+To compile only two changes were needed (look at vOS::GetHostName 
+and vOS::vSleep ). I used the Config.mk file of V1.18-XFREE/OS2
+(ftp://24.2.168.186/pub/os2/unix/xfree86/ports/development/v118-src.zip).  
+
+OpenGL isn't implemented and VIDE doesn't compile yet. 
+
+To rebuild go into the srcx directory and run make (the central makefile
+doesn't work).
+
+Andreas Helms
+
+(helms@physik.fu-berlin.de)
+

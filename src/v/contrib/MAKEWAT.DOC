@@ -1,0 +1,19 @@
+
+Installing 'V' for WatcomC v10.5
+
+Well, the previous WatcomC MAKEFILEs were a mess and this was what I cooked up
+myself.
+
+1. edit the pathnames for WatcomC and 'V' classlib in the makefiles
+2. cd \v\watcom\win32 (or appropriate dir)
+3. wmake -f vlib32.mk1
+
+Should leave a ``vlib32.lib'' in \v\watcom\win32 (or appropriate dir)
+
+4. wmake -f iconed.mk1
+
+creates sample program ``iconed.exe'' - and the other makefiles create
+executables with same names.
+
+-Stig V., 18. june 1996
+

@@ -1,0 +1,151 @@
+<html>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<title>
+V FAQ (MISC.)
+</title>
+</HEAD>
+<body bgcolor="#ffffff">
+
+<a name="00top">
+<h1>
+V FAQ (MISC.)
+</h1>
+
+<menu>
+<li><a href="07misc.html#01">Using V from C</a>
+<li><a href="07misc.html#02">How can I learn C++?</a>
+</menu>
+
+<hr>
+
+<a href="#00top" name="01">
+<h2>Using V from C</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+V GUI looks quite interesting. I wonder if there is a way to
+use it from a C program?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+V can be used from C, but you still need to use the basic C++
+object oriented framework. Converting an existing C program can
+often be difficult because they are often command driven rather
+than event driven.
+<p>
+
+<dd>
+It is much easier to convert a C program that has its major
+functionality isolated into routines that get called from the
+command interface interpreter. The easiest path is to toss the
+interface code and start with a V sample program. Define the
+menus and toolbars you need, and then call the appropriate C code
+from a 'case' in the 'WindowCommand' routine of the command
+window. Given the simple definitions of menus and toolbars, using
+this approach requires more cut and paste into the sample code
+than complete understanding of C++.
+<p>
+
+<dd>
+Handling output from the C program may also be a bit difficult.
+The V vTextCanvas class may be the easiest. Essentially, it works
+just like a classic dumb terminal, like a DOS session from
+Windows, or a tty window from X. It isn't a VT100 (say, that
+sounds like an interesting project), but it has similar
+functionality. Using it will still require minimal understanding
+of C++.
+<p>
+
+<dd>
+In the end, however, learning C++ is really worth it. I've found
+the main payback is much more maintainable and robust code. It is
+far easier to modify a well-defined object than a piece of even a
+good C module, and the modifications don't break the rest of the
+system.
+<p>
+<hr>
+
+<a href="#00top" name="02">
+<h2>How can I learn C++?</h2>
+</a>
+
+<font size=+2>Q:</font>
+
+<dd>
+I was wondering if you could help me out. I have been trying to
+learn C++, and I would like to learn how to use V also. What
+can you do to help me?
+<p>
+<font size=+2>A:</font>
+
+<dd>
+Occasionally I get general help requests like this. As much
+as I would like to be able to help you out, I really don't
+have the time to devote to getting people up to speed on
+C++ or GUIs in general.
+<p>
+
+<dd>
+I do have some strong opinions about C++ and object orientation.
+I think OO is wonderful, and that C++ is a reasonable
+OO language, if not perfect. It has the overwhelming
+advantage of being the marketplace winner. One of the
+main problems with C++ that I have found is that there
+are no really outstanding C++ books available, either for
+the new programmer, or for someone converting to C++.
+<p>
+
+<dd>
+The main problem I've found is that to use C++ in a reasonable
+and effective fashion, you need to use its object-oriented
+capabilities. Without really understanding objects, encapsulation,
+inheritance, AND aggregation, it is hard to know what
+constructors are really good for, why destructors are so
+wonderful for managing dynamic objects, and the real significance
+of shallow and deep object semantics.
+<p>
+
+<dd>
+So, given that, I can recommend the following books:
+<p>
+
+<dd>
+FIRST, get the object-orientation! While these books aren't
+perfect, they are the ones I like best:
+<p>
+
+<dd>Object-Oriented Systems Design - An Integrated Approach,
+<dd>Edward Yourdon, Yourdon Press, ISBN 0-13-636325-3.
+<p>
+
+<dd>Object-Oriented Analysis and Design, Second Edition, Grady Booch,
+<dd>Benjamin/Cummings, ISBN 0-8053-5340-2.
+<p>
+
+<dd>The C++ Books are harder to pin down. I really don't like
+<dd>any of them. But I probably most use:
+<p>
+
+<dd>C++ Primer, 2nd Edition, Stanly B. Lippman, Addison Wesley,
+<dd>ISBN 0-201-54848-8.
+<p>
+
+<dd>Stroustrup's book is essential after you are proficient
+<dd>with C++.
+<p>
+
+<dd>
+It turns out that GUIs are one of the most natural object-oriented
+applications around, so they really do provide a great way
+to get started on OO. The use of inheritance, messages, and
+real objects makes then seem natural. I think V is a good
+example OO GUI. In fact, V started out as a small demo
+program for an OO/C++ book I'm trying to write. The V
+demo has taken over, and my book is on the back burner...
+<p>
+</body>
+</html>

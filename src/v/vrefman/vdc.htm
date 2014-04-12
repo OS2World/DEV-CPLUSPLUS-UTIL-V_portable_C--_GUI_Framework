@@ -1,0 +1,439 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vDC</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vDC</H1>
+<HR>
+<A NAME="vDC"></A>
+This is the base class that defines all the drawing methods provided
+by the various drawing canvases.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/vdc.h&#62;</tt>
+	<dt><b>Class name:</b></dt><dd> vDC
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+All drawing classes such as <tt>vCanvasPaneDC</tt> and <tt>vPostScriptDC</tt>
+are derived from this class. Each drawing class will support
+these methods as needed. Not all drawing classes have the same
+scale, and printer drawing canvases provide extra support for
+paging. Your code will not normally need to include <tt>vdc.h</tt>.
+
+<p>
+See the specific sections for details of drawing classes:
+<A HREF="vcpdc.htm" TARGET="info"><TT>vCanvasPaneDC</TT></A>,
+<A HREF="vmemdc.htm" TARGET="info"><TT>vMemoryDC</TT></A>,
+<A HREF="vprintdc.htm" TARGET="info"><TT>vPrintDC</TT></A>,
+and <A HREF="drawing.htm" TARGET="info">Drawing</TT></A>.
+<p>
+
+<h2>Utility Methods</h2>
+
+<p>
+
+<H4>virtual void BeginPage()</H4>
+Supported by printer canvases. Call to specify a page is
+beginning. Bracket pages with <tt>BeginPage</tt> and <tt>EndPage</tt>
+calls.
+
+<p>
+
+<H4>virtual void BeginPrinting()</H4>
+Required by printer canvases. Call to specify a document is
+beginning. You 
+<em>must</em> bracket documents with <tt>BeginPrinting</tt>
+and <tt>EndPrinting</tt> calls. <tt>BeginPrinting</tt> includes an
+implicit call to <tt>BeginPage</tt>.
+
+<p>
+
+<H4>virtual void Clear()</H4>
+Clear the canvas to the background color. No op on printers.
+
+<p>
+
+<H4>virtual void ClearRect(int x, int y, int width, int height)</H4>
+Clear a rectangular area starting at x,y of height and width. No
+op on printers.
+
+<p>
+
+<H4>void CopyFromMemoryDC(vMemoryDC* memDC, int destX, int
+destY, int srcX = 0, int srcY = 0, int srcW = 0, int srcH = 0)</H4>
+ 
+This method is used to copy the image contained in a <tt>vMemoryDC</tt>
+to another drawing canvas. The parameter <tt>memDC</tt> specifies
+the <tt>vMemoryDC</tt> object, and <tt>destX</tt> and <tt>destY</tt>
+specify where the image is to be copied into <tt>this</tt> drawing
+canvas (which will usually be 0,0). If you use the default
+values for <tt>srcX=0</tt>, <tt>srcY=0</tt>, <tt>srcW=0</tt>, and
+<tt>srcH=0</tt>, the entire source canvas will be copied.
+
+<p>
+Beginning with 
+<em><b>V</b></em>release 1.13, <tt>CopyFromMemoryDC</tt> provides
+the extra parameters to specify an area of the source to copy.
+You can specify the source origin, and its width and height.
+The default values for these allow backward call and behavior
+compatibility.
+
+<p>
+One of the most useful uses of this is to draw both the canvas
+pane drawing canvas, and to a memory drawing canvas, and then
+use <tt>CopyFromMemoryDC</tt> to copy the memory canvas to the
+canvas pane for <tt>Redraw</tt> events.
+
+<p>
+
+<H4>virtual void DrawAttrText(int x, int y, char* text, const
+ChrAttr attr)</H4>
+Draw text using the current font with specified attributes at
+given x, y.
+
+<p>
+<tt>ChrAttr attr</tt> is used to specify attributes to override
+some of the text drawing characteristics normally determined by
+the pen and font. Specifying <tt>ChNormal</tt> means the current
+pen and font will be used.  <tt>ChReverse</tt> is used to specify
+the text should be drawn reversed or highlighted, using the
+current font and pen. You can also specify 16 different standard
+colors to override the pen color. You use <tt>ORed</tt>
+combinations the basic color attributes <tt>ChRed</tt>, <tt>ChBlue</tt>,
+and <tt>ChGreen</tt>. Most combinations are also provided as
+<tt>ChYellow</tt>, <tt>ChCyan</tt>, <tt>ChMagenta</tt>,  <tt>ChWhite</tt>,
+and <tt>ChGray</tt>. These colors can be combined with <tt>ChDimColor</tt>
+can be used for half bright color combinations (or you can use
+<tt>ChDimRed</tt>, etc.). You can combine color attributes with
+<tt>ChReverse</tt>. Attributes such as boldface, size, and
+underlining are attributes of the font.
+
+<p>
+
+<H4>virtual void DrawColorPoints(int x, int y, int nPts, vColor*
+pts)</H4>
+Draw an array of <tt>nPts</tt> <tt>vColors</tt> as points starting at
+x,y. This method is useful for drawing graphical images, and
+bypasses the need to set the pen or brush for each point.
+Typically, <tt>DrawColorPoints</tt> will be significantly faster
+than separate calls to <tt>DrawPoint</tt>.
+
+<p>
+
+<H4>virtual void DrawEllipse(int x, int y, int width, int
+height)</H4>
+Draw an ellipse inside the bounding box specified by x, y, width,
+and height.
+The current Pen will be used to draw the shape, and the current
+Brush will be used to fill the shape.
+
+<p>
+
+<H4>virtual void DrawIcon(int x, int y, vIcon&amp; icon)</H4>
+A <tt>vIcon</tt> is drawn at x,y using the current Pen.
+Note that only the location of an icon is scaled. The icon
+will retain its original size.
+
+<p>
+
+<H4>virtual void DrawLine(int x, int y, int xend, int yend)</H4>
+Draw a line from x,y to xend,yend.
+The current Pen will be used to draw the line.
+
+<p>
+
+<H4>virtual void DrawLines(vLine* lineList, int count)</H4>
+Draws the <tt>count</tt> lines contained in the list <tt>lineList</tt>.
+
+<p>
+The current Pen will be used to draw the lines.
+
+<p>
+The type <tt>vLine</tt> is defined in <tt>v_defs.h</tt> as:
+<font size=-2>
+<p>
+
+<pre>
+    typedef struct vLine
+      {
+        short x, y, xend, yend;
+      } vLine;
+</pre></font>
+
+<H4>virtual void DrawLines(vPoint* points, int count)</H4>
+Draws the <tt>count</tt> lines defined by the list of endpoints <tt>points</tt>.
+This is similar to drawing with a line list. The value of <tt>count</tt>
+must be 2 or greater. (New in version 1.19)
+
+<p>
+The current Pen will be used to draw the lines.
+
+<p>
+
+<H4>virtual void DrawPoint(int x, int y)</H4>
+Draw a point at x,y using the current Pen.
+
+<p>
+
+<H4>virtual void DrawPoints(vPoint* pointList, int count)</H4>
+Draws the <tt>count</tt> points contained in the list <tt>pointList</tt>.
+
+<p>
+The current Pen will be used to draw the points.
+
+<p>
+The type <tt>vPoint</tt> is defined in <tt>v_defs.h</tt> as:
+<font size=-2>
+<p>
+
+<pre>
+    typedef struct vPoint
+      {
+        short x, y;
+      } vPoint;
+</pre></font>
+
+<H4>virtual void DrawPolygon(int n, vPoint points[],
+int fillMode = vAlternate)</H4>
+A closed polygon of n points is drawn. Note that the
+first and last element of the point list must specify
+the same point.
+The current Pen will be used to draw the shape, and the current
+Brush will be used to fill the shape.
+
+<p>
+The fillMode parameter specifies one of two alternative filling
+algorithms, <tt>vAlternate</tt> or <tt>vWinding</tt>. These algorithms correspond
+to the equivalent algorithms on the native platforms.
+
+<p>
+The type <tt>vPoint</tt> is defined in <tt>v_defs.h</tt> as:
+<font size=-2>
+<p>
+
+<pre>
+    typedef struct vPoint       // a point
+      {
+        short x, y;             // X version
+      } vPoint; 
+</pre></font>
+<H4>virtual void DrawRoundedRectangle(int x, int y, int width,
+int height, int radius = 10)</H4>
+Draw a rectangle with rounded corners at x,y of size width and
+height. The radius specifies the radius of the circle used to
+draw the corners. If a radius of less than 0 is specified, the
+radius of the corners will be ((width+height)/-2*radius) which
+gives a more or less reasonable look for various sized
+rectangles. The current Pen will be used to draw the shape, and
+the current Brush will be used to fill the shape.
+
+<p>
+
+<H4>virtual void DrawRectangle(int x, int y, int width,
+int height)</H4>
+Draw a rectangle with square corners at x,y of size width and
+height. The current Pen will be used to draw the shape, and the
+current Brush will be used to fill the shape.
+
+<p>
+
+<H4>virtual void DrawRectangles(vRect* rectList, int count)</H4>
+Draw a list of <tt>count</tt> <tt>vRect</tt> rectangles pointed to by
+the list <tt>rectList</tt>.
+The current Pen will be used to draw the rectangles, and the
+current Brush will be used to fill the rectangles.
+
+<p>
+The type <tt>vRect</tt> is defined in <tt>v_defs.h</tt> as:
+<font size=-2>
+<p>
+
+<pre>
+    typedef struct vRect
+      {
+        short x, y, w, h;
+      } vRect;
+</pre></font>
+<H4>virtual void DrawRubberLine(int x, int y, int xend, int yend)</H4>
+Draw a rubber-band line from x, y to xend, yend. This method is most
+useful for showing lines while the mouse is down. By first drawing
+a rubber line, and then redrawing over the same line with <tt>DrawRubberLine</tt>
+causes the line to be erased. Thus, pairs of rubber lines can track
+mouse movement. The current Pen is used to determine line style.
+
+<p>
+
+<H4>virtual void DrawRubberEllipse(int x, int y, int width,
+int height)</H4>
+Draw a rubber-band Ellipse. See DrawRubberLine.
+
+<p>
+
+<H4>virtual void DrawRubberPoint(int x, int y)</H4>
+Draw a rubber-band point. See DrawRubberLine.
+
+<p>
+
+<H4>virtual void DrawRubberRectangle(int x, int y, int width,
+int height)</H4>
+Draw a rubber-band rectangle. See DrawRubberLine.
+
+<p>
+
+<H4>virtual void DrawText(int x, int y, char* text)</H4>
+Simple draw text at given x, y using the current font and
+current pen. Unlike icons and other 
+<em><b>V</b></em>&nbsp;drawing objects,
+<tt>x</tt> and <tt>y</tt> represent the lower left corner of the
+first letter of the text. Using a <tt>vSolid</tt> pen results
+in the text being drawn in with the pen's color using
+the current background color. Using a <tt>vTransparent</tt>
+pen results in text in the current color, but just drawing
+the text over the current canvas colors. (See <tt>vPen::SetStyle</tt>.)
+
+<p>
+
+<H4>virtual void EndPage()</H4>
+Supported by printer canvases. Call to specify a page is
+ending. Bracket pages with <tt>BeginPage</tt> and <tt>EndPage</tt>
+calls.
+
+<p>
+
+<H4>virtual void EndPrinting()</H4>
+Supported by printer canvases. Call to specify a document is
+ending. Bracket documents with <tt>BeginPrinting</tt> and
+<tt>EndPrinting</tt> calls. <tt>EndPrinting</tt> includes
+an implicit call to <tt>EndPage</tt>.
+
+<p>
+
+<H4>virtual vBrush GetBrush()</H4>
+Returns a copy of the current brush being used by the canvas.
+
+<p>
+
+<H4>virtual vFont GetFont()</H4>
+Returns a copy of the current font of the drawing canvas.
+
+<p>
+
+<H4>virtual vBrush GetPen()</H4>
+Returns a copy of the current pen being used by the canvas.
+
+<p>
+
+<H4>virtual int GetPhysHeight()</H4>
+Returns the maximum physical y value supported by the
+drawing canvas. Especially useful for determining scaling
+for printers.
+
+<p>
+
+<H4>virtual int GetPhysWidth()</H4>
+Returns the maximum physical x value supported by the
+drawing canvas. Especially useful for determining scaling
+for printers.
+
+<p>
+
+<H4>virtual void GetScale(int&amp; mult, int&amp; div)</H4>
+Returns the scaling factors for the
+canvas. See <tt>SetScale</tt>.
+
+<p>
+
+<H4>void GetTranslate(int&amp; x, int&amp; y)</H4>
+
+<H4>int GetTransX()</H4>
+
+<H4>int GetTransY()</H4>
+Returns the current x and y translation values.
+
+<p>
+
+<H4>virtual void SetBackground(vColor&amp; color)</H4>
+This sets the background of the drawing canvas to the
+specified color.
+
+<p>
+
+<H4>virtual void SetBrush(vBrush&amp; brush)</H4>
+This sets the brush used by the drawing canvas. Brushes are used
+for the filling methods such as <tt>vDrawPolygon</tt>. It is
+important to call <tt>SetBrush</tt> whenever you change any
+attributes of a brush used by a drawing canvas.
+
+<p>
+
+<H4>virtual void SetFont(vFont&amp; vf)</H4>
+Change the font associated with this canvas. The default method
+handles changing the font and calls the FontChanged method for
+the canvas pane.
+
+<p>
+
+<H4>virtual void SetPen(vPen&amp; pen)</H4>
+Sets the current pen of the canvas to pen. Pens are used
+to draw lines and the outlines of shapes. It is important
+to call <tt>SetPen</tt> whenever you change any attributes of
+a pen used by a drawing canvas.
+
+<p>
+
+<H4>virtual void SetScale(int mult, int div)</H4>
+Sets the scaling factor. Each coordinate passed to the 
+drawing canvas is first multiplied by mult and then divided
+by div. Thus, to scale by one third, set mult to 1 and div to 3.
+Many applications will never have to worry about scaling.
+Note that scaling applies to output only. The mouse
+events will provide unscaled coordinates, and it is up
+to your code to scale mouse coordinates appropriately.
+
+<p>
+
+<H4>void SetTranslate(int x, int y)</H4>
+
+<H4>void SetTransX(int x)</H4>
+
+<H4>void SetTransY(int y)</H4>
+These methods set the internal translation used by the
+drawing canvas. Each coordinate sent to the various
+drawing methods (e.g., <tt>DrawRectangle</tt>) will be
+translated by these coordinates. This can be most useful
+when using the scroll bars to change which part of a
+drawing is visible on the canvas. Your application will
+have to handle proper mapping of mouse coordinates.
+
+<p>
+
+<H4>int TextHeight(int&amp; ascent, int&amp; descent)</H4>
+This function returns the total height of the font <tt>fontId</tt>.
+The total height of the font is the sum of the <tt>ascent</tt> and
+<tt>descent</tt> heights of the font <tt>fontId</tt>. Each character
+ascends <tt>ascent</tt> pixels above the Y coordinate where it is
+being drawn, and <tt>descent</tt> pixels below the Y coordinate.
+
+<p>
+
+<H4>int TextWidth(char* str)</H4>
+Returns the width in pixels or drawing points of the string
+<tt>str</tt> using the currently set font of the canvas.
+
+<p>
+
+
+</BODY>
+</HTML>

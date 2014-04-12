@@ -1,0 +1,424 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vTextEditor</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vTextEditor</H1>
+<HR>
+
+<A NAME="vTextEditor"></A>
+A complete text editing canvas pane.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt>&lt;v/vtexted.h&#62;</tt>
+	<dt><b>Class name:</b></dt><dd> vTextEditor
+ 	<dt><b>Hierarchy:</b></dt><dd> <A HREF="vcanvas.htm">vCanvasPane</A> -&#62;<A HREF="vtextcnv.htm">vTextCanvasPane</A> -&#62;vTextEditor
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+This class is a completely functional line oriented text editor.
+It can edit any file with lines less than 300 characters wide that
+use a linefeed, carriage return, or combination of those to mark
+the end of each line.
+
+<p>
+While you need to create your own class derived from <tt>vTextEditor</tt>,
+your class can be very minimal. You will need to provide some
+service methods for the parent <tt>vCmdWindow</tt>, such as methods
+to open, read, save, and close files. Other than actually working
+with the real text source and providing that source to <tt>vTextEditor</tt>,
+you can get a fully functional text editor with no additional work.
+
+<p>
+However, <tt>vTextEditor</tt> has been designed to allow you to extend
+and add functionality to the editor if you need to. The <tt>vTextEditor</tt>
+also sends messages that will allow you to place various status
+messages on a status bar if you wish. The hard stuff is done for you.
+You don't need to worry about mouse movements, scroll bars or scroll
+messages, updating the screen, handling keystrokes, or anything else
+associated with actual editing. The <tt>vTextEditor</tt> class takes
+care of all those details, and provides a standard editing interface.
+
+<p>
+The following steps are required to use <tt>vTextEditor</tt>. First,
+you create an instance of your derived class from your <tt>vCmdWindow</tt>
+class, something like this:
+
+<p>
+<font size=-2>
+<pre>
+   ...
+
+   // The Text Editor Canvas
+    vedCanvas = new vedTextEditor(this);
+    AddPane(vedCanvas);
+   ...
+
+   // Show Window
+
+    ShowWindow();
+    vedCanvas-&#62;ShowVScroll(1);  // Show Vert Scroll for vTextEditor
+
+    ...
+</pre></font>
+Your derived <tt>vTextEditor</tt> class should provide the methods
+needed for opening and reading the text file you want to edit.
+(Actually, you can edit any text source you wish.) <tt>VTextEditor</tt>
+doesn't actually read or write any text itself. It maintains an
+internal line buffer. (The default version of the internal buffer
+is essentially limited by the amount of memory your system can
+provide. The buffer methods can be overridden to provide totally
+unlimited file size, if you wish.) The idea is to have your
+application control where the text comes from, and then
+add it a line at a time to the <tt>vTextEditor</tt> buffer.
+You retrieve the text a line at a time when you want to save
+the edited text. Thus, your if your code is working with
+disk files, it can read the text a line at a time, and let
+<tt>vTextEditor</tt> worry about the buffering.
+
+<p>
+The following code shows how to add the contents of a text file
+to the <tt>vTextEditor</tt> buffer, and display it in the canvas
+for the first time. Calls to <tt>vTextEditor</tt> methods are
+marked with **.
+
+<p>
+<font size=-2>
+<pre>
+//===================&#62;&#62;&#62; vedTextEditor::ReadFile &lt;&lt;&lt;====================
+  int vedTextEditor::ReadFile(char* name)
+  {
+    const int maxBuff = 300;    // Line length
+    char buff[maxBuff];
+
+    if (!name || !*name)
+        return 0;
+    ifstream inFile(name);      // Open the file
+
+    if (!inFile)
+        return 0;               // file not there
+
+    resetBuff();                // ** Tell vTextEditor to init buffer
+
+    while (inFile.getline(buff,maxBuff))  // read file
+      {
+        if (!addLine(buff))     // ** Add the line to the buffer
+          {
+            ERROR_MESSAGE("File too big -- only partially read.");
+            break;
+          }
+      }
+    inFile.close();             // Close the file
+    displayBuff();              // ** Now, display the buffer
+    return 1;
+  }
+</pre></font>
+To load text into the editor buffer,
+you first call <tt>resetBuff</tt> to initialize the
+buffer, then add a line at a time with calls to <tt>addLine</tt>,
+and finally display the text by calling <tt>displayBuff</tt>.
+
+<p>
+When your are editing (e.g., the user enters a Close command),
+you retrieve the text from the <tt>vTextEditor</tt> buffer
+with calls to <tt>getLine</tt>.
+
+<p>
+Then, to use the editor, you pass keystrokes from the
+<tt>KeyIn</tt> method of your <tt>vCmdWindow</tt> to the <tt>EditKeyIn</tt>
+method of the <tt>vTextEditor</tt>. <tt>EditKeyIn</tt> interprets
+the conventional meanings of the arrow keys, etc., and lets
+you edit the text in the buffer. You will also probably implement
+other commands, such as Find, by using the <tt>EditCommand</tt>
+method.
+
+<p>
+<tt>VTextEditor</tt> also calls several methods to notify of
+text state changes, such as current line, insert or overtype,
+etc. You can receive these messages by overriding the default
+methods, and display appropriate information on a status bar.
+
+<p>
+While <tt>vTextEditor</tt> is very complete, there are some
+things missing. The major hole is cut and paste support. This
+will be added when cut and paste support is added to 
+<em><b>V</b></em>. There
+is also no real undo support. Maybe someday.
+
+<p>
+
+<h2>Constructor</h2> 
+<p>
+
+<H4>vTextEditor(vBaseWindow* parent)</H4>
+The <tt>vTextEditor</tt> constructor requires that you specify
+the parent <tt>vCmdWindow</tt>. Since you usually create the text editor object
+in your <tt>vCmdWindow</tt> object, this is easy. You will probably need
+to cast the <tt>this</tt> to a <tt>vBaseWindow*</tt>.
+
+<p>
+
+<h2>Utility Methods</h2> 
+<p>
+
+<H4>resetBuff()</H4>
+Before you load new text into the buffer, you must first
+call this method. It initializes the internal state of
+the text buffer.
+
+<p>
+
+<H4>virtual int addLine(char* line)</H4>
+This method is called repeatedly to add lines to the
+text buffer. The default method is limited by the amount
+of memory available on the system, and this method
+return 0 when it runs out of memory.
+
+<p>
+Note that the entire text buffer package can be overridden
+if you need to provide unlimited file size handling. You
+should examine the source code for <tt>vTextEditor</tt> to
+determine the specifications of the methods you'd need
+to override.
+
+<p>
+
+<H4>virtual void displayBuff()</H4>
+After you have added the complete file, call <tt>displayBuff</tt>
+to display the text in the window.
+
+<p>
+
+<H4>virtual int getLine(char* line, int maxChars, long
+lineNum)</H4>
+
+<H4>virtual int getFirstLine(char* line, int maxChars)</H4>
+
+<H4>virtual int getNextLine(char* line, int maxChars)</H4>
+These are used to retrieve the edited text from the buffer.
+You can use <tt>getFirstLine</tt> with <tt>getNextLine</tt> for
+easy sequential retrieval, or <tt>getLine</tt> for specific
+lines. These methods return -1 when all lines have been
+recovered.
+
+<p>
+
+<H4>virtual int EditCommand(int id, long val)</H4>
+This method provides a complete interface to the functions
+provided by <tt>vTextEditor</tt>. While the basic
+editing functions are also handled by <tt>EditKeyIn</tt>,
+<tt>EditCommand</tt> gives access to functions that typically
+are either usually invoked from a menu command (such as
+Find), or don't have a standard mapping to a functions
+key (such as lineGoto). If you want the functionality of
+these commands in your application, you will have to
+provide an appropriate menu or command pane item to
+support them.
+
+<p>
+Each function supported by <tt>vTextEditor</tt> has an
+associated id (symbolically defined in <tt>v/vtexted.h</tt>), each
+beginning with <tt>ed</tt>. Many of
+the functions also take an associated value. Many editors
+allow a repetition count to be specified with many commands.
+For example, it is sometimes useful to be able to specify
+a command to move right some specific number of characters.
+The <tt>val</tt> parameter can be used to specify a value
+as desired. The only function that really need a value
+other than 1 (or -1 in the case of directional movement
+commands) is <tt>edLineGoto</tt>.
+
+<p>
+<tt>EditCommand</tt> returns 1 if the command was executed
+successfully, 0 if the command was recognized, but not
+successful (the find fails, for example), and -1 if
+the command was not recognized as valid.
+
+<p>
+At the time this manual was written, the following commands
+are supported. Because <tt>vTextEditor</tt> is evolving,
+it is likely more commands will be added. Check the
+<tt>v/vtexted.h</tt> file for specification of new editor
+commands. In the following descriptions, the note
+``no val'' means that the <tt>val</tt> parameter is not
+used. A notation of ``+/-'' means the sign of <tt>val</tt>
+indicates direction.
+
+<p>
+
+<DL compact><dt><b>edBalMatch</b></dt><dd> find matching paren (if val &#62; 1, up to val
+lines away, otherwise within a reasonable range)
+<dt><b>edBufferBottom</b></dt><dd> move to bottom of file (no val)
+<dt><b>edCharDelete</b></dt><dd> delete +/- val chars
+<dt><b>edCharFoldCase</b></dt><dd> swap case of +/- val letters
+<dt><b>edCharInsert</b></dt><dd> insert char val
+<dt><b>edCharRight</b></dt><dd> move +/- val chars right
+<dt><b>edFind</b></dt><dd> invoke TextEd's find dialog (no val)
+<dt><b>edFindNext</b></dt><dd> find next occurrence of prev (no val)
+<dt><b>edLineBeginning</b></dt><dd> move to line beginning (no val)
+<dt><b>edLineDown</b></dt><dd> move down +/- val lines in column
+<dt><b>edLineDownBeg</b></dt><dd> move down +/- val lines
+<dt><b>edLineDelete</b></dt><dd> delete +/- val lines
+<dt><b>edLineDeleteFront</b></dt><dd> delete to beginning of line (no val)
+<dt><b>edLineDeleteToEnd</b></dt><dd> delete to end of line (no val)
+<dt><b>edLineEnd</b></dt><dd> move to end of line (no val)
+<dt><b>edLineGoto</b></dt><dd> move cursor to line val
+<dt><b>edLineOpen</b></dt><dd> open val new blank lines
+<dt><b>edScrollDown</b></dt><dd> scroll +/- val lines without changing cursor
+<dt><b>edVerify</b></dt><dd> force repaint of screen (no val)
+<dt><b>edWordRight</b></dt><dd> move cursor +/- val words right
+
+<p>
+</DL>For a basic editor, the simplest way to use <tt>EditCommand</tt>
+is to use the <tt>ed*</tt> id's to define the associated menu
+items and controls, and then call <tt>EditCommand</tt> as the
+default case of the <tt>switch</tt> in the <tt>WindowCommand</tt>
+method of your <tt>vCmdWindow</tt>. Thus, you might have
+code that looks like this:
+
+<p>
+<font size=-2>
+<pre>
+   ...
+  static vMenu EditMenu[] = {
+  ...
+    {"Find", edFind, isSens,notChk,noKeyLbl,noKey,noSub},
+    {"Find Next", edFindNext, isSens,notChk,noKeyLbl,noKey,noSub},
+    {"Find Matching Paren", edBalMatch, isSens,notChk,
+      noKeyLbl,noKey,noSub},
+  ...
+  };
+
+   ...
+
+//===========&#62;&#62;&#62; vedCmdWindow::WindowCommand &lt;&lt;&lt;====================
+ void vedCmdWindow::WindowCommand(ItemVal id, ItemVal val,
+      CmdType cType)
+ {
+   switch (id)
+    {
+     ...
+
+      default:  // route unhandled commands through editor
+       {
+         if (vedCanvas-&#62;EditCommand(id, 1) &lt; 0)
+            vCmdWindow::WindowCommand(id, val, cType);
+        break;
+       }
+
+    }
+   ...
+ }
+
+//====================&#62;&#62;&#62; vedCmdWindow::KeyIn &lt;&lt;&lt;====================
+  void vedCmdWindow::KeyIn(vKey keysym, unsigned int shift)
+  {
+    if (vedCanvas-&#62;EditKeyIn(keysym, shift) &lt; 0)
+        vCmdWindow::KeyIn(keysym, shift);
+  }
+</pre></font>
+
+<H4>virtual int EditKeyIn(vKey key, unsigned int shift)</H4>
+This method is usually called from the <tt>KeyIn</tt> method
+of your derived <tt>vCmdWindow</tt> class. See the above code
+example. 
+
+<p>
+The default implementation of <tt>EditKeyIn</tt> handles
+most of the standard keys, such as
+the arrow keys, the page keys, backspace, home, delete,
+insert, and end keys. It will also insert regular
+character keys into the text. It ignores function keys
+and non-printing control key values except tab and newline.
+
+<p>
+You can override this method to provide your own look and feel
+to the editor.
+
+<p>
+
+<H4>edState GetEdState()</H4>
+
+<H4>void SetEdState()</H4>
+<tt>VTextEditor</tt> maintains a state structure with relevant state
+information associated with various operating options of <tt>vTextEditor</tt>. It is
+defined in <tt>v/vtexted.h</tt>, and has the following fields:
+
+<p>
+<font size=-2>
+<pre>
+    typedef struct edState
+      {
+        long changes,           // count of changes
+             cmdCount;          // how many times to repeat command
+        int
+            findAtBeginning,    // leave find at beginning of pattern
+            fixed_scroll,       // flag if using fixed scroll
+            ins_mode,           // true if insert mode
+            counter,            // counter for + insert
+            echof,              // whether or not to echo action
+            tabspc,             // tab spacing
+            wraplm;             // right limit
+      } edState;
+</pre></font>
+You can query and set the state with <tt>GetEdState</tt> and
+<tt>SetEdState</tt>.
+
+<p>
+
+<H4>long GetLines()</H4>
+Returns the number of lines in the current buffer.
+
+<p>
+
+<h2>Methods to Override</h2> 
+<p>
+
+<H4>virtual void ChangeLoc(long line, int col)</H4>
+This method is called by <tt>vTextEditor</tt> whenever the current line
+or current column is changed. This information could be displayed
+on a status bar, for example.
+
+<p>
+
+<H4>virtual void ChangeInsMode(int IsInsMode)</H4>
+This method is called by <tt>vTextEditor</tt> whenever the
+insert mode is changed. If <tt>IsInsMode</tt> is true, then
+the editor is in insert mode. Otherwise, it is in overtype
+mode. The editor starts in insert mode. This information could be displayed
+on a status bar, for example.
+
+<p>
+
+<H4>virtual void StatusMessage(char* Msg)</H4>
+The editor will call this message with a non-critical message
+such as ``Pattern Not Found'' for certain operations.
+This information could be displayed on a status bar, for example.
+
+<p>
+
+<H4>virtual void ErrorMessage(char* Msg)</H4>
+The editor will call this message with a critical error message
+such as ``Bad parameter value'' for certain operations.
+This information could be displayed in a warning dialog, for example.
+
+<p>
+
+<h2>See Also</h2> 
+<p>
+<A HREF="vtextcnv.htm">vTextCanvasPane</A>
+
+
+</BODY>
+</HTML>

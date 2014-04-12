@@ -1,0 +1,447 @@
+<HTML> <HEAD>
+  <TITLE> V Tutorial - Getting Started</TITLE>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+ </HEAD>
+<BODY bgcolor="#ffffff">
+<H1>Getting Started</H1>
+<HR>
+
+<p>
+This chapter is intended to cover the elements that make up a
+<em><b>V</b></em> application. The first section covers the general
+organization of a ``Standard <em><b>V</b></em> Application''.
+Read this section
+to get an overview of a 
+<em><b>V</b></em> application. Don't worry about the details
+yet - just the the main idea.
+Then read Section&nbsp;<A href="#sec:tutexamp">Tutorial Example</A>
+and the <A href="tutcode.htm">Tutorial Code</A>, which has 
+the source code of a small, complete
+<em><b>V</b></em> application, to get the details.
+<p>
+
+<H2>Getting Started with Your Own V Application</H2>
+
+As with any new system, 
+<em><b>V</b></em> has a learning curve before you can
+write applications of your own. 
+<em><b>V</b></em>'s learning curve is actually
+pretty short. The experience of the students using 
+<em><b>V</b></em> has shown
+the best way to get started with 
+<em><b>V</b></em> is to first read the first
+part of this reference manual, including this chapter. Then begin
+with an example 
+<em><b>V</b></em> application. 
+
+<p>
+The 
+<em><b>V</b></em> application generator, <tt>vgen</tt>, included with the
+<em><b>V</b></em> distribution is the easiest way to begin building a 
+<em><b>V</b></em>
+application. Run <tt>vgen</tt>, select the basic options you
+want to include in your application, select the directory
+to save the generated code in, and then generate the basic
+skeleton application. From the skeleton app, it is relatively
+easy to add your own functionality.
+
+<p>
+The tutorial application described in this page is also an
+excellent 
+<em><b>V</b></em> example. Start by getting the example to compile.
+Then modify the code to add or remove features. Before long, you
+will have a good feel for 
+<em><b>V</b></em>, and be able to add all the features
+you need.
+
+<p>
+There are several other example programs provided with the 
+<em><b>V</b></em>
+distribution. This tutorial is found in <tt>&#126;/v/tutor</tt>.
+The VDraw program is found in <tt>&#126;/v/draw</tt>. The program
+used to test all 
+<em><b>V</b></em> functionality is found in <tt>&#126;/v/test</tt>.
+It will have an example of how to use every 
+<em><b>V</b></em> feature,
+although it is not as well structured as the other examples.
+
+<p>
+
+<H2>A Standard V Application</H2>
+While the 
+<em><b>V</b></em> framework is flexible enough to allow many different
+approaches to building an application, you should find it easier
+to base your applications on a model 
+<em>Standard 
+<em><b>V</b></em> Application</em>.
+The software organization described by a Standard 
+<em><b>V</b></em> Application
+can support <A href="vapp.htm#MVC">MVC (Model-View-Controller)
+</A> object-oriented architecture paradigm.
+<p>
+Figure&nbsp;<A href="#fig:stdvapp">1</A>
+ shows the hierarchy of a standard 
+<em><b>V</b></em> application.
+A standard 
+<em><b>V</b></em> application consists of the parts described below.
+Each part consists of a pair of <tt>.cpp</tt> (or <tt>.cxx</tt>) and
+<tt>.h</tt> files (except the <tt>makefile</tt>).
+
+<p>
+
+<A NAME="fig:stdvapp"></A>
+<center><img src="fig/stdvapp.gif"><br></center>
+<center>Figure 1: Standard V Application</center>
+
+<p>
+<p>
+<DL compact><dt><b>The Application</b></dt><dd>
+
+<p>
+In many ways, the heart of a Standard 
+<em><b>V</b></em> Application is the
+application class derived from the <tt><A HREF="vapp.htm" TARGET="_self" >vApp</A></tt> class. By
+convention, this derived class is called <tt>myApp</tt> (but you
+can use a different name if you want.) There will always be
+exactly one instance of the <tt>myApp</tt> class.  The <tt>myApp</tt>
+class acts as a coordinator between the windows that implement
+the user interface (the views) and the objects and algorithms
+that actually make up the application (the model).  The <tt>myApp</tt>
+class will contain in a whole/part (or aggregation) relationship
+the windows defined by the application, as well as any classes
+needed to implement the application.
+
+<p>
+The <tt>vApp</tt> class has several utility methods that are
+usually used unmodified, plus several methods that are usually
+overridden by the <tt>myApp</tt> class.  These are described in the
+section covering <tt>vApp</tt>.  In addition, your <tt>myApp</tt>
+class will usually have several other programmer defined methods
+used to interface the command windows with the application model.
+
+<p>
+<dt><b>Windows and Canvases</b></dt><dd>
+
+<p>
+Each Standard 
+<em><b>V</b></em> Application will have at least one top level
+window, and possible subwindows. These will usually be
+command windows derived from the <tt><A HREF="vcmdwin.htm" TARGET="_self" >vCmdWindow</A></tt> class. Your
+main derived class should be called <tt>myCmdWindow</tt>, and
+include a constructor that defines a menu bar, a canvas, and
+possible command and status bars. Of course, there will be a
+corresponding destructor. The <tt>.cpp</tt> file will contain the
+static definitions of the menu and any command and status bars.
+It will also override the <tt>WindowCommand</tt> method of <tt>vCmdWindow</tt>
+superclass. In your <tt>WindowCommand</tt> method, you will have a
+<tt>switch</tt> with a <tt>case</tt> for each menu item and button
+defined for the window.
+
+<p>
+Since a <tt>vCmdWindow</tt> contains different panes such as
+<tt><A HREF="vmenu.htm" TARGET="_self" >vMenus</A></tt>, <tt><A HREF="vcanvas.htm" TARGET="_self" >vCanvasPanes</A></tt>, <tt><A HREF="vcmdpane.htm" TARGET="_self" >vCommandPanes</A></tt>, and
+<tt><A HREF="vstatus.htm" TARGET="_self" >vStatusPanes</A></tt>, your top level command window object will
+usually define the appropriate pointers to each of these objects
+as required by the specific application. The <tt>myCmdWindow</tt>
+constructor will then have a <tt>new</tt> for each pane used.
+
+<p>
+Each instance of a window will be built using a call to the
+<tt>vApp::NewAppWin</tt> method. This allows the app object
+to track windows, and control interaction between the app
+model and the views represented by each window. 
+
+<p>
+Some applications need to open subwindows. These windows may or
+may not use the same menu, command bar, and canvas as the top
+level window. If they do, then they can use the same static
+definitions used by the top level window. Subwindows may also
+have their own menu, button, and canvas definitions.
+
+<p>
+<dt><b>Canvases for Windows</b></dt><dd>
+
+<p>
+Since each window usually needs a canvas, you will usually derive
+a canvas object from the <tt>vCanvasPane</tt> class. At
+this point in the life of 
+<em><b>V</b></em>, there are only two possible kinds
+of canvas.  The first is for graphics drawing, and is
+derived directly from the <tt>vCanvasPane</tt> class.  The other
+kind is a text canvas derived from the <tt>vTextCanvasPane</tt>
+class. The derived class will define override methods required
+for the user to interact with the canvas.
+
+<p>
+<dt><b>Optional Dialogs</b></dt><dd>
+
+<p>
+Most applications will need dialogs - either modeless or modal.
+A Standard 
+<em><b>V</b></em> dialog consists of a <tt>.cpp</tt> file with the
+static definition of the dialog commands, and the definitions
+of methods derived from the <tt><A HREF="vdialog.htm" TARGET="_self" >vDialog</A></tt> class. These will
+include a constructor and destructor, and a <tt>DialogCommand</tt>
+override with a <tt>switch</tt> with a <tt>case</tt> for each command
+defined for the dialog. Each <tt>case</tt> will have the code
+required to carry out useful work.
+
+<p>
+The top level window (or the subwindow that
+defines and uses the dialog) will create an instance of each
+dialog it needs (via <tt>new</tt>). The constructor for the
+dialog sets up the commands used for the dialog.
+
+<p>
+Typically, the top level window defines menu and button commands
+that result in the creation of a dialog. The top level window
+is thus usually responsible for invoking dialogs.
+
+<p>
+<dt><b>Optional Modal Dialogs</b></dt><dd>
+
+<p>
+Modal dialogs are almost identical to modeless dialogs. The main
+difference is how the dialog is invoked from the defining window.
+
+<p>
+<dt><b>Menu, Command and Status Bars</b></dt><dd>
+
+<p>
+By definition, the look and feel of a 
+<em><b>V</b></em> application requires
+a menu bar on the command window. A 
+<em><b>V</b></em> application also typically
+has a command bar and a status bar, but these are not required.
+
+<p>
+<dt><b>The Application Model</b></dt><dd>
+
+<p>
+Each application will need code to implement its data structures
+and algorithms. The design of the application model is beyond the
+scope of 
+<em><b>V</b></em>, but will usually be defined as a relatively
+independent hierarchy contained by the <tt>myApp</tt> object.
+Interaction between the application model and the various
+views represented by <tt>myCmdWindows</tt> can be coordinated with
+the <tt>myAppWinInfo</tt> class.
+
+<p>
+<dt><b>The Makefile</b></dt><dd>
+
+<p>
+Each 
+<em><b>V</b></em> Standard Application should have an associated <tt>makefile</tt>
+that can be used to compile and link the application.
+
+<p>
+</DL>
+Please note that while 
+<em><b>V</b></em> is object-oriented, the objects
+represent real screen windows. Thus, it makes no sense for most
+
+<em><b>V</b></em> objects to support copy constructors or object assignment. If
+you use one of these 
+<em><b>V</b></em> objects in a way requiring a copy
+constructor or an assignment (fortunately, it is difficult to
+contrive such an example), the code will generate a run time
+error.
+
+<p>
+
+<H2>Special V Applications</H2>
+
+<p>
+
+<H3>Windows MDI/SDI</H3>
+The standard 
+<em><b>V</b></em> application includes a command window
+with a menu, a command bar, a canvas, and a status bar. While
+this model suits most applications, there are some special
+cases that 
+<em><b>V</b></em> supports.
+
+<p>
+First, on Windows, 
+<em><b>V</b></em> supports the standard Windows MDI model
+(Multiple Document Interface)
+by default. The MDI model consists of a parent window that
+can contain several children canvases, each with a different
+menu that changes in the main parent window when a child
+gets focus. In practice, the menus are usually the same for
+all children windows, and each window is used to hold a
+new document or data object. One of the main advantages
+of the MDI model is that each application has a main window
+to distinguish it from other Windows applications, and
+as many child windows as it needs to manipulate its data.
+
+<p>
+On X versions, there is no need for a special parent window.
+Each time you open a new command window, you get a new window
+on the X display.
+
+<p>
+The Windows MDI model forces some screen decorations that
+are not appropriate for all applications. Thus, 
+<em><b>V</b></em> also supports
+the standard Windows SDI model. The SDI model allows only one
+canvas/command window combination. There is a parameter to
+the <tt>vApp</tt> constructor that tells 
+<em><b>V</b></em> to use the SDI model.
+This parameter is not used on the X version.
+
+<p>
+
+<H3>Canvasless, menuless V Application</H3>
+
+<p>
+Sometimes an application needs just a command bar with no menu or
+canvas. By setting the <tt>simSDI</tt> parameter to 1, and
+supplying a width and height value to the <tt>vApp</tt>
+constructor, 
+<em><b>V</b></em> allows this kind of simple interface. Instead of
+adding a menu and a canvas as is done for normal 
+<em><b>V</b></em> apps, a
+menuless and canvasless app just defines a command pane for the
+command bar. The height and width are used to specify the height
+and width of the application, and require different values for
+Windows or X.
+
+<p>
+
+<A NAME="sec:tutexamp"></A>
+<H2>A Tutorial Example V Application</H2>
+<p>
+Now that you've read about the parts of a standard 
+<em><b>V</b></em>
+application, it might be useful to go over a simple example of a
+
+<em><b>V</b></em> application. Appendix A contains the source code for a simple
+
+<em><b>V</b></em> application. The code is tutorial, and well commented. You
+can read the code directly and get a good understanding of what
+elements are required for a 
+<em><b>V</b></em> application. This section will
+give a higher level overview of the code in the <A HREF="tutcode.htm" TARGET="_self" >tutorial source</A>.
+
+<p>
+You should read this code, paying special attention to the comments.
+Most of the information you need to build a typical 
+<em><b>V</b></em>
+application is explained in this code. This sample code is also
+available on line under the <tt>&#126;/v/tutor</tt> directory.
+The source code of a slightly different standard 
+<em><b>V</b></em> application
+is included the <tt>&#126; /v/examp</tt> directory of the 
+<em><b>V</b></em> distribution.
+
+<p>
+The previous section suggested using <tt>myApp</tt> for names. This
+tutorial uses a <tt>t</tt> prefix instead of <tt>my</tt>. You really
+can use whatever names you want. It will help to be consistent,
+however.
+
+<p>
+The code is broken down into five sections, corresponding to the
+main application, the main window, a simple canvas, and  modal
+and modeless dialogs. The source code for each of these parts is
+included in Appendix A. The source code is extensively commented,
+and the comments contain much detail on how you should structure
+a 
+<em><b>V</b></em> application, so please read them carefully. The following
+sections give a brief overview of each source file included in
+the tutorial example.
+
+<p>
+
+<H3>The Base Application Class</H3>
+The file <tt>tutapp.cpp</tt> contains the overridden definitions of
+the classes <tt>NewAppWin</tt>, <tt>Exit</tt>, <tt>CloseAppWin</tt>,
+<tt>AppCommand</tt>, and <tt>KeyIn</tt> methods. These examples
+don't do much work, but are provided as a template for building
+complete applications.
+
+<p>
+The single definition of the application (<tt>static</tt> <tt>tutApp</tt>
+<tt>tut_App("TutorApp")</tt>, and the <tt>AppMain</tt> main program
+are also in this file. The initial window is created in <tt>AppMain</tt>
+by calling <tt>NewAppWin</tt>.
+
+<p>
+One thing that can be difficult to grasp when using a
+framework such as 
+<em><b>V</b></em> is understanding where the program starts,
+and how you get things rolling. This happens in <tt>tutapp.cpp</tt>,
+so it is especially important to understand this piece of code.
+The essential thing to understand is that C++ will invoke the
+constructors of static objects before beginning execution of the
+program proper. Thus, you declare a static instance of the
+<tt>vApp</tt> object, and its constructor is used to initialize the
+native GUI library and get things going. Your program will
+
+<em>not</em> have a <tt>main</tt> function (see <tt>AppMain</tt> in the
+description of the <tt>vApp</tt> class for more details).
+
+<p>
+As with all files in the tutorial, each has a <tt>.cpp</tt> source
+file, and its associated <tt>.h</tt> header file. All 
+<em><b>V</b></em> code has
+been written using the coding guidelines given in Appendix B.
+This includes the order of the declarations included in header
+files.
+
+<p>
+
+<H3>The Command Window</H3>
+The file <tt>tcmdwin.cpp</tt> contains the code for the main
+command window. Of particular interest are the definitions of
+the main menu, command pane, and status pane. These panes are
+defined and added to the window in the constructor.
+
+<p>
+There is also code to demonstrate handling keyboard and window
+command events in the <tt>KeyIn</tt> and <tt>WindowCommand</tt> methods.
+There is also a simple example of using the <tt>vFileSelect</tt>
+utility class, as well as invoking modeless and modal dialogs.
+
+<p>
+
+<H3>The Canvas</H3>
+The file <tt>tcanvas.cpp</tt> contains the code for the canvas.
+This is a really simple canvas example which supports
+drawing a few lines. This class handles redrawing after
+expose events very simply, but demonstrates what must be done
+in general.
+
+<p>
+
+<H3>A Modeless Dialog</H3>
+The file <tt>tdialog.cpp</tt> contains the code for a modeless
+dialog. There are just a few example buttons, check boxes, and
+radio buttons. The <tt>DialogCommand</tt> methods demonstrates how
+to handle commands from a dialog.
+
+<p>
+
+<H3>A Modal Dialog</H3>
+
+<p>
+The file <tt>tmodal.cpp</tt> contains the code for a modal dialog.
+The definition of a modal dialog is nearly identical to a modeless
+dialog. The main difference is how they are invoked, which is
+shown in the <tt>tcmdwin.cpp</tt> code.
+
+<p>
+
+<H3>The Makefile</H3>
+The file <tt>makefile</tt> contains a sample Unix-style make file.
+This version is for Gnu make, which has features different
+than some other flavors of make. It should still serve as a
+decent example.
+
+<p>
+<HR>
+<p>
+</font>
+</BODY></HTML>

@@ -1,0 +1,231 @@
+<HTML>
+<HEAD>
+<LINK REL=StyleSheet HREF="./vstyle.css">
+<Title>vDebugDialog</title>
+
+</HEAD>
+<BODY BGCOLOR="#ffffff">
+
+<H1>vDebugDialog</H1>
+<HR>
+
+<A NAME="vDebugDialog"></A>
+Utility class to access debugging messages.
+
+<p>
+
+<h2>Synopsis</h2>
+
+<p>
+
+<DL compact>	<dt><b>Header:</b></dt><dd> <tt><A HREF="vquickr.htm#vDebugDialog">&lt;v/vdebug.h&#62;</A></tt>
+	<dt><b>Class name:</b></dt><dd> vDebugDialog
+ 	<dt><b>Hierarchy:</b></dt><dd> vModalDialog -&#62;vDebugDialog
+</DL>
+<p>
+
+<h2>Description</h2>
+
+<p>
+
+<em><b>V</b></em>&nbsp;provides built in debugging features. Most of the 
+<em><b>V</b></em>&nbsp;classes
+contain debugging messages that are displayed on <tt>stderr</tt> or a
+special debugging information window. For Unix systems, <tt>stderr</tt>
+is usually the xterm window used to launch the 
+<em><b>V</b></em>&nbsp;application.
+<P>
+<em>NOTE: vDebugDialog is NOT currently implemented for Windows
+WIN32.</EM> This will be changed in the near future.
+
+<p>
+Several categories of debugging messages have been defined by 
+<em><b>V</b></em>,
+and display of messages from different categories is controlled
+by the <tt>vDebugDialog</tt> class.
+
+<p>
+
+<em><b>V</b></em>&nbsp;provides several macros that can be used to insert debugging
+messages into your code. These are of the form <tt>SysDebugN</tt> for
+system code, and <tt>UserDebugN</tt> for your code. Display of
+these messages is controlled by the <tt>vDEBUG</tt> symbol, and the
+settings of the <tt>vDebugDialog</tt> class.
+
+<p>
+You define an error message using a <tt>UserDebug</tt> macro.
+Your message is a format string using the conventions of <tt>sprintf</tt>.
+You can have none to three values by using the corresponding
+<tt>UserDebug</tt> through <tt>UserDebug3</tt> macros. Each macro
+takes a debug type, a message, and any required values for the
+message format string. For example,
+<tt>UserDebug(Misc,"myClass: %d\n", val)</tt>
+will print the message ``myClass:&nbsp;xx'' when it is executed and the
+<tt>Misc</tt> debug message type is enabled.
+
+<p>
+If <tt>vDEBUG</tt> is 
+<em>not</em> defined, your debugging messages will
+be null macros, and not occupy any code space.  If <tt>vDEBUG</tt> is
+defined, then your messages will be conditionally displayed depending
+on their type.
+
+<p>
+By default, V starts with the <tt>System</tt> category <tt>BadVals</tt>
+on, and all three <tt>User</tt> categories on. Unix versions of 
+<em><b>V</b></em>\
+support a command line option that allows you to enable each
+option using
+the <tt>-vDebug</tt> command line switch. You include the switch
+<tt>-vDebug</tt> on the command line, followed by a single argument
+value made up of letters corresponding to the various debugging
+categories. If <tt>-vDebug</tt> is specified, all debugging categories
+except those specified in the value are turned off. The value
+for each category is listed in its header. For example, using
+the switch <tt>-vDebug SUCDm</tt> would enable debugging messages
+for both <tt>System</tt> and <tt>User</tt> constructors and destructors,
+as well as <tt>System</tt> mouse events.
+Note that the values are case sensitive.
+
+<p>
+
+<h2>Debugging Categories</h2>
+
+<p>
+Each of the following debug categories can be set or unset using
+the <tt>vDebugDialog</tt> class. These category names are to be
+used as the first argument to the <tt>UserDebug</tt> macro.
+
+<p>
+*System (-vDebug S)
+
+<p>
+These are the messages defined using the <tt>SysDebug</tt> macro.
+These messages can sometimes be useful to determine if you are
+using the classes properly. The constructor, destructor, and
+command events are often the most useful system debug messages.
+Turning this off will disable all system messages.
+
+<p>
+*User (-vDebug U)
+
+<p>
+These are the messages defined using the <tt>UserDebug</tt> macros. Turning
+this off will disable all user messages, while turning it on enables those
+user messages that have been enabled.
+
+<p>
+*CmdEvents (-vDebug c)
+
+<p>
+This category corresponds to command events, which include menu
+picks and dialog command actions.
+
+<p>
+*MouseEvents (-vDebug m)
+
+<p>
+This category corresponds to mouse events, such as a button click
+or a move.
+
+<p>
+*WindowEvents (-vDebug w)
+
+<p>
+This category corresponds to window events, such as a resize or redraw.
+
+<p>
+*Build (-vDebug b)
+
+<p>
+This category corresponds to actions taken to build a window, such
+as adding commands to a dialog.
+
+<p>
+*Misc (-vDebug o)
+
+<p>
+This is a catch all category used for miscellaneous system messages.
+The <tt>o</tt> vDebug stands for other.
+You should probably use a UserAppN category for your miscellaneous messages.
+
+<p>
+*Text (-vDebug t)
+
+<p>
+These messages are primarily used by the <tt>vTextCanvasPane</tt> class,
+and are useful for debugging text display.
+
+<p>
+*BadVals (-vDebug v)
+
+<p>
+These messages are generated when a bad parameter or illegal value
+is detected. These can be most useful.
+
+<p>
+*Constructor (-vDebug C)
+
+<p>
+These messages are displayed whenever a constructor for an
+object is called. These messages can be very useful for tracking
+object creation bugs. You should try to have
+<tt>UserDebug(Constructor,"X::X constructor")</tt> messages
+for all of your constructors, and a corresponding Destructor message.
+
+<p>
+*Destructor (-vDebug D)
+
+<p>
+Messages from an object destructor.
+
+<p>
+*UserApp1, UserApp2, UserApp3 (-vDebug 123)
+
+<p>
+These are provided to allow you up to three categories of your
+own debugging messages.
+
+<p>
+
+<h3>Example</h3>
+
+<p>
+To use the 
+<em><b>V</b></em>&nbsp;debugging facilities, it is usually easiest to
+add a Debug command to a menu item - controlled by the <tt>vDEBUG</tt>
+symbol.  Then add calls to <tt>UserDebug</tt> as needed in your code.
+This example shows how to define a Debug menu item, and then invoke
+the <tt>vDebugDialog</tt> to control debugging settings.
+
+<p>
+<font size=-2>
+<pre>
+
+#include &lt;v/vdebug.h&#62;
+
+    vMenu FileMenu[] =
+      {
+        ...
+#ifdef vDEBUG
+        {"-", M_Line, notSens,notChk,noKeyLbl,noKey,noSub},
+        {"Debug", M_SetDebug,isSens,notChk,noKeyLbl,noKey,noSub},
+#endif
+        ...
+      };
+
+    ...
+    case M_SetDebug:
+     {
+        vDebugDialog debug(this);    // instantiate
+        UserDebug(Misc,"About to show Debug dialog.\n");
+        debug.SetDebug();            // show the dialog
+        break;
+     }
+    ...
+
+</pre></font>
+
+
+</BODY>
+</HTML>
